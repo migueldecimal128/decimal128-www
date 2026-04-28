@@ -1,3 +1,3 @@
-# decimal128
+# decimal128 for the world
 
-[Kotlin decimal128 implementation](https://decimal128.com/decimal128-kotlin).
+[Kotlin decimal128 implementation](https://migueldecimal128.github.io/decimal128-kotlin).
