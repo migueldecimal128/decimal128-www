@@ -1,6 +1,6 @@
-# UBD: An Unpacked Binary Decimal Encoding for Fast Software Decoding of IEEE 754 decimal128
+# UBD: An Unpacked Binary Decimal Format for Fast Software Decoding of IEEE 754 decimal128
 
-**Abstract.** UBD (Unpacked Binary Decimal) is a software-oriented in-memory encoding for IEEE 754 decimal128, designed for fast decoding on general-purpose CPUs. The two interchange encodings defined by IEEE 754 — Densely Packed Decimal (DPD) and Binary Integer Decimal (BID) — were designed primarily for hardware, which remains rare outside IBM processors. In software, both carry a decode cost: DPD requires substantial work to unpack its declet-based coefficient, while BID, though cheaper to unpack, still makes exponent recovery and operand classification non-trivial. Consequently, most software implementations unpack each operand into a wider, more memory-hungry working representation. UBD instead fits the full decimal128 coefficient range and NaN/infinity semantics into 128 bits while making the binary coefficient accessible via a single masking operation and the quantum exponent via a single arithmetic shift. All non-finite special values are stored with oversized coefficients, eliminating a separate operand check on the fast path. The result makes common-case operand checks and field extractions for addition, subtraction, and multiplication trivial. Implementations in Swift and Kotlin Multiplatform pass the Cowlishaw/IBM decTest, IBM FPgen fptest, and Intel libbid decimal128 test-vector suites; a core C implementation is in progress to extend UBD to other languages.
+**Abstract.** UBD (Unpacked Binary Decimal) is a software-oriented in-memory format for IEEE 754 decimal128, designed for fast decoding on general-purpose CPUs. The two interchange encodings defined by IEEE 754 — Densely Packed Decimal (DPD) and Binary Integer Decimal (BID) — were designed primarily for hardware, which remains rare outside IBM processors. In software, both carry a decode cost: DPD requires substantial work to unpack its declet-based coefficient, while BID, though cheaper to unpack, still makes exponent recovery and operand classification non-trivial. Consequently, most software implementations unpack each operand into a wider, more memory-hungry working representation. UBD instead fits the full decimal128 coefficient range and NaN/infinity semantics into 128 bits while making the binary coefficient accessible via a single masking operation and the quantum exponent via a single arithmetic shift. All non-finite special values are stored with oversized coefficients, eliminating a separate operand check on the fast path. The result makes common-case operand checks and field extractions for addition, subtraction, and multiplication trivial. A Swift implementation using UBD format passes the Cowlishaw/IBM decTest, IBM FPgen fptest, and Intel libbid decimal128 test-vector suites. An earlier Kotlin Multiplatform implementation is being retrofitted to adopt UBD format; a core C implementation is in planned to extend decimal128 availability to other languages.
 
 **Keywords:** decimal floating-point, IEEE 754, decimal128, DPD, BID, software arithmetic, in-memory encoding.
 
@@ -18,7 +18,7 @@ The contributions of this paper are:
 
 1. **UBD**, a 128-bit in-memory encoding for `decimal128` that preserves the full coefficient range and NaN/infinity semantics while exposing the coefficient and exponent through single, cheap operations with a high degree of instruction-level parallelism (ILP).
 2. A **special-value scheme** that stores all non-finite values with oversized coefficients, reducing the need for a dedicated operand-classification step on the arithmetic fast path.
-3. **Conforming implementations** in Swift and Kotlin Multiplatform, validated against three independent industry test suites.
+3. **Conforming implementations** A completed Swift implementation and an in-process Kotlin Multiplatform implementation, validated against three independent industry test suites.
 
 ## 2. Background and Related Work
 
@@ -240,7 +240,7 @@ UBD is implemented in **Swift** and in **Kotlin Multiplatform**, giving native d
 
 The Swift value-type memory model is well suited to a numeric datatype. The implementation is written in Swift 6.3, makes heavy use of the `UInt128` type and of the overflow operators, and is 100% Swift with no external dependencies.
 
-The **Kotlin Multiplatform** implementation uses a JVM-style heap-allocated-object model. Values are immutable, enforced by the Kotlin compiler through `val` fields. The core is 100% Kotlin, restricted to JVM-native signed types (no Kotlin pseudo-unsigned types); the only routine written in C, for Kotlin/Native, is `unsignedMulHi`, which returns the high 64 bits of a 64×64 unsigned multiply — available on the JVM but absent from the standard Kotlin Multiplatform library. The implementation is heap-friendly: each core operation, including all arithmetic, allocates at most one 32-byte object (a 12-byte header, 4 unused bytes, and 2 × 8 bytes of UBD).
+The **Kotlin Multiplatform** implementation uses a JVM-style heap-allocated-object model. _As of 1 Jun 2026, retro-fitting to UBD format is in-process_ Values are immutable, enforced by the Kotlin compiler through `val` fields. The core is 100% Kotlin, restricted to JVM-native signed types (no Kotlin pseudo-unsigned types); the only routine written in C, for Kotlin/Native, is `unsignedMulHi`, which returns the high 64 bits of a 64×64 unsigned multiply — available on the JVM but absent from the standard Kotlin Multiplatform library. The implementation is heap-friendly: each core operation, including all arithmetic, allocates at most one 32-byte object (a 12-byte header, 4 unused bytes, and 2 × 8 bytes of UBD).
 
 The Swift and Kotlin implementations are kept as syntactically similar as practical, and are intended to converge further over time — a subject for a companion paper.
 
@@ -274,20 +274,15 @@ UBD optimizes the arithmetic fast path at the cost of conversions at interchange
 
 UBD trades work at the interchange boundary for cheaper arithmetic, so it is not the right choice everywhere (see Section 7.1). Two design limitations are worth stating plainly. First, the "folded" special-value check is only free to the extent that an operation already performs a range check on its coefficient or product; where it does not, an explicit comparison is reintroduced, though it remains a single magnitude test rather than a combination-field decode. Second, UBD is an in-memory format: values must still be converted to a standard interchange encoding (DPD or BID) for storage and exchange, and the cost of that conversion is borne at I/O boundaries.
 
-Honestly, this cost is very low and not much more than the cost that would normally be associated with any operation. If you are reading from a file and summing values the cost might be slightly higher, but I'm not sure it would be measurable. If this were perceived to be a true limitation then I could take another look at optimizing the decoding.
-
-The real truth is, users would not have another option.
+_Honestly, this cost is very low and not much more than the cost that would normally be associated with any operation. If you are reading from a file and summing values the cost might be slightly higher, but I'm not sure it would be measurable. If this were perceived to be a true limitation then I could take another look at optimizing the decoding._
 
 ### 7.3 Future work
 
-Candidate directions do *NOT* include a `decimal64` variant because nobody wants it.
-completion of the portable C core ... yep
-formal verification of the encode/decode round-trip and the special-value invariants ... nope
-and a quantitative performance study of the arithmetic kernels and the RRMP10 rounding path, planned for companion papers.
+A standard architecture for multi-platform support has been designed. See the accompanying whitepaper. 
 
 ## 8. Conclusion
 
-UBD reframes the decimal128 storage question for the common case of software implementations of decimal floating-point. UBD maintains the density of the DPD and BID interchange formats while allowing the coded coefficient and qExp to be accessed with a single trivial operation each. Conforming Swift and Kotlin Multiplatform implementations pass the Cowlishaw/IBM decTest, IBM FPgen fptest, and Intel `libbid` suites. A quantitative study of the arithmetic kernels built on this format is left to a companion paper.
+UBD reframes the decimal128 storage question for the common case of software implementations of decimal floating-point. UBD maintains the density of the DPD and BID interchange formats while allowing the coded coefficient and qExp to be accessed with a single trivial operation each. Conforming Swift and Kotlin Multiplatform implementations pass the Cowlishaw/IBM decTest, IBM FPgen fptest, and Intel `libbid` test suites. A quantitative study of the arithmetic kernels built on this format is left to a companion paper.
 
 ## References
 
