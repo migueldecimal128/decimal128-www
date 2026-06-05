@@ -280,6 +280,8 @@ C returns a single value. Several core operations must return more than one valu
 
 The translation rule is mechanical: *value-return* on Swift/C corresponds to *fill the caller's instance* on Java/Kotlin. The function logic stays parallel; only the signature and the return mechanism differ.
 
+Where the fill-in convention applies, the destination parameter comes **first** and scratch/context parameters come **last**: `op(result, operand…, scratch/ctx…)` (settled June 2026 with the primitive-layer companion). Destination-first keeps the operands positionally identical to the Swift/C value-return line (`let z = op(x, y)` ↔ `op(z, x, y)`) and holds the destination at position 0 under varying operand arity.
+
 ### 5.2 Quot128Residue
 
 The division result type for the `div_pow10_*` family is `Quot128Residue`. It pairs a 128-bit quotient magnitude with the `residue` that categorizes the lost digits that represent the digits that were shifted out to the right ... the remainder.
@@ -341,17 +343,27 @@ The core operates entirely in the library's internal UBD representation. The two
 
 Function names are **identical across all four cores**. Only signatures diverge, and only where the value-return-versus-fill-in rule or the type-representation rules force it.
 
-Because C has no overloading, a manual name-mangling scheme provides unique names for what would otherwise be overloaded functionality. The suffix vocabulary established so far:
+Because C has no overloading, a manual name-mangling scheme provides unique names for what would otherwise be overloaded functionality. The scheme is codified (June 2026, settled during the primitive-layer specification — see the companion whitepaper):
 
-- `_128` — a 128-bit parameter
-- `_256` — a 256-bit parameter
-- `_tte` — ties-to-even
-- `_rnd` — a rounding direction
-- `_ctx` — a `DecContext` (the decimal context holding flags and trap handlers)
+```
+name      ::= op '_' result '_' operands { '_' qualifier }
+operands  ::= width ('x' width)*
+result    ::= width | aggregate segment
+```
 
-The full mangling rules are **to be determined**: the ordering rule when multiple suffixes apply, whether a suffix encodes the full signature or only enough to disambiguate, and whether the suffix set is closed. One known open problem is that `_ctx` is currently sometimes optional; overloading one suffix to mean both "context present" and "context absent" is unsatisfactory, and a distinct token for the nullable variant is the likely resolution.
+**The result segment leads.** Name order then mirrors call-site order on every platform: `let q = divPow10_q128res_256(x, k)` on Swift/C and `divPow10_q128res_256(q, x, k)` under the Java/Kotlin fill-in convention (Section 5.1) both put the result leftmost. Result aggregates use terse segments: `q128res` (Quot128Residue), `q256r64` (Quot256Rem64), `d256sw` (Diff256Swapped).
 
-Base function names are generally `camelCase` and qualifying extensions are digits and lower case, separated by underbars.
+- **Width segments** (`64`, `128`, `256`) name the operand widths in declaration order, subsuming the earlier free-floating `_128`/`_256` suffixes.
+- **Operands implied by the op are not spelled**: the power-of-ten exponent in `mulPow10`/`divPow10` names, an Int shift count.
+- **Qualifiers trail**: `_tte` ties-to-even, `_rnd` a rounding-direction parameter, `_ctx` a required `DecContext`, `_ctxnull` an optional/nullable `DecContext`, and algorithm markers (`_barrett`, `_knuth`) where one contract has strategy-split implementations.
+
+`_ctxnull` resolves the earlier problem of `_ctx` doing double duty: `_ctx` always means a required `DecContext` parameter; `_ctxnull` is officially the optional/nullable variant.
+
+The core's division-by-powers-of-ten family illustrates the grammar: `divPow10_q128res_*`, e.g. `divPow10_q128res_256_barrett` (today's `div_256_pow10_q128res_barrett`, which carries its result segment in third position and reorders when touched).
+
+Base op names are `camelCase`; result, operand, and qualifier segments are digits and lower case, separated by underbars. The tier-0 scalar primitives are the one sanctioned exception, using inline widths without segments (`unsignedMul64Hi64`, `clz64`) — see the companion whitepaper.
+
+Still open: whether the qualifier set is closed, and the spelling of scalar result segments (`int`, `bool`) — tracked in Section 11.
 
 ## 9. Error Handling
 
@@ -400,7 +412,7 @@ These are the points where the four cores do **not** translate purely mechanical
 
 The following are explicitly unresolved and are tracked for future work:
 
-- The full name-mangling rules (ordering, full-signature versus disambiguate-only, closed versus open suffix set), and the optional/nullable-`_ctx` naming problem.
+- Naming leftovers (Section 8): whether the qualifier set is closed, and confirmation of the scalar result segments (`int`, `bool`). The segment grammar, result-first ordering, and the `_ctxnull` token are settled.
 - The `DecContext` status-flag and `DecTrapHandler` trap-propagation mechanism — wrapper-facing and substantial enough to warrant its own document.
 - The use(s) of the free `Int` field (`TBD`) in `Decimal128`.
 - The fate of `FormatStyle.COEFFICIENT_QEXP`.
