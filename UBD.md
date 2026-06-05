@@ -77,7 +77,7 @@ In `decimal128` the quantum exponent *qExp* must represent values in the range [
 
 IEEE 754 binary floating-point — like many other floating-point representations — stores a *biased* exponent as a packed field. This requires an addition or subtraction during packing and unpacking, which is trivial in hardware but is an extra operation when decoding in software.
 
-UBD instead packs qExp in unbiased two's-complement form in the top 14 bits of the value. The qExp can be decoded to an Int64 simply by performing a signed (arithmetic) shift right of hi64 by 49 bits; conversely, a validated Int64 qExp can be positioned for packing by shifting left 49 bits.
+UBD instead packs qExp in unbiased two's-complement form in the top 14 bits of the value. The qExp can be decoded to an Int64 simply by performing a signed (arithmetic) shift right of hi64 by 50 bits; conversely, a validated Int64 qExp can be positioned for packing by shifting left 50 bits.
 
 Observe that 14 bits lets the qExp field represent two's-complement values in the range [−8192, 8191], while the finite range we must represent is only [−6176, 6111]. Values outside the finite range are therefore available to denote non-finite special values — Infinity and the NaN variants.
 
@@ -119,13 +119,13 @@ Within the 14-bit qExp field, special values are encoded as follows:
 ```
 0b0111xx_000000_xx   non-finite
 0b0111ns_000000_pp   n: NaN bit, s: signaling bit, pp: payloadHi2
-0b011100_000000_00   Infinity (6176)
+0b011100_000000_00   Infinity (7168)
 0b01111x_000000_pp   NaN
 0b011110_000000_pp   qNaN
-0b011111_000000_pp   sNaN (7963..7967)
+0b011111_000000_pp   sNaN (7936..7939)
 ```
 
-All non-finite values fall in the range [7168, 7967], with substantial gaps. Decoding that range might appear complicated — and decoding complexity is precisely what UBD aims to avoid — but in pseudocode it is not bad at all. Assuming a 64-bit register width, `>>>` denoting an unsigned shift right, decimal integer constants, and `hi64` holding the upper 64 bits of the encoded value:
+All non-finite values fall in the range [7168, 7939], with substantial gaps. Decoding that range might appear complicated — and decoding complexity is precisely what UBD aims to avoid — but in pseudocode it is not bad at all. Assuming a 64-bit register width, `>>>` denoting an unsigned shift right, decimal integer constants, and `hi64` holding the upper 64 bits of the encoded value:
 
 ```
 isFinite     { (hi64 >>> 60) != 7 }
