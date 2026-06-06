@@ -313,7 +313,7 @@ So the pattern is: the core pays for performance with weaker typing; the wrapper
 
 ### 6.4 The Primary Enum Types
 
-**Residue** (internal to the core, not visible to the wrapper) has four values, encoded so that bit 1 is the rounding bit and bit 0 is the sticky bit:
+**Residue** (internal, not visible to the wrapper; per the companion whitepaper's D17 it is a 2-bit Int defined at the primitive layer rather than an enum — Java cannot express a zero-cost wrapper, so no core wraps it) has four values, encoded so that bit 1 is the rounding bit and bit 0 is the sticky bit:
 
 - `EXACT   = 0` (0b00)
 - `LT_HALF = 1` (0b01)
