@@ -27,6 +27,8 @@ The classifications in this document were settled as explicit decisions (June 20
 | D9 | **Names lead with the result, in full segment form throughout the uniform API**: `op_result_operands[_qualifier]` — `divRem_q256r64_256x64`, `add_256_256x64`, `subAbs_d256sw_256x128`. Type-prefix abbreviations were considered and rejected. Tier-0 scalar ops were originally excepted with inline-width short names; D11 retires that exception and folds them into the grammar. |
 | D10 | **`barrettStep` is promoted to tier 1** as `divRem_q64r64_64x64x64_mu_barrettStep`, reversing its Section 4.3 retention. The single reciprocal-multiply division step is decimal-agnostic, and its branch-free correction is exactly the Section 6.2 confined idiom — keeping it core would force that idiom into JVM-family core source. Barrett *strategy* — the mu tables, the 10^k = 2^k·5^k split, dividend-width dispatch, and the chunk-kernel ladder — remains core. |
 | D11 | **Tier-0 names fold into the D9 segment grammar**, retiring the inline-width exception: `umulHi_64_64x64`, `udiv_64_64x64`, `urem_64_64x64`, `ucmp_int_64x64`, `ushr_64_64`, `clz_int_64` (and `ctz_int_64` if confirmed). The `u` op prefix marks the unsigned semantics that signed dwords obscure — information the 128/256 families don't need (their types are unsigned) but 64-bit ops do (signed dwords have two real shifts and compares). The exception had eroded: the set outgrew "five ops, learned once," and `ucmp_int_64x64`/`cmp_int_128x128`, `ushr_64_64`/`shr_128_128`/`shr_256_256` now form one grammar instead of two systems. |
+| D12 | **The U128 vocabulary is frozen.** The Section 5.3 confinement sweep of the Swift reference is complete (June 2026); per the rule that the sweep is the authority, membership is fixed at the twelve Section 4.2 ops plus `mul_128_64x64`. **U128 vocabulary arithmetic is wrapping** (bit-bucket semantics, matching the native `&+`/`&-`/`&*` expressions it replaced); trap-on-overflow exists only in the U256 family. Expression forms the sweep found but deferred are tracked as candidate members in Open Items: the sign-mask/conditional-negate idiom, 128÷128 divRem, and the `hi32`/`lo32` dword half-word ops. |
+| D13 | **`hi32_64`/`lo32_64` join tier 0**, resolving the half-word question in favor of dedicated ops over bare `ushr_64_64` spellings: the high half of an arbitrary dword is the dominant logical-shift shape in the kernels (Knuth loads, Barrett 32-bit chunking), and the named pair reads as intent where a shift count reads as arithmetic. The logical-shift confinement pass is complete in the Swift reference — field/flag extraction (dfd predicates, BID/DPD words, residue sign checks) and chunk-boundary shifts spell `ushr_64_64`; half-word extraction spells `hi32_64`/`lo32_64` — except the rrmp10 kernel interiors, which await the Section 3.4 exemption decision. |
 
 Three earlier decisions from the parent-document era are restated because this layer inherits them: `u128StripTrailingZeroDigits` is primitive; the division *algorithms* are core; and multi-value returns use **typed result aggregates** (the Quot* family) rather than a single untyped scratch object, with JVM cores value-returning small aggregates by default in reliance on C2 escape analysis (Section 6.4).
 
@@ -54,6 +56,9 @@ Tier 0 is deliberately tiny, and every tier-0 operation returns a **single value
 | `urem_64_64x64(a, b)` | unsigned 64÷64 remainder | native `%` | native `%` | `Long.remainderUnsigned` | `toULong() % toULong()` | `Long.remainderUnsigned` |
 | `ucmp_int_64x64(a, b)` | −1/0/+1 unsigned compare | native compare | native compare | `Long.compareUnsigned` | xor-`MIN_VALUE` compare | `Long.compareUnsigned` |
 | `clz_int_64(a)` | leading zero count, `clz_int_64(0) == 64` | `leadingZeroBitCount` | `__builtin_clzll` (zero-guarded) | `Long.numberOfLeadingZeros` | `countLeadingZeroBits` | `Long.numberOfLeadingZeros` |
+| `ushr_64_64(a, n)` | logical right shift, `n` in `0..<64` | native `>>` on `UInt64` | native `>>` on `uint64_t` | `ushr` | `ushr` | `>>>` |
+| `hi32_64(a)` | high 32 bits, zero-extended in a dword | `a >> 32` | `a >> 32` | `a ushr 32` | `a ushr 32` | `a >>> 32` |
+| `lo32_64(a)` | low 32 bits, zero-extended in a dword | `a & 0xFFFF_FFFF` | `a & 0xFFFFFFFF` | `a and 0xFFFF_FFFFL` | `a and 0xFFFF_FFFFL` | `a & 0xFFFF_FFFFL` |
 
 (`ctz_int_64`, the trailing-zeros twin, is proposed by symmetry — the strip and power-of-two-divisor paths consume it — but is not yet confirmed; see Open Items.)
 
@@ -97,8 +102,8 @@ The uniform API, by family, in the D9 full segment grammar `op_result_operands` 
 
 | Family | Operations | Result | Notes |
 |---|---|---|---|
-| tier 0 | `umulHi_64_64x64`, `udiv_64_64x64`, `urem_64_64x64`, `ucmp_int_64x64`, `ushr_64_64`, `clz_int_64` | dword / Int | Section 3.2; grammar names with `u` op prefix per D11 |
-| U128 vocabulary | `add_128_128x128`, `sub_128_128x128`, `mul_128_128x128`, `shl_128_128`, `shr_128_128`, `and_128_128x128`, `or_128_128x128`, `xor_128_128x128`, `not_128_128`, `cmp_int_128x128`, `isZero_bool_128`, `fromDwords_128_64x64`, … ◆ | U128 / Int / Bool | Section 5; exact list derived mechanically during the confinement sweep |
+| tier 0 | `umulHi_64_64x64`, `udiv_64_64x64`, `urem_64_64x64`, `ucmp_int_64x64`, `ushr_64_64`, `hi32_64`, `lo32_64`, `clz_int_64` | dword / Int | Section 3.2; grammar names with `u` op prefix per D11; half-word ops per D13 |
+| U128 vocabulary | `add_128_128x128`, `sub_128_128x128`, `mul_128_128x128`, `shl_128_128`, `shr_128_128`, `and_128_128x128`, `or_128_128x128`, `xor_128_128x128`, `not_128_128`, `cmp_int_128x128`, `isZero_bool_128`, `fromDwords_128_64x64` | U128 / Int / Bool | Section 5; membership FROZEN by the completed sweep (D12); arithmetic is wrapping |
 | 64→128 product | `mul_128_64x64(a, b)` | U128 | full-width 64×64 by construction; replaces core-visible `multipliedFullWidth` |
 | 128÷64 | `divRem_q128r64_128x64(x, y)` | `Quot128Rem64` | general |
 | 128÷64, q fits 64 | `divRem_q64r64_128x64(hi, lo, y)` | `Quot64Rem64` | the `dividingFullWidth` contract; the result segment carries the quotient-fits precondition |
@@ -107,9 +112,9 @@ The uniform API, by family, in the D9 full segment grammar `op_result_operands` 
 | U256 sub | `sub_256_256x256` | U256 | traps on underflow |
 | U256 subAbs | `subAbs_d256sw_256x128`, `subAbs_d256sw_256x256` | `Diff256Swapped` | D2; single-pass borrow chain + branch-free conditional negate |
 | U256 mul | `mul_256_128x64`, `mul_256_128x128`, `mul_256_256x64`, `mul_256_256x128`, `mul_256_256x256` | U256 | traps where the result must fit |
-| mulPow10 | `mulPow10_128_128`, `mulPow10_256_128`, `mulPow10_256_256` | U128 / U256 | D4; table-driven; the Int exponent operand is implied by the op (today's `mul_128_pow10_p128`, `U256.mulPow10`) |
+| mulPow10 | `mulPow10_128_128`, `mulPow10_256_128`, `mulPow10_256_256` | U128 / U256 | D4; table-driven; the Int exponent operand is implied by the op (formerly `mul_128_pow10_p128`, `U256.mulPow10`; retired) |
 | fused mulPow10 | `fusedMulPow10Add_256_128x128`, `fusedMulPow10Add_256_256x64`, `fusedMulPow10Add_256_256x128`, `fusedMulPow10SubAbs_d256sw_128x128`, `fusedMulPow10SubAbs_d256sw_256x128` | U256 / `Diff256Swapped` | D4; platforms may interleave limbs (Swift does) or sequence two primitives |
-| simple division | `divRem_q256r64_256x64(x, y)` | `Quot256Rem64` | D3; the self-contained unit of Section 4.4 (today's `u256DivRem64`) |
+| simple division | `divRem_q256r64_256x64(x, y)` | `Quot256Rem64` | D3; the self-contained unit of Section 4.4 (formerly `u256DivRem64`; retired) |
 | shifts | `shl1_256_256`, `shr1_256_256`, `shr_256_256` | U256 | Int shift count implied for the counted form |
 | length | `bitLen_int_128`, `digitLen_int_128`, `digitLen_int_128_withBitLen`, `bitLen_int_256`, `digitLen_int_256`, `digitLen_int_256_withBitLen` ◆ | Int | D6, D7; today's `calcBitLen128` family; `int`/`bool` result segments pending confirmation |
 | strip | `u128StripTrailingZeroDigits(x, maxToStrip)` ◆ | `Stripped128` ◆ | settled primitive; full-form spelling waits on the result-shape decision (Open Items) |
@@ -178,7 +183,7 @@ For the Swift core, enforcement means:
 - The U256 *method* surface (`x.add(y)`, `x.mul(y)`, `x.subAbs(y)`) migrates to top-level functions (`add_256_256x256(x, y)`, …), because the uniform API must be expressible in C, which has no methods, and the regime's restrict-to list already names "static and top-level functions" as the shape of core code.
 - Core files keep reading `.dw0…dw3`, `.bitLen()`/`.digitLen()` (or their top-level spellings) — accessor reads are not arithmetic and are uniform already.
 
-The vocabulary's exact membership is derived mechanically: sweep the ~10 files, enumerate every distinct native-128 expression form, name it. The Section 4.2 list is the expected result; the sweep is the authority.
+The vocabulary's exact membership was derived mechanically: the sweep of the core files (completed in the Swift reference, June 2026) enumerated every distinct native-128 expression form. The Section 4.2 list is now frozen (D12). Three expression forms were found and deliberately left native pending member decisions (Open Items): the sign-mask/conditional-negate idiom (five sites), 128÷128 `quotientAndRemainder` (four sites), and the signed `Int128` uses (`d128_coeffSigned`).
 
 ## 6. Signatures, Signedness, and Multi-Value Return
 
@@ -314,7 +319,9 @@ The following are explicitly unresolved and tracked for future revisions of this
 - **`Stripped128` shape** — typed aggregate (consistent with the family, EA-default) versus the inventory's earlier mutate-in-place-plus-count recommendation for JVM; decide once the EA measurements for the smallest aggregates are in.
 - **Per-type escape-analysis verification** — the `jmh -prof gc` results for each aggregate (notably the five-field `Quot256Rem256`) that confirm or revoke value-return-by-default, to be recorded here.
 - **Swift signed-dword migration sequencing** — whether the parent Section 4.3 signedness change rides the confinement sweep or follows it as a separate spelling pass.
-- **The exact U128 vocabulary membership** — to be fixed by the sweep enumeration, then frozen in Section 4.2's table.
+- **Sign-mask/conditional-negate member** — the sweep left five core sites spelling `UInt128(bitPattern: Int128(bitPattern: d) >> 127)` + xor/sub natively (D128ArithAddSub ×4, Dec38AddSub ×1); decide a vocabulary shape (`signMask`/`negAbs`) or a rewrite.
+- **128÷128 divRem member** — four core sites still call native `quotientAndRemainder` (division strategy, the pow10==20 path, DivDirect's 128 form, the DPD 10^18 peel); the table's divRem family has no 128x128 form.
+- **rrmp10 kernel-interior logical shifts** — the kernels' `z >> shiftRight` extractions (~9 sites) are the one unconverted logical-shift family; they ride the open question of whether the rrmp10 kernels are Section 3.4 internal decomposition (exempt) or sweep-subject core.
 - **Final naming reconciliation** — depends on the parent's open name-mangling rules; the Section 7 conventions are provisional.
 - **C specifics** — `__int128` unavailability on MSVC (fallback: JVM-family-style synthesized kernels), and the C `int` width decision inherited from parent Section 4.4.3.
 - **Kotlin/JS tier-0 performance** — emulated-Long costs for the JS actuals; measure before committing JS to the same kernel shapes.
