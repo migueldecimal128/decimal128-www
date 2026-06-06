@@ -21,10 +21,12 @@ The classifications in this document were settled as explicit decisions (June 20
 | D3 | **Simple division** — `divRem_q256r64_256x64` (today's `u256DivRem64`) together with everything below it (fast paths, divisor-width dispatch, the divMod{64,128,192,256}x{16,32} kernels, `divRem256by64`) — is one self-contained tier-1 unit. `u256DivRem128`, `u256DivRem_128`, `u256DivRem256`, and residue computation remain **core**. |
 | D4 | The **mulPow10 family** — plain `mulPow10` plus `fusedMulPow10Add` and `fusedMulPow10SubAbs` — is tier-1: it is performance-critical and benefits from platform-specific tuning. The `POW10`/`POW10_256` tables are defined at the primitive layer as read-only constants, directly readable by core. |
 | D5 | The parent Section 4.2 confinement rule is **enforced**: core code routes all U128 arithmetic expressions through a tier-1 vocabulary of uniformly named functions. Swift retains `UInt128` as the *physical* representation of U128, with computed `.dw0`/`.dw1` accessors providing the uniform dword surface. |
-| D6 | The **calcBitLen/calcDigitLen family** (128- and 256-bit forms, including the `WithBitLen` variants) is tier-1. `calcDigitLen` is performance-critical and requires unsigned compares that Kotlin/Java cannot express directly. Tier 0 gains `clz64`. |
+| D6 | The **calcBitLen/calcDigitLen family** (128- and 256-bit forms, including the `WithBitLen` variants) is tier-1. `calcDigitLen` is performance-critical and requires unsigned compares that Kotlin/Java cannot express directly. Tier 0 gains `clz_int_64`. |
 | D7 | **bitLen/digitLen are recomputed, never cached.** Magnitude types carry dwords only. Kotlin's `steal` packed-lengths field (and its packed-zero-flag trick) is removed during the Kotlin rework. |
 | D8 | **Fill-in parameter order: destination first, scratch/ctx last** — `op(result, operand…, scratch/ctx…)`. Keeps operand order identical to the Swift/C value-return line, holds the destination at position 0 under varying arity, and matches the existing Kotlin kernels and C precedent. |
-| D9 | **Names lead with the result, in full segment form throughout the uniform API**: `op_result_operands[_qualifier]` — `divRem_q256r64_256x64`, `add_256_256x64`, `subAbs_d256sw_256x128`. Type-prefix abbreviations were considered and rejected. Tier-0 scalar ops are the one exception, keeping inline widths (`unsignedMul64Hi64`, `clz64`). |
+| D9 | **Names lead with the result, in full segment form throughout the uniform API**: `op_result_operands[_qualifier]` — `divRem_q256r64_256x64`, `add_256_256x64`, `subAbs_d256sw_256x128`. Type-prefix abbreviations were considered and rejected. Tier-0 scalar ops were originally excepted with inline-width short names; D11 retires that exception and folds them into the grammar. |
+| D10 | **`barrettStep` is promoted to tier 1** as `divRem_q64r64_64x64x64_mu_barrettStep`, reversing its Section 4.3 retention. The single reciprocal-multiply division step is decimal-agnostic, and its branch-free correction is exactly the Section 6.2 confined idiom — keeping it core would force that idiom into JVM-family core source. Barrett *strategy* — the mu tables, the 10^k = 2^k·5^k split, dividend-width dispatch, and the chunk-kernel ladder — remains core. |
+| D11 | **Tier-0 names fold into the D9 segment grammar**, retiring the inline-width exception: `umulHi_64_64x64`, `udiv_64_64x64`, `urem_64_64x64`, `ucmp_int_64x64`, `ushr_64_64`, `clz_int_64` (and `ctz_int_64` if confirmed). The `u` op prefix marks the unsigned semantics that signed dwords obscure — information the 128/256 families don't need (their types are unsigned) but 64-bit ops do (signed dwords have two real shifts and compares). The exception had eroded: the set outgrew "five ops, learned once," and `ucmp_int_64x64`/`cmp_int_128x128`, `ushr_64_64`/`shr_128_128`/`shr_256_256` now form one grammar instead of two systems. |
 
 Three earlier decisions from the parent-document era are restated because this layer inherits them: `u128StripTrailingZeroDigits` is primitive; the division *algorithms* are core; and multi-value returns use **typed result aggregates** (the Quot* family) rather than a single untyped scratch object, with JVM cores value-returning small aggregates by default in reliance on C2 escape analysis (Section 6.4).
 
@@ -37,7 +39,7 @@ The primitive layer presents a single uniform API to core — the same function 
 - **Tier 0** operations are irreducible: each platform supplies them from intrinsics, stdlib calls, or shims, and no portable expression of them exists at acceptable cost.
 - **Tier 1** operations are multi-word kernels *composable* from tier 0, with bodies that are platform-honest (Section 3.3).
 
-Core code may call operations of either tier by their uniform names; the existing cores already do (Swift's core `barrettStep` consumes `unsignedMul64Hi64`-equivalent intrinsics directly). The tier boundary constrains implementers, not callers.
+Core code may call operations of either tier by their uniform names; the existing cores already do (Swift's core Knuth D consumes `udiv_64_64x64` and `ucmp_int_64x64` directly in its q-hat estimate). The tier boundary constrains implementers, not callers.
 
 This structure is not hypothetical. The Kotlin Multiplatform implementation proved it: its `expect`/`actual` split isolated *all* platform divergence to four unsigned 64-bit operations, with every multi-word kernel built portably above them in common source shared by the JVM, Native, and JS targets.
 
@@ -47,13 +49,13 @@ Tier 0 is deliberately tiny, and every tier-0 operation returns a **single value
 
 | Operation | Contract | Swift | C | Kotlin JVM | Kotlin Native | Java |
 |---|---|---|---|---|---|---|
-| `unsignedMul64Hi64(a, b)` | high 64 bits of the unsigned 64×64 product | native (`multipliedFullWidth(by:).high` / `UInt128` product) | `(unsigned __int128)a * b >> 64` | `Math.unsignedMultiplyHigh` | C shim via `__uint128_t` | `Math.unsignedMultiplyHigh` |
-| `unsignedDiv64(a, b)` | unsigned 64÷64 quotient | native `/` | native `/` on `uint64_t` | `Long.divideUnsigned` | `toULong() / toULong()` | `Long.divideUnsigned` |
-| `unsignedRem64(a, b)` | unsigned 64÷64 remainder | native `%` | native `%` | `Long.remainderUnsigned` | `toULong() % toULong()` | `Long.remainderUnsigned` |
-| `unsignedCmp64(a, b)` | −1/0/+1 unsigned compare | native compare | native compare | `Long.compareUnsigned` | xor-`MIN_VALUE` compare | `Long.compareUnsigned` |
-| `clz64(a)` | leading zero count, `clz64(0) == 64` | `leadingZeroBitCount` | `__builtin_clzll` (zero-guarded) | `Long.numberOfLeadingZeros` | `countLeadingZeroBits` | `Long.numberOfLeadingZeros` |
+| `umulHi_64_64x64(a, b)` | high 64 bits of the unsigned 64×64 product | native (`multipliedFullWidth(by:).high` / `UInt128` product) | `(unsigned __int128)a * b >> 64` | `Math.unsignedMultiplyHigh` | C shim via `__uint128_t` | `Math.unsignedMultiplyHigh` |
+| `udiv_64_64x64(a, b)` | unsigned 64÷64 quotient | native `/` | native `/` on `uint64_t` | `Long.divideUnsigned` | `toULong() / toULong()` | `Long.divideUnsigned` |
+| `urem_64_64x64(a, b)` | unsigned 64÷64 remainder | native `%` | native `%` | `Long.remainderUnsigned` | `toULong() % toULong()` | `Long.remainderUnsigned` |
+| `ucmp_int_64x64(a, b)` | −1/0/+1 unsigned compare | native compare | native compare | `Long.compareUnsigned` | xor-`MIN_VALUE` compare | `Long.compareUnsigned` |
+| `clz_int_64(a)` | leading zero count, `clz_int_64(0) == 64` | `leadingZeroBitCount` | `__builtin_clzll` (zero-guarded) | `Long.numberOfLeadingZeros` | `countLeadingZeroBits` | `Long.numberOfLeadingZeros` |
 
-(`ctz64`, the trailing-zeros twin, is proposed by symmetry — the strip and power-of-two-divisor paths consume it — but is not yet confirmed; see Open Items.)
+(`ctz_int_64`, the trailing-zeros twin, is proposed by symmetry — the strip and power-of-two-divisor paths consume it — but is not yet confirmed; see Open Items.)
 
 Two realization notes:
 
@@ -95,11 +97,12 @@ The uniform API, by family, in the D9 full segment grammar `op_result_operands` 
 
 | Family | Operations | Result | Notes |
 |---|---|---|---|
-| tier 0 | `unsignedMul64Hi64`, `unsignedDiv64`, `unsignedRem64`, `unsignedCmp64`, `clz64` | dword / Int | Section 3.2; inline-width short names per D9 |
+| tier 0 | `umulHi_64_64x64`, `udiv_64_64x64`, `urem_64_64x64`, `ucmp_int_64x64`, `ushr_64_64`, `clz_int_64` | dword / Int | Section 3.2; grammar names with `u` op prefix per D11 |
 | U128 vocabulary | `add_128_128x128`, `sub_128_128x128`, `mul_128_128x128`, `shl_128_128`, `shr_128_128`, `and_128_128x128`, `or_128_128x128`, `xor_128_128x128`, `not_128_128`, `cmp_int_128x128`, `isZero_bool_128`, `fromDwords_128_64x64`, … ◆ | U128 / Int / Bool | Section 5; exact list derived mechanically during the confinement sweep |
 | 64→128 product | `mul_128_64x64(a, b)` | U128 | full-width 64×64 by construction; replaces core-visible `multipliedFullWidth` |
 | 128÷64 | `divRem_q128r64_128x64(x, y)` | `Quot128Rem64` | general |
 | 128÷64, q fits 64 | `divRem_q64r64_128x64(hi, lo, y)` | `Quot64Rem64` | the `dividingFullWidth` contract; the result segment carries the quotient-fits precondition |
+| 64÷64 by reciprocal | `divRem_q64r64_64x64x64_mu_barrettStep(dw, denom, mu)` | `Quot64Rem64` | D10; single Barrett correction step; precondition `mu = floor(2^64 / denom)` with q-hat at most 1 below the true quotient |
 | U256 add | `add_256_256x64`, `add_256_256x128`, `add_256_256x256`, `add_256_128x128` | U256 | traps on 256-bit overflow |
 | U256 sub | `sub_256_256x256` | U256 | traps on underflow |
 | U256 subAbs | `subAbs_d256sw_256x128`, `subAbs_d256sw_256x256` | `Diff256Swapped` | D2; single-pass borrow chain + branch-free conditional negate |
@@ -116,7 +119,7 @@ The uniform API, by family, in the D9 full segment grammar `op_result_operands` 
 
 For the avoidance of doubt, the following stay in core and are **not** primitive, however arithmetic they look:
 
-- **Barrett division** including `barrettStep` (its branch-free correction is core logic that *consumes* `unsignedMul64Hi64`), **Knuth D**, **range-reciprocal mulPow10 (rrmp10)**, and the **power-of-ten divisor dispatch**.
+- **Barrett division strategy** — the mu tables, the 10^k = 2^k·5^k split, dividend-width dispatch, and the chunk-kernel ladder (`barrettStep` itself is tier-1 by D10) — **Knuth D**, **range-reciprocal mulPow10 (rrmp10)**, and the **power-of-ten divisor dispatch**.
 - `u256DivRem128`, `u256DivRem_128`, `u256DivRem256` — these are *strategy*: they choose among the simple-division primitive, special cases, and Knuth D. In particular `u256DivRem256` falls through to Knuth D, which is core; a primitive must never call up into core.
 - `u256DivResidue_128`/`_256` and `residueFromRemainderDivisor_*` — residue categorization is rounding semantics.
 - Finalize/rounding, parse/print, DPD/BID conversion, dfd packing logic (which after the Section 5 sweep is expressed *through* the U128 vocabulary but remains core code).
@@ -137,13 +140,13 @@ Its production consumer today is general decimal division (via core's `u256DivRe
 
 ### 4.5 The mulPow10 Family and the POW10 Tables
 
-mulPow10 is hot enough, and shaped conveniently enough per platform, that the whole family is tier-1 (D4). Swift already hand-interleaves the limb products of `fusedMulPow10Add` with the addend's carry chain; the JVM family composes `umul128xPow10`-style kernels from `unsignedMul64Hi64`; platforms without an advantage may implement the fused forms as plain mulPow10-then-add/subAbs sequencing. All of that is body freedom under one API.
+mulPow10 is hot enough, and shaped conveniently enough per platform, that the whole family is tier-1 (D4). Swift already hand-interleaves the limb products of `fusedMulPow10Add` with the addend's carry chain; the JVM family composes `umul128xPow10`-style kernels from `umulHi_64_64x64`; platforms without an advantage may implement the fused forms as plain mulPow10-then-add/subAbs sequencing. All of that is body freedom under one API.
 
 The `POW10` (10⁰…10³⁸ as U128) and `POW10_256` (10³⁹…10⁷⁷ as U256) tables are **defined at the primitive layer** as read-only constants and are **directly readable by core** — core's own table uses (digitLen comparisons, division pow10 dispatch) read them without an accessor hop. They are shared constants with identical values everywhere, not an ownership wall.
 
 ### 4.6 Length Calculation: Recompute, Never Cache
 
-The length family — today's `calcBitLen*`/`calcDigitLen*`, full-form `bitLen_int_*`/`digitLen_int_*` (Section 4.2) — is tier-1 (D6). digitLen is the classic two-step: `(bitLen × 1233) >> 12` for a floor estimate, then one unsigned table compare against `POW10` — and that unsigned compare is exactly what Kotlin/Java cannot write natively, which is what pushed the family into this layer. bitLen composes from `clz64` with the branch-free two-word idiom (Section 6.2).
+The length family — today's `calcBitLen*`/`calcDigitLen*`, full-form `bitLen_int_*`/`digitLen_int_*` (Section 4.2) — is tier-1 (D6). digitLen is the classic two-step: `(bitLen × 1233) >> 12` for a floor estimate, then one unsigned table compare against `POW10` — and that unsigned compare is exactly what Kotlin/Java cannot write natively, which is what pushed the family into this layer. bitLen composes from `clz_int_64` with the branch-free two-word idiom (Section 6.2).
 
 D7 makes the storage rule explicit: **magnitude types carry dwords only, and lengths are always recomputed.** The Kotlin implementation's `steal` field — cached bitLen/digitLen packed into C256's heap-padding Int, doubling as a zero flag — is removed during its architecture rework. The reasoning: clz is 1–2 cycles everywhere; a cache imposes a maintain-the-invariant obligation on every mutating kernel (a standing JVM-only bug source, invisible at call sites); and a cache field would force a fifth dword-sized member into the Swift/C value structs, violating the four-dword shape of parent Section 4.2. If profiling later shows a hot recompute, caching may return as a measured, localized optimization — not as the default.
 
@@ -207,7 +210,7 @@ The family, with producers:
 
 | Aggregate | Fields | Produced by |
 |---|---|---|
-| `Quot64Rem64` | q64, r64 | `divRem_q64r64_128x64` (primitive); core `barrettStep` |
+| `Quot64Rem64` | q64, r64 | `divRem_q64r64_128x64`, `divRem_q64r64_64x64x64_mu_barrettStep` (both primitive, D10) |
 | `Quot128Rem64` | q128, r64 | `divRem_q128r64_128x64` (primitive) |
 | `Quot128Rem128` | q128, r128 | core division strategy |
 | `Quot256Rem64` | q256, r64 | `divRem_q256r64_256x64` (primitive) |
@@ -251,7 +254,7 @@ The result leads the name so that name order mirrors call-site order on every pl
 
 **Full segment form is used throughout the uniform API.** A type-prefix abbreviation (`u128Add`, `u256Mul128x64`) was considered for operations whose prefix fully determines the signature, and rejected: one grammar everywhere keeps the result visible at every call site, keeps every name mechanically parseable for the translation tooling, and avoids a mixed-style API surface. The division contracts show the payoff: `divRem_q128r64_128x64` versus `divRem_q64r64_128x64` differ only in the result segment, making the quotient-fits precondition part of the name where a bare `_128` suffix once said it by private convention.
 
-**Tier-0 names** are short forms with widths inline: `unsignedMul64Hi64`, `unsignedDiv64`, `unsignedRem64`, `unsignedCmp64`, `clz64` — five scalar ops, learned once.
+**Tier-0 names** follow the same grammar (D11): `umulHi_64_64x64`, `udiv_64_64x64`, `urem_64_64x64`, `ucmp_int_64x64`, `ushr_64_64`, `clz_int_64`. The `u` op prefix marks unsigned semantics, needed at the dword width where the signed representation makes it ambiguous; the earlier inline-width short forms (`unsignedMul64Hi64`, `clz64`) are retired.
 
 Known inconsistencies to reconcile during the sweep rather than per-file: today's type-prefix spellings (`u256DivRem64`, the `calcBitLen128` family, `mul_128_pow10_p128`) rename to the full grammar per the Section 4.2 table; method-form U256 operations become top-level spellings; the core division-strategy names (`div_256_pow10_q128res_barrett`) carry their result segment in third position and reorder to result-first with the exponent folded into the op (`divPow10_q128res_256_barrett`, parent Section 8) when touched; Kotlin's `umul128x128to192`-style kernels use a result-*last* `to` form but are platform-internal decomposition (Section 3.4) and may follow at leisure. The reconciliation is mechanical renaming and belongs to the same change that moves these functions into primitive-layer source files.
 
@@ -263,11 +266,11 @@ Tier 0 is native; tier-1 bodies use `UInt128` freely (sanctioned). U128 is physi
 
 ### 8.2 C
 
-Structs of `int64_t` dwords; bodies cast to `unsigned __int128` and back, with the compiler expected to fuse pack/unpack. `clz64` guards the `__builtin_clzll(0)` undefined case explicitly. The C core does not yet exist; this layer is where its implementation starts, because the Swift-over-C and Kotlin/Native-over-C wrappers let the existing test suites drive it immediately. MSVC's lack of `__int128` is noted in Open Items.
+Structs of `int64_t` dwords; bodies cast to `unsigned __int128` and back, with the compiler expected to fuse pack/unpack. `clz_int_64` guards the `__builtin_clzll(0)` undefined case explicitly. The C core does not yet exist; this layer is where its implementation starts, because the Swift-over-C and Kotlin/Native-over-C wrappers let the existing test suites drive it immediately. MSVC's lack of `__int128` is noted in Open Items.
 
 ### 8.3 Kotlin Multiplatform
 
-Tier 0 is the four unsigned-operation expect/actuals from `XPlatform.kt`, plus `clz64` (which may realize as common-source `countLeadingZeroBits` rather than expect/actual — tier 0 is contract, not mechanism). Tier-1 kernels are common source shared by JVM, Native, and JS targets, evolving from `SumU64.kt`. The rework retires `Pentad` (Section 6.3) and the `steal` cache (D7). JS performance rests on emulated Longs and is measured, not assumed (Open Items).
+Tier 0 is the four unsigned-operation expect/actuals from `XPlatform.kt` (renamed per D11 at the rework), plus `clz_int_64` (which may realize as common-source `countLeadingZeroBits` rather than expect/actual — tier 0 is contract, not mechanism). Tier-1 kernels are common source shared by JVM, Native, and JS targets, evolving from `SumU64.kt`. The rework retires `Pentad` (Section 6.3) and the `steal` cache (D7). JS performance rests on emulated Longs and is measured, not assumed (Open Items).
 
 ### 8.4 Java
 
@@ -291,14 +294,14 @@ These extend the parent Section 10 list within this layer. Everything else in th
 **Swift (this repo, the reference implementation):**
 
 - The confinement sweep of ~10 core files (Section 5.3), rewriting native U128 expressions as vocabulary calls and U256 methods as top-level functions.
-- Relocation of the decided primitives — mulPow10 family, subAbs, strip, the length family, `divRem_q256r64_256x64` (today's `u256DivRem64`) and its ladder, the U128 vocabulary — into primitive-layer source files under their D9 names; `u256DivRem128/_128/256`, residue, and all division algorithms stay in core files.
+- Relocation of the decided primitives — mulPow10 family, subAbs, strip, the length family, `divRem_q256r64_256x64` (today's `u256DivRem64`) and its ladder, `barrettStep` (D10), the U128 vocabulary — into primitive-layer source files under their D9 names; `u256DivRem128/_128/256`, residue, and the division algorithms' strategy layers stay in core files.
 - New `Diff256Swapped` (and provisional `Stripped128`) aggregates replacing the last primitive-layer tuples; `fusedMulPow10SubAbs` and `subAbs` callers updated.
 - Naming reconciliation per Section 7.
 
 **Kotlin (decimal128-kotlin, at architecture rework):**
 
 - Drop `steal` (D7) and its zero-flag trick, retire `Pentad` in favor of typed aggregates with EA-verified value return.
-- Keep the four proven tier-0 expect/actuals; add `clz64` if expect/actual proves necessary; align kernel names to the uniform API.
+- Keep the four proven tier-0 expect/actuals (renamed per D11); add `clz_int_64` if expect/actual proves necessary; align kernel names to the uniform API.
 - The SumU64 kernel suite persists as internal decomposition beneath the uniform tier-1 names.
 
 **C and Java:** greenfield; begin at tier 0 and the aggregate definitions, then tier 1, then core translation.
@@ -307,7 +310,7 @@ These extend the parent Section 10 list within this layer. Everything else in th
 
 The following are explicitly unresolved and tracked for future revisions of this document:
 
-- **`ctz64` in tier 0** — proposed by symmetry with `clz64` (strip and power-of-two paths consume it); confirm or fold into platform-local bodies.
+- **`ctz_int_64` in tier 0** — proposed by symmetry with `clz_int_64` (strip and power-of-two paths consume it); confirm or fold into platform-local bodies.
 - **`Stripped128` shape** — typed aggregate (consistent with the family, EA-default) versus the inventory's earlier mutate-in-place-plus-count recommendation for JVM; decide once the EA measurements for the smallest aggregates are in.
 - **Per-type escape-analysis verification** — the `jmh -prof gc` results for each aggregate (notably the five-field `Quot256Rem256`) that confirm or revoke value-return-by-default, to be recorded here.
 - **Swift signed-dword migration sequencing** — whether the parent Section 4.3 signedness change rides the confinement sweep or follows it as a separate spelling pass.

@@ -361,7 +361,7 @@ result    ::= width | aggregate segment
 
 The core's division-by-powers-of-ten family illustrates the grammar: `divPow10_q128res_*`, e.g. `divPow10_q128res_256_barrett` (today's `div_256_pow10_q128res_barrett`, which carries its result segment in third position and reorders when touched).
 
-Base op names are `camelCase`; result, operand, and qualifier segments are digits and lower case, separated by underbars. The tier-0 scalar primitives are the one sanctioned exception, using inline widths without segments (`unsignedMul64Hi64`, `clz64`) — see the companion whitepaper.
+Base op names are `camelCase`; result, operand, and qualifier segments are digits and lower case, separated by underbars. The tier-0 scalar primitives originally carried inline widths without segments (`unsignedMul64Hi64`, `clz64`); the companion whitepaper's D11 folds them into the grammar (`umulHi_64_64x64`, `clz_int_64`), with a `u` op prefix marking unsigned semantics at the dword width.
 
 Still open: whether the qualifier set is closed, and the spelling of scalar result segments (`int`, `bool`) — tracked in Section 11.
 
