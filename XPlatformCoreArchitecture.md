@@ -351,7 +351,7 @@ operands  ::= width ('x' width)*
 result    ::= width | aggregate segment
 ```
 
-**The result segment leads.** Name order then mirrors call-site order on every platform: `let q = divPow10_q128res_256(x, k)` on Swift/C and `divPow10_q128res_256(q, x, k)` under the Java/Kotlin fill-in convention (Section 5.1) both put the result leftmost. Result aggregates use terse segments: `q128res` (Quot128Residue), `q256r64` (Quot256Rem64), `d256sw` (Diff256Swapped).
+**The result segment leads.** Name order then mirrors call-site order on every platform: `let q = divPow10_q128res_256(x, k)` on Swift/C and `divPow10_q128res_256(q, x, k)` under the Java/Kotlin fill-in convention (Section 5.1) both put the result leftmost. Result aggregates use terse segments: `q128res` (Quot128Residue), `q256r64` (Quot256Rem64), `d256swap` (Diff256Swap).
 
 - **Width segments** (`64`, `128`, `256`) name the operand widths in declaration order, subsuming the earlier free-floating `_128`/`_256` suffixes.
 - **Operands implied by the op are not spelled**: the power-of-ten exponent in `mulPow10`/`divPow10` names, an Int shift count.
