@@ -111,31 +111,30 @@ The primitive layer contains **basic 128/256-bit integer operations**; the core 
 
 ### 4.2 The Primitive Inventory
 
-The uniform API, by family, in the D9 full segment grammar `op_result_operands` (Section 7). Every spelling is final as of D22 (the provisional ◆ marks of earlier drafts are all resolved). Where a name replaced an earlier Swift core spelling, the old name is noted in the Notes column. Preconditions trap via `demand`/`impossible` per parent Section 9.
+The uniform API, by family, in the D9 full segment grammar `op_result_operands` (Section 7). Every spelling is final as of D22 (the provisional ◆ marks of earlier drafts are all resolved). As of D23/D24/D26, every 128/256-bit operand crosses as ascending dword limbs — `(xDw0, xDw1)` for U128, `(xDw0…xDw3)` for U256, operand-major, trailing scalars last — and the signatures below are spelled in that limb form; typed overloads survive only as `internal` Primitive-interior helpers per the D25 existence rule. Where a name replaced an earlier Swift core spelling, the old name is noted in the Notes column. Preconditions trap via `demand`/`impossible` per parent Section 9.
 
 | Family | Operations | Result | Notes |
 |---|---|---|---|
 | tier 0 | `umulHi_64_64x64`, `udiv_64_64x64`, `urem_64_64x64`, `ucmp_int_64x64`, `ushr_64_64`, `hi32_64`, `lo32_64`, `clz_int_64` | dword / Int | Section 3.2; grammar names with `u` op prefix per D11; half-word ops per D13 |
-| U128 vocabulary | `add_128_128x128`, `sub_128_128x128`, `mul_128_128x128`, `shl_128_128`, `shr_128_128`, `and_128_128x128`, `or_128_128x128`, `xor_128_128x128`, `not_128_128`, `cmp_int_128x128`, `isZero_bool_128`, `fromDwords_128_64x64` | U128 / Int / Bool | Section 5; membership FROZEN by the completed sweep (D12); arithmetic is wrapping |
+| U128 vocabulary | `add_128_128x128`, `sub_128_128x128`, `mul_128_128x128`, `shl_128_128`, `shr_128_128`, `and_128_128x128`, `or_128_128x128`, `xor_128_128x128`, `not_128_128`, `cmp_int_128x128`, `isZero_bool_128`, `fromLoHi_128_64x64` | U128 / Int / Bool | Section 5; membership FROZEN by the completed sweep (D12; `fromDwords` re-spelled lo-first by D23); arithmetic is wrapping |
 | 64→128 product | `mul_128_64x64(a, b)` | U128 | full-width 64×64 by construction; replaces core-visible `multipliedFullWidth` |
-| 128÷64 | `divRem_q128r64_128x64(x, y)` | `Quot128Rem64` | general |
-| 128÷64, q fits 64 | `divRem_q64r64_128x64(hi, lo, y)` | `Quot64Rem64` | the `dividingFullWidth` contract; the result segment carries the quotient-fits precondition |
+| 128÷64 | `divRem_q128r64_128x64(xDw0, xDw1, y)` | `Quot128Rem64` | general |
+| 128÷64, q fits 64 | `divRem_q64r64_128x64(xDw0, xDw1, y)` | `Quot64Rem64` | the `dividingFullWidth` contract; the result segment carries the quotient-fits precondition |
 | 64÷64 by reciprocal | `divRem_q64r64_64x64x64_mu_barrettStep(dw, denom, mu)` | `Quot64Rem64` | D10; single Barrett correction step; precondition `mu = floor(2^64 / denom)` with q-hat at most 1 below the true quotient |
-| 128÷128 | `divRem_q128r128_128x128(x, y)` | `Quot128Rem128` | D15; general; JVM body composes from the 128÷64 kernel — no Knuth D |
+| 128÷128 | `divRem_q128r128_128x128(xDw0, xDw1, yDw0, yDw1)` | `Quot128Rem128` | D15; general; JVM body composes from the 128÷64 kernel — no Knuth D |
 | U256 add | `add_256_256x64`, `add_256_256x128`, `add_256_256x256`, `add_256_128x128` | U256 | traps on 256-bit overflow |
 | U256 sub | `sub_256_256x256` | U256 | traps on underflow |
 | U256 subAbs | `subAbs_d256swap_256x128`, `subAbs_d256swap_256x256` | `Diff256Swap` | D2; single-pass borrow chain + branch-free conditional negate |
 | U128 subAbs | `subAbs_d128swap_128x128` | `Diff128Swap` | D14; absorbs core's sign-mask conditional-negate idiom |
 | U256 mul | `mul_256_128x128`, `mul_256_256x64`, `mul_256_256x128`, `mul_256_256x256` | U256 | traps where the result must fit (`mul_256_128x64` left the table by the D21 test — no core consumer; it survives as a Primitive-interior `internal` helper of `mulPow10_256_256`, typed form only) |
-| mulPow10 | `mulPow10_128_128`, `mulPow10_256_128`, `mulPow10_256_256` | U128 / U256 | D4; table-driven; the Int exponent operand is implied by the op (formerly `mul_128_pow10_p128`, `U256.mulPow10`; retired) |
-| fused mulPow10 | `fusedMulPow10Add_256_128x128`, `fusedMulPow10Add_256_256x64`, `fusedMulPow10Add_256_256x128`, `fusedMulPow10SubAbs_d256swap_128x128`, `fusedMulPow10SubAbs_d256swap_256x128` | U256 / `Diff256Swap` | D4; platforms may interleave limbs (Swift does) or sequence two primitives |
-| simple division | `divRem_q256r64_256x64(x, y)` | `Quot256Rem64` | D3; the self-contained unit of Section 4.4 (formerly `u256DivRem64`; retired) |
-| rrmp10 kernels | `divPow10_q128res_128_rrmp10(x, pIndex, pow10)`, `divPow10_q128res_256_rrmp10(x, pIndex, pow10)` | `Quot128Residue` | D16/D17; quotient fits 128 by contract; kernel interiors are platform-local (§3.4) |
-| ÷10 magic | `div1e1_q128res_128_magic(x)` | `Quot128Residue` | D19; fixed-reciprocal multiply, the `barrettStep` pattern with a hardcoded constant |
-| pow10 exact divide | `divPow10_q128r64_128_barrett(x, pow10)` | `Quot128Rem64` | D20; 10^k = 2^k·5^k split over the tabulated mu reciprocals, pow10 ≤ 13 |
-| shifts | `shl1_256_256`, `shr1_256_256`, `shr_256_256` | U256 | Int shift count implied for the counted form |
-| length | `bitLen_int_128`, `digitLen_int_128`, `digitLen_int_128_withBitLen`, `bitLen_int_256`, `digitLen_int_256`, `digitLen_int_256_withBitLen` | Int | D6, D7; renamed from the `calcBitLen*` family by D22; `int`/`bool` result segments confirmed |
-| strip | `strip_s128sc_128(x, maxToStrip)` | `Stripped128StripCount` | D18 shape; relocated and named by D20 |
+| mulPow10 | `mulPow10_128_128(xDw0, xDw1, pow10)`, `mulPow10_256_128(xDw0, xDw1, pow10)`, `mulPow10_256_256(xDw0…xDw3, pow10)` | U128 / U256 | D4; table-driven (formerly `mul_128_pow10_p128`, `U256.mulPow10`; retired). D4's fused forms were shrunk away by D25 — one survivor is Primitive-interior |
+| simple division | `divRem_q256r64_256x64(xDw0, xDw1, xDw2, xDw3, y0)` | `Quot256Rem64` | D3; the self-contained unit of Section 4.4 (formerly `u256DivRem64`; retired) |
+| rrmp10 kernels | `divPow10_q128res_128_rrmp10(xDw0, xDw1, pIndex, pow10)`, `divPow10_q128res_256_rrmp10(xDw0…xDw3, pIndex, pow10)` | `Quot128Residue` | D16/D17; quotient fits 128 by contract; kernel interiors are platform-local (§3.4) |
+| ÷10 magic | `div1e1_q128res_128_magic(xDw0, xDw1)` | `Quot128Residue` | D19; fixed-reciprocal multiply, the `barrettStep` pattern with a hardcoded constant |
+| pow10 exact divide | `divPow10_q128r64_128_barrett(xDw0, xDw1, pow10)` | `Quot128Rem64` | D20; 10^k = 2^k·5^k split over the tabulated mu reciprocals, pow10 ≤ 13 |
+| shifts | `shl1_256_256(xDw0…xDw3)`, `shr1_256_256(xDw0…xDw3)`, `shr_256_256(xDw0…xDw3, n)` | U256 | — |
+| length | `bitLen_int_128`, `digitLen_int_128`, `digitLen_int_128_withBitLen`, `bitLen_int_256`, `digitLen_int_256`, `digitLen_int_256_withBitLen` | Int | D6, D7; renamed from the `calcBitLen*` family by D22; the `withBitLen` forms moved the precomputed bitLen to trailing-scalar position per D24 |
+| strip | `strip_s128sc_128(cDw0, cDw1, maxToStrip)` | `Stripped128StripCount` | D18 shape; relocated and named by D20 |
 | constants | `POW10[0…38]` (U128), `POW10_256[39…77]` (U256) | — | D4; defined here, read-only, directly readable by core |
 
 ### 4.3 Core Retentions
