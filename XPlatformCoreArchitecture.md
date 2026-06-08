@@ -114,6 +114,8 @@ The HLL cores do not use:
 
 **Exception:** nullable/optional types are excluded *except* for `DecContext` and `DecTrapHandler`, where optional is permitted.
 
+**Exception:** default parameters are excluded *except* for the compiler-generated source-location parameters (filename, line number) on the verification primitives `verify`, `demand`, and `impossible` — see Section 9.
+
 ### 3.4 Features Excluded from Both C and HLL Cores
 
 Neither the C core nor the HLL cores use:
@@ -369,6 +371,8 @@ Still open: whether the qualifier set is closed, and the spelling of scalar resu
 
 The core uses **no exception or error-handling mechanism**. IEEE conditions are reported thru the return value and optionally thru status flags carried in `DecContext` (the propagation mechanism is the subject of a companion document). For internal state verification there are three distinct, deliberately separated mechanisms.
 
+All three of these primitives accept compiler-generated source-location parameters — filename and line number — defaulted to the call site. This is the regime's one sanctioned exception to the default-parameter prohibition (Section 3.3): the location is supplied by each platform's native mechanism (Swift `#file`/`#line`, C's `__FILE__`/`__LINE__` macros, the JVM equivalents) and has no portable spelling as an ordinary argument, so defaulting it is unavoidable. The exception is scoped to location only — the `String` message parameter remains mandatory and non-defaulted (Sections 9.2, 9.3).
+
 ### 9.1 verify — compile-time-gated state assertion
 
 `verify` asserts internal state during development and is compiled out completely in production. It takes a condition (today, a `() -> Bool` closure on Swift and Kotlin) and is gated on a compile-time flag.
@@ -382,7 +386,7 @@ The closure-versus-macro difference is a sanctioned, localized divergence. `veri
 
 ### 9.2 demand — production runtime guard
 
-`demand` is a runtime precondition that **survives into production**. It evaluates a condition and, on failure, routes through `impossible`. It takes a mandatory `String` message; the empty string `""` is the legal way to omit a message (this avoids a default parameter, which the regime prohibits).
+`demand` is a runtime precondition that **survives into production**. It evaluates a condition and, on failure, routes through `impossible`. It takes a mandatory `String` message; the empty string `""` is the legal way to omit a message (this avoids defaulting the message, which the regime still prohibits — only the source-location parameters are exempt, per the note opening Section 9).
 
 The contract is exactly: `demand(cond, msg)` is equivalent to `if (!cond) { impossible(msg) }`.
 
