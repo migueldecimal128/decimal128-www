@@ -128,7 +128,7 @@ The uniform API, by family, in the D9 full segment grammar `op_result_operands` 
 | U256 sub | `sub_256_256x256` | U256 | traps on underflow |
 | U256 subAbs | `subAbs_d256swap_256x128`, `subAbs_d256swap_256x256` | `Diff256Swap` | D2; single-pass borrow chain + branch-free conditional negate |
 | U128 subAbs | `subAbs_d128swap_128x128` | `Diff128Swap` | D14; absorbs core's sign-mask conditional-negate idiom |
-| U256 mul | `mul_256_128x128`, `mul_256_256x64`, `mul_256_256x128`, `mul_256_256x256` | U256 | traps where the result must fit (`mul_256_128x64` left the table by the D21 test — no core consumer; it survives as a Primitive-interior `internal` helper of `mulPow10_256_256`, typed form only) |
+| U256 mul | `mul_256_128x128`, `mul_256_256x64`, `mul_256_256x128`, `mul_256_256x256` | U256 | traps where the result must fit (`mul_256_128x64` left the table by the D21 test — no core consumer; it survives as a Primitive-interior `internal` helper of `mulPow10_256_256`, typed form only). `mul_256_256x256`'s overflow trap is **conservative**: its column accumulator keeps one limb of carry, so inputs whose intermediate columns exceed the accumulator trap even when the final product would fit. This is a property of the algorithm, not a platform quirk (the Java port reproduced it); its only consumer, `mulPow10_256_256`, stays inside the supported envelope, and the narrower 256×64/256×128/128×128 paths are exact. |
 | mulPow10 | `mulPow10_128_128(xDw0, xDw1, pow10)`, `mulPow10_256_128(xDw0, xDw1, pow10)`, `mulPow10_256_256(xDw0…xDw3, pow10)` | U128 / U256 | D4; table-driven (formerly `mul_128_pow10_p128`, `U256.mulPow10`; retired). D4's fused forms were shrunk away by D25 — one survivor is Primitive-interior |
 | simple division | `divRem_q256r64_256x64(xDw0, xDw1, xDw2, xDw3, y0)` | `Quot256Rem64` | D3; the self-contained unit of Section 4.4 (formerly `u256DivRem64`; retired) |
 | rrmp10 kernels | `divPow10_q128res_128_rrmp10(xDw0, xDw1, pIndex, pow10)`, `divPow10_q128res_256_rrmp10(xDw0…xDw3, pIndex, pow10)` | `Quot128Residue` | D16/D17; quotient fits 128 by contract; kernel interiors are platform-local (§3.4) |
@@ -299,7 +299,20 @@ Tier 0 is the four unsigned-operation expect/actuals from `XPlatform.kt` (rename
 
 ### 8.4 Java
 
-Tier 0 as `static` wrappers over `Math.unsignedMultiplyHigh`, `Long.divideUnsigned`/`remainderUnsigned`/`compareUnsigned`, `Long.numberOfLeadingZeros`. Tier-1 source mirrors the Kotlin kernels statement for statement. The Java core does not yet exist; like C, it begins here.
+Tier 0 as `static` wrappers over `Math.unsignedMultiplyHigh`, `Long.divideUnsigned`/`remainderUnsigned`/`compareUnsigned`, `Long.numberOfLeadingZeros`. Tier-1 source mirrors the Kotlin kernels statement for statement.
+
+**Implementation status (first port, June 2026).** The Java *primitive layer* is implemented and complete — every Section 4.2 uniform-API entry exists, JVM-only for now (package `com.decimal128.decimal128java.primitive`, JDK 21), each family conformance-tested against `BigInteger`. It is the first port of the frozen Swift reference, and it validated the thesis of this document: the regime translated cleanly, with divergences landing exactly where Sections 5–9 predicted (signed-`long` limbs through the §6.2 idioms, flat tables, `Quot*` value-returns). The Java *core* does not yet exist; like C, it begins from this layer.
+
+The port surfaced findings worth recording for the C/Kotlin ports that follow:
+
+- **Tier 0 is a 1:1 intrinsic map, and two contracts come for free.** `Long.compareUnsigned` returns exactly `-1/0/+1` (it delegates to `Long.compare`), meeting the `ucmp_int_64x64` contract with no `signum` normalization; `Long.numberOfLeadingZeros(0) == 64` meets the `clz_int_64` contract with no zero-guard — the explicit `__builtin_clzll(0)` guard is a C-only concern (Section 8.2).
+- **`impossible` is `throw impossible(...)`.** It always throws but is *declared* to return `AssertionError`, so a value-returning site can write `throw impossible(msg)` to satisfy Java's definite-return analysis. This is the Java spelling of Swift's `-> Never` (parent sanctioned divergence #7).
+- **Shift-count masking is a real kernel hazard.** Java masks shift counts to the low 6 bits, so `x >>> 64` is `x >>> 0`, not `0`. Every synthesized 128-/256-bit shift must branch on `n < 64` vs `n >= 64` and never spell `>> (64 - n)` at `n == 0`. Swift/C native 128-bit types hide this; the JVM-family kernels (and the C 64-bit-limb fallback for MSVC) must guard it.
+- **The byte-packed lookups are exactly why D16 mandates Int accessors.** Java's `byte` is signed and the RRMP10 lookup values exceed 127 (up to `0xED`), so a direct element read is negative; the `& 0xFF` zero-extension *inside* `rrmp10Lookup128`/`_256_34`/`_256_38` is load-bearing on the JVM. This is the concrete confirmation of the D16 sub-dword-table refinement.
+- **The quotient-fits contract that left the uniform API still exists as a shared interior.** `divRem_q64r64_128x64` was deleted from the inventory (no core consumer), but the 128÷64 q-fits *operation* it named is needed internally by both the 128- and 256-bit division units. Java has no `dividingFullWidth` intrinsic, so it is realized once as a package-private `divlu` (Knuth Algorithm D, two corrected 32-bit digits) shared by both. The C core will hit the same gap and want the same shared helper.
+- **D15's "no full Knuth D for 128÷128" held.** A divisor `< 2^64` delegates to the 128÷64 kernel; a divisor `>= 2^64` is one clz-normalized single quotient digit plus a multiply-back correction — confirmed against `BigInteger`.
+- **`ntz` folded into platform-local bodies as D21 predicted** — `strip` and the power-of-two divisor path spell `Long.numberOfTrailingZeros` directly, no uniform name needed.
+- **Swift's `inout` bundle becomes a small mutable state object.** The rrmp10 kernels carry a mutable `KState` (round bit, fraction-bits-remaining, sticky compare, quotient limbs) where Swift used `inout` parameters, and the `UInt128` carry-save accumulator becomes a reused two-`long` accumulator with an `accAdd` helper.
 
 ## 9. Sanctioned Divergences
 
@@ -329,13 +342,15 @@ These extend the parent Section 10 list within this layer. Everything else in th
 - Keep the four proven tier-0 expect/actuals (renamed per D11); add `clz_int_64` if expect/actual proves necessary; align kernel names to the uniform API.
 - The SumU64 kernel suite persists as internal decomposition beneath the uniform tier-1 names.
 
-**C and Java:** greenfield; begin at tier 0 and the aggregate definitions, then tier 1, then core translation.
+**Java (decimal128-java):** the primitive layer is **done** (Section 8.4) — tier 0, the aggregates, and every tier-1 family, JVM-only, conformance-tested. What remains is the Java core, which begins from this layer once the Swift core/wrapper split fixes the core contract.
+
+**C:** greenfield; begin at tier 0 and the aggregate definitions, then tier 1, then core translation. The Java port's findings (Section 8.4) preview the C-relevant ones: the shared `divlu` quotient-fits helper, and the shift-count guard in any 64-bit-limb fallback path.
 
 ## 11. Open Items
 
 The following are explicitly unresolved and tracked for future revisions of this document:
 
-- **Per-type escape-analysis verification** — the `jmh -prof gc` results for each aggregate (notably the five-field `Quot256Rem256`) that confirm or revoke value-return-by-default, to be recorded here.
+- **Per-type escape-analysis verification** — the `jmh -prof gc` results for each aggregate (notably the five-field `Quot256Rem256`) that confirm or revoke value-return-by-default, to be recorded here. The Java first port (Section 8.4) **adopted the decision**: all aggregates (and `U128`/`U256`) are immutable `final` classes, value-returned — the EA-friendliest shape and the closest match to the Swift `struct`/`let` semantics. The mutable-class + thread-local-pool mechanic of parent Section 4.7.3 is held as the per-type fallback. What is still pending is the *measurement* that confirms or revokes that default per type; the decision is made, the `jmh -prof gc` numbers are not yet taken.
 - ~~**Swift signed-dword migration sequencing** — whether the parent Section 4.3 signedness change rides the confinement sweep or follows it as a separate spelling pass.~~ **Resolved (D27–D29):** it followed as a separate, staged pass — value-type fields → carriers → `.dw` accessors → `U256` storage → the deferred `DivBarrett`/`DivKnuth` bodies and the tier-0 return/parameter flips — landing core `Int64`-clean save the public `Decimal128.init(unsigned:)`.
 - **Final naming reconciliation** — depends on the parent's open name-mangling rules; the Section 7 conventions are provisional.
 - **C specifics** — `__int128` unavailability on MSVC (fallback: JVM-family-style synthesized kernels), and the C `int` width decision inherited from parent Section 4.4.3.
