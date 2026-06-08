@@ -63,6 +63,8 @@ The UBD layout is as follows:
 
 It is convenient to assume that UBD values are processed on a 64-bit machine. The terms *hi64* and *lo64* refer to the upper and lower 64 bits of a 128-bit value.
 
+Implementations bind these halves to concretely named stored fields — `ubdLo64` and `ubdHi64`, declared lo-first — and that field list (names, types, declaration order) is the uniform cross-platform surface (PrimitiveLayer.md D27): a JVM `Decimal128` is two longs with these names, a C struct two `uint64_t`. Constructors and whole-value accessors remain platform-local.
+
 #### 3.2.1 Coefficient field
 
 `decimal128` defines 34 digits of precision. 113 bits is sufficient to hold integer values up through 10^34 − 1; in fact, 113 bits admits values up through 2^113 − 1. We use the term *oversized* to describe coefficient values in the range [10^34, 2^113 − 1], which lie beyond the valid 34-digit precision of finite `decimal128` values. The hi64 bits of 10^34 have the hex representation `0x1ED09BEAD87C0`.
