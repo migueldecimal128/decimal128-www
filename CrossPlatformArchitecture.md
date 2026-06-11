@@ -4,19 +4,26 @@
 
 ## 1. Purpose and Scope
 
-This document describes the architecture of a multiplatform IEEE 754-2019 decimal128 library and the deliberate language-constraint regime that governs its core implementations. It covers two tightly related ideas: the separation of a language-neutral *core engine* from language-specific *wrappers*, and the restricted subset of language features the core implementations are permitted to use so that parallel implementations in different languages remain mechanically translatable and mutually verifiable.
+This document describes the architecture of a multiplatform IEEE 754-2019 decimal128 library and the deliberate language-constraint regime that govern implementations at the the *core* layer. The *core* layer sits above the hand-tuned-platform-specific *primitive* layer and below the language-specific *wrapper* layer. The primary purpose of this document is to describe the restricted subset of language features the core implementations are permitted to use so that parallel implementations in different languages remain mechanically translatable and mutually verifiable.
 
-It does **not** cover, except by reference, the internal numeric representation (UBD), the full IEEE 754-2019 arithmetic semantics, the DecContext flag- and trap-propagation mechanism, the final name-mangling rules, the primitive arithmetic layer, or the eventual translation tooling. Those are the subjects of companion documents.
+It does **not** cover, except by reference, the internal numeric representation (UBD), the full IEEE 754-2019 arithmetic semantics, the Context flag- and trap-propagation mechanism, the final name-mangling rules, the primitive arithmetic layer, the wrapper layer, or the eventual translation tooling. Those are the subjects of companion documents.
 
 ## 2. Architectural Overview
 
-### 2.1 Core, Primitive Arithmetic, and Wrapper Layers
+### 2.1 Primitive, Core, and Wrapper Layers
 
 The library is split into three layers with a clean division of responsibilities.
 
-The **core** is responsible for the complete implementation of IEEE 754-2019 decimal128. It owns the arithmetic, rounding, encoding, decoding, text parsing and text formatting logic. It does not deal with language-specific features, idioms, or conveniences. 
+In summary:
+Primitive layer - hand-tuned basic unsigned arithmetic per target platform
+Core layer - cross platform logic for alignment, rounding, and dispatch
+Wrapper layer - target-language-specific transducer for core. 
 
-The **primitive arithmetic** layer provides basic arithmetic functions on unsigned 128-bit and 256-bit integer values. Core uses these functions to perform basic arithmetic on 113-bit decimal128 coefficients. Multiplication of two 113-bit values may produce a 226 bit intermediate result. Fused-multiply-add fma operations require alignment of coefficients in the 256-bit world in order to achieve the single-rounding functionality dictated by the IEEE 754-2019 specification. Addition, subtraction, multiplication and simple division of 128/256-bit values are part of the primitive arithmetic layer. Note that advanced division algorithms for division by powers of 10 are part of the core, not part of the primitive arithmetic layer. 
+The **primitive** layer provides basic arithmetic functions on unsigned 128-bit and 256-bit integer values. Core uses these functions to perform basic arithmetic on 113-bit decimal128 coefficients. Multiplication of two 113-bit values may produce a 226 bit intermediate result. Fused-multiply-add fma operations require alignment of coefficients in the 256-bit realm in order to achieve the single-rounding functionality dictated by the IEEE 754-2019 specification. Addition, subtraction, multiplication, and simple division of 128/256-bit values are part of the primitive arithmetic layer. 
+
+Division by powers of 10 `divPow10` merits special discussion. Aligning decimal values involves shifting coefficients left and right. On a base-2 computer this means multiplying and dividing by powers of 10. Division remains a relatively expensive operation at the hardware level. To derive a performant decimal128 implementation, various division algorithms are utilized. The primitive layer includes the low-level `kernel` implementation used by these advanced division algorithms. The higher level dispatch and decision for these divPow10 functions are part of the Core, where they can be cross-platform. 
+
+The **core** is responsible for the complete implementation of IEEE 754-2019 decimal128. It is responsible for the alignment, rounding, dispatch, encoding, decoding, text parsing and text formatting logic. It relies on the primitive layer for arithmetic operations on the scaled/radix-aligned coefficients. It does not deal with target-language-specific features, idioms, or conveniences. 
 
 The **wrapper** provides user-facing functionality. It adapts the core to the characteristics and idioms of its host language — operator overloading, protocol or interface conformance, idiomatic naming, optional/nullable conventions, and so on. The wrapper adapts decimal128 values to be (as near as possible) first-class datatypes of the target language.
 
@@ -56,17 +63,26 @@ The C core does not yet exist.
 
 The Java core does not yet exist. 
 
-The Kotlin Multiplatform KMP implementation was the first decimal128 implementation undertaken. It is written in 100% Kotlin, running on jvm, native, and JavaScript. Unpublished benchmarks (available in the source) demonstrate excellent performance and heap behavior. It is publicly available in pre-release at `decimal128.com` hosted on github. It is fully functional, but does not adhere to the UBD in-memory format or the separation of layers described. The Kotlin KMP implementation will not be officially released until it is reworked to comply with the architecture described herein. 
+The Kotlin Multiplatform KMP implementation was the first decimal128 implementation undertaken. It is written in 100% Kotlin, running on jvm, native, and JavaScript. Unpublished benchmarks (available in the source) demonstrate excellent performance and heap behavior. It is publicly available as the `decimal128-kotlin-legacy` public repository on github. It is fully functional, but does not adhere to the UBD in-memory format or the separation of layers described. The Kotlin KMP legacy implementation will not be officially released; it will be reworked to adhere to the architecture described in this document and associated documents. 
 
 The existing Swift (v6.3) implementation was based upon the Kotlin KMP experience. The Swift value struct memory model forced a shift in perspective. The availability of intrinsic UInt128 support simplified a number of operations. That simplification brought clarification and insight into improvements for both implementations. The swift implementation also passes the same comprehensive set of IBM/Cowlishaw dectest, IBM FPgen/fptest, and Intel test vectors. 
 
-Both the Kotlin KMP and Swift implementations pass a rigid suite of decimal128 test vectors from 3 different sources: IBM/Cowlishaw dectest, IBM FPgen/fptest, and Intel `libbid` tests. For finite numeric answers, _passing_ means using the specified rounding direction to getting the same bitwise value in the same cohort. For non-finite results it means getting the same Infinity/NaN/sNaN result with the same sign and the same payload. The test vectors have proven exceptionally valuable in validating the existing implementations. Frankly, without the test vectors the ambitious architecture described here would not be possible. Details about the tests and how they are run can be found in an upcoming companion paper.
+Both the Kotlin KMP and Swift implementations pass a rigid suite of decimal128 test vectors from 3 different sources: IBM/Cowlishaw dectest, IBM FPgen/fptest, and Intel `libbid` tests. _Passing_ means getting the the exactly bitwise equal value and exactly the expected flags.This applies to both finite and non-finite results. For finite results it means a numerically equal value in the same cohort as expected. For non-finite results it means getting the same Infinity/NaN/sNaN result with the same sign and the same payload. The test vectors have proven exceptionally valuable in validating and migrating the existing implementations. Frankly, without the test vectors the ambitious architecture described here would not be possible. Details about the tests and how they are run can be found in an upcoming companion paper.
 
 **Immediate next steps**
 
 The Swift platform is closest to the architecture described here. The Swift platform will be split into the wrapper, core, and primitive arithmetic layers described here. 
 
 Work will begin on separating out the Kotlin KMP primitive arithmetic layer
+
+### 2.4.2 2026-06-11
+
+The Java **Primitive** layer is now ported (`decimal128-java/primitive`),
+name-compatible with the Swift Primitive API. The Java **Core** layer port is
+planned next: see the companion **`JavaCorePort.md`**, which fixes scope,
+sequencing, and the settled decisions (immutable value-return memory model;
+IEEE-required ops first; the Rosetta harness co-evolved with Core so each
+operator is validated against its real corpus vectors as it lands).
 
 
 ## 3. The Cross-Language Constraint Regime
@@ -121,7 +137,7 @@ The HLL cores do not use:
 Neither the C core nor the HLL cores use:
 
 - assignment as an embedded expression
-- pre/post increment operators `x++` `--y` ... use `x += 1` `y -= 1`
+- pre/post increment operators `x++` `--y` ... use `x += 1` `y -= 1` statements
 - bare (braceless) statement as a conditional branch or loop body
 - library functions (stdlib, Foundation, etc.)
 - multiple declarations per statement
@@ -129,7 +145,7 @@ Neither the C core nor the HLL cores use:
 - recursion (see exception below)
 - `goto`
 
-**Recursion exception:** there is no general use of recursion. Neither Knuth D division nor string formatting recurses. One isolated case — implementation of `remainderTrunc` / `remainderNear` — *may* recurse exactly one level.
+**Recursion exception:** there is no general use of recursion. Neither Knuth D division nor string formatting uses recursion. One isolated case — implementation of `remainderTrunc` / `remainderNear` — *may* recurse exactly one level.
 
 ### 3.5 HLL Restrict-To List
 

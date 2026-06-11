@@ -23,6 +23,12 @@ been added since the original plan and are folded into the sections below:
     subset — counted `while` loops, named functions (no operator overloads),
     structs (no tuples), no closures/HOFs, and no optionals across seams (§13).
 
+The second axis — porting this harness to the other languages — begins with
+Java, co-evolved with the Java Core port. See the companion `JavaCorePort.md`
+(§4 covers the Rosetta-infra / Rosetta-dispatch split and the regime-exempt,
+idiomatic-Java treatment of the harness, including a real-enum `CanonicalOp`
+that restores the exhaustive-switch "missing arm = compile error" guarantee).
+
 
 ================================================================================
 1. Why

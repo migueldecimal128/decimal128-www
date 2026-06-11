@@ -10,7 +10,7 @@
 
 Decimal floating-point arithmetic matters wherever results must match human, regulatory, or accounting expectations exactly — finance, tax, billing, and commerce — because binary floating-point cannot represent common decimal fractions such as 0.1 exactly [Goldberg 1991]. IEEE 754-2008 standardized decimal floating-point alongside its binary counterpart, and the 2019 revision carried these formats forward. The standard defines the `decimal128` format with a 34-digit coefficient and a wide exponent range, making it the natural choice for general-purpose decimal computation.
 
-The standard defines two *interchange* encodings for storing decimal values: Densely Packed Decimal (DPD) and Binary Integer Decimal (BID). Both were designed primarily with hardware implementation in mind. In practice, that hardware is rare. IBM processors and Fujitsu SPARC64 support DPD decimal floating-point, but most general-purpose CPUs — including Intel's — do not. Intel has effectively argued, through its `libbid` implementation, that dedicated hardware is unnecessary and that decimal arithmetic can be carried out competitively in software [Cornea et al. 2009].
+The standard defines two *interchange* encodings for storing decimal values: Densely Packed Decimal (DPD) and Binary Integer Decimal (BID). Both were designed primarily with hardware implementation in mind. In practice, that hardware is rare. IBM processors and Fujitsu SPARC64 support DPD decimal floating-point, but most general-purpose CPUs — including Intel's — do not. Intel has argued, through its `libbid` implementation, that dedicated hardware is unnecessary and that decimal arithmetic can be carried out competitively in software [Cornea et al. 2009].
 
 This creates a tension. The interchange encodings are optimized for the hardware that most platforms lack, yet the software that must stand in for that hardware pays a decode cost on every operation. This paper argues that software implementations benefit from a distinct *in-memory* encoding — one chosen for cheap decoding on commodity CPUs rather than for the density and regularity that suit silicon — and presents UBD (Unpacked Binary Decimal) as such an encoding for `decimal128`.
 
@@ -32,7 +32,7 @@ DPD encodes the coefficient as a sequence of *declets*: each group of three deci
 
 ### 2.3 Binary Integer Decimal (BID)
 
-BID stores the coefficient as a binary integer, which is far friendlier to software because the value is already in a form CPUs compute on directly. BID is the basis of Intel's `libbid` [Cornea et al. 2009]. However, BID is less straightforward than it first appears: the encoding uses a combination field that, for large coefficients, shifts where the leading coefficient bits and the exponent live. Recovering the quantum exponent and classifying the operand (finite, infinity, NaN) therefore still require conditional logic that executes on the common path [Cornea et al. 2009].
+BID stores the coefficient as a binary integer, which is far friendlier to software because the value is already in a form that general-purpose CPUs compute on directly. BID is the basis of Intel's `libbid` [Cornea et al. 2009]. However, BID is less straightforward than it first appears: the encoding uses a combination field that, for large coefficients, shifts where the leading coefficient bits and the exponent live. Recovering the quantum exponent and classifying the operand (finite, infinity, NaN) therefore still require conditional logic that executes on the common path [Cornea et al. 2009].
 
 ### 2.4 Working representations in software libraries
 
@@ -71,7 +71,7 @@ Implementations bind these halves to concretely named stored fields — `ubdLo64
 
 #### 3.2.2 Sign bit field
 
-All `decimal128` computation is sign-magnitude. Negative zero (−0) is a perfectly valid value. UBD therefore needs a dedicated sign bit, but its exact location does not matter much. There is no compelling reason to place it in the traditional most-significant-bit position; what matters is that it not interfere with another field. UBD places the sign bit at b113 — that is, b49 of hi64 — where it sits clear of both the qExp and the coefficient. The sign-bit field is otherwise unremarkable: it must exist for all finite and non-finite values, and so must be a dedicated bit.
+All `decimal128` computation is sign-magnitude. Negative zero (−0) is a perfectly valid value. UBD therefore needs a dedicated sign bit, but its exact location does not matter much. Since our representation is not encoding two's-complement integers directly, there is no compelling reason to place the value sign in the traditional most-significant-bit position. It is more important that the sign bit not interfere with its companion fields. UBD places the sign bit at b113 — that is, b49 of ubdHi64 — where it sits clear of both the qExp and the coefficient. The sign-bit field is otherwise unremarkable.
 
 #### 3.2.3 Quantum exponent field
 
@@ -89,7 +89,7 @@ The intended consequence of the layout is that decoding a finite operand reduces
 
 Any value with a qExp in [−6176, 6111] and a coefficient less than 10^34 is a finite, valid `decimal128` value. Because values are never *normalized*, there is no special treatment for *subnormal* values in the binary floating-point sense. This is a fundamental characteristic of decimal floating-point as formalized by Cowlishaw and has nothing to do with the UBD representation.
 
-One useful consequence of the layout is that a UInt128 integer less than 10^34 has exactly the same binary representation in UBD: the coefficient *is* the integer value, and the qExp and sign are zero. A UInt64 (or a non-negative Int64) can therefore be converted to a UBD value simply by setting hi64 to zero. Negative two's-complement values are slightly more involved, since `decimal128` is sign-magnitude: to represent an Int64, the lo64 becomes the absolute value and the sign bit is placed at b49 of hi64.
+One useful consequence of the UBD layout is that unsigned integers less than 10^34 have exactly the same binary representation in UBD: the coefficient *is* the integer value, and the qExp and sign are zero. A UInt64 (or a non-negative Int64) can therefore be converted to a UBD value simply by setting hi64 to zero. Negative two's-complement values are slightly more involved, since `decimal128` is sign-magnitude: to represent an Int64, ubdLo64 becomes the absolute value and the sign bit is placed at b49 of ubdHi64.
 
 ### 3.4 Special values
 
@@ -110,11 +110,11 @@ The hi64 bits of 10^34 have the hex representation `0x1ED09BEAD87C0`, or with un
 
 Any value greater than 10^34 − 1 could serve as the oversized threshold. This particular value begins with `0x1E`, so any value beginning with `0x1F` is clearly well into the oversized range. UBD therefore requires that all valid special values have coefficients beginning with `0x1F`. The coeffHi49 bits of Infinity and of NaN with payload zero (NaN0) are `0x1_F000_0000_0000`.
 
-For NaN, all bits after the `0x1F` prefix — 113 − 5 = 108 bits — are available for payload. Representing 33 decimal digits, however, requires 110 bits, leaving us two bits short. To meet the full 33-digit payload requirement of the specification, those two bits are recovered from the qExp field, as described next.
+For NaN, all bits after the `0x1F` prefix — 113 − 5 = 108 bits — are available for payload. However, 108 bits only allows us to represent 32 decimal digits. Representing the 33 decimal digits required by IEEE 754-2019 requires 110 bits, leaving us two bits short. To meet the full 33-digit payload requirement of the specification, those two bits are recovered from the qExp field, as described next.
 
 #### 3.4.2 Special values — qExp
 
-Two ranges of non-finite qExp values are available: above 6111 or below −6176. Each carries subtle complexity owing to two's-complement notation. Viewed as a 14-bit field, the top four bits of 6111 are `0b0101` (`0x5`). UBD tags all special values with a top nibble of `0b0111` (`0x7`, i.e. 7168 and above). After this prefix, the NaN bit distinguishes Infinity from NaN; if the NaN bit is set, the next bit (the signaling bit) distinguishes qNaN from sNaN. For a NaN, the low two bits of the qExp field hold two additional payload bits; combined with the 108 bits available in the coefficient, this gives 110 bits — sufficient to represent 10^33 − 1 (33 nines).
+Two ranges of non-finite qExp values are available: above 6111 or below −6176. Each carries subtle complexity owing to two's-complement notation. Viewed as a 14-bit field, the top four bits of 6111 are `0b0101` (`0x5`). The UBD format tags all special values with a top nibble of `0b0111` (`0x7`, i.e. 7168 and above). After this prefix, the NaN bit distinguishes Infinity from NaN; if the NaN bit is set, the next bit (the signaling bit) distinguishes qNaN from sNaN. For a NaN, the low two bits of the qExp field hold two additional payload bits; combined with the 108 bits available in the coefficient, this gives 110 bits — sufficient to represent 10^33 − 1 (33 nines).
 
 Within the 14-bit qExp field, special values are encoded as follows:
 
@@ -127,15 +127,15 @@ Within the 14-bit qExp field, special values are encoded as follows:
 0b011111_000000_pp   sNaN (7936..7939)
 ```
 
-All non-finite values fall in the range [7168, 7939], with substantial gaps. Decoding that range might appear complicated — and decoding complexity is precisely what UBD aims to avoid — but in pseudocode it is not bad at all. Assuming a 64-bit register width, `>>>` denoting an unsigned shift right, decimal integer constants, and `hi64` holding the upper 64 bits of the encoded value:
+All non-finite values fall in the range [7168, 7939], with substantial gaps. Decoding that range might appear complicated — and decoding complexity is precisely what UBD aims to avoid — but in pseudocode it is not bad at all. Assuming a 64-bit register width, `>>>` denoting an unsigned shift right, decimal integer constants, and `ubdHi64` holding the upper 64 bits of the encoded value:
 
 ```
-isFinite     { (hi64 >>> 60) != 7 }
-isNonFinite  { (hi64 >>> 60) == 7 }
-isInfinite   { (hi64 >>> 59) == 14 }
-isNaN        { (hi64 >>> 59) == 15 }
-isQNaN       { (hi64 >>> 58) == 30 }
-isSNaN       { (hi64 >>> 58) == 31 }
+isFinite     { (ubdHi64 >>> 60) != 7 }
+isNonFinite  { (ubdHi64 >>> 60) == 7 }
+isInfinite   { (ubdHi64 >>> 59) == 14 }
+isNaN        { (ubdHi64 >>> 59) == 15 }
+isQNaN       { (ubdHi64 >>> 58) == 30 }
+isSNaN       { (ubdHi64 >>> 58) == 31 }
 ```
 
 This gives a full set of predicates, each computed with a single shift and a comparison against a small immediate constant carried in the instruction stream. Each predicate stands alone; none assumes a prior finiteness test. Moreover, this decoding happens only off the fast path; fast-path operations never reach it.
@@ -179,7 +179,7 @@ Addition proceeds as follows:
 - the combined qExp-and-sign-bit value is extracted from each operand with a single shift; and
 - if `x.qExpAndSignBit == y.qExpAndSignBit` and `(sumHi49 >> 48) == 0`, the fast path is taken; otherwise the slow path.
 
-The fast path is taken only when the high bit of coeffHi49 is clear. A minority of valid 34-digit values route to the slow path, but they are handled correctly there. In effect, the check for non-finite operands is rolled into the overflow check.
+The fast path is taken only when the high bit of coeffHi49 is clear. A minority of valid 34-digit values route to the slow path, but they are handled correctly there. In effect, the check for non-finite operands is rolled into the overflow check. On the fast path, sumHi49 is available and ready to accept the carry out of sumLo64. 
 
 #### 4.1.1 Addition fast path
 
@@ -189,7 +189,7 @@ Masking the operand coefficients and shifting the qExpAndSignBit values are comp
 
 Recall that every non-finite value has the high bit of coeffHi49 set. For +Infinity + +Infinity, for instance, the qExpAndSignBit values match, but sumHi49 exceeds 48 bits and so forces the slow path.
 
-This fast-path case applies only to aligned values of the same sign — a situation that nonetheless arises frequently, as when summing a fixed-scale database column.
+This fast-path case applies only to aligned values of the same sign — a situation that nonetheless arises frequently, as when summing values from a fixed-scale database column.
 
 #### 4.1.2 Addition slow path
 
@@ -207,7 +207,7 @@ The slow path falls back to the traditional methods of classifying operands and 
 
 The subtraction fast path gates on equal qExp together with the same coefficient-magnitude bound used by addition. Because the special-value qExp tags lie outside the finite range, equal in-range qExp also guarantees that both operands are finite — so the same test that aligns the operands rules out the non-finite cases, with no separate classification step. Within the gate, the operation consults qExpAndSignBit to choose its path: when the operands' signs differ the magnitudes are summed (as in addition), and when they agree the magnitudes are subtracted. The subtract-magnitudes result cannot overflow; an exactly-zero difference is handed to the slow path, so that the result's quantum and sign of zero follow the IEEE rules.
 
-The branchless computation of the signed magnitude difference is a two's-complement technique independent of UBD, and is deferred to the companion paper.
+The branchless computation of the signed magnitude difference is a two's-complement technique independent of UBD, and is deferred to a companion paper.
 
 ### 4.3 Multiplication
 
@@ -278,6 +278,8 @@ UBD trades work at the interchange boundary for cheaper arithmetic, so it is not
 
 _Honestly, this cost is very low and not much more than the cost that would normally be associated with any operation. If you are reading from a file and summing values the cost might be slightly higher, but I'm not sure it would be measurable. If this were perceived to be a true limitation then I could take another look at optimizing the decoding._
 
+This conversion cost issue only applies to binary data that is already in DPD/BID format. Parsing of text representations converts directly to UBD. 
+
 ### 7.3 Future work
 
 A standard architecture for multi-platform support has been designed. See the accompanying whitepaper. 
@@ -298,7 +300,7 @@ UBD reframes the decimal128 storage question for the common case of software imp
 
 [Aharoni et al. 2003] M. Aharoni, S. Asaf, L. Fournier, A. Koifman, and R. Nagel, "FPgen — A Test Generation Framework for Datapath Floating-Point Verification," in *Proc. Eighth IEEE International High-Level Design Validation and Test Workshop (HLDVT)*, 2003, pp. 17–22. DOI: 10.1109/HLDVT.2003.1252469. Available: https://ieeexplore.ieee.org/document/1252469/. The associated IEEE 754R test suite (*fptest*) was distributed by IBM Research, Haifa.
 
-[Cowlishaw 2002] M. F. Cowlishaw, "Densely Packed Decimal Encoding," *IEE Proceedings — Computers and Digital Techniques*, vol. 149, no. 3, pp. 102–104, May 2002. ISSN 1350-2387. A summary is available at https://speleotrove.com/decimal/DPDecimal.html
+[Cowlishaw 2002] M. F. Cowlishaw, "Densely Packed Decimal Encoding," *IEEE Proceedings — Computers and Digital Techniques*, vol. 149, no. 3, pp. 102–104, May 2002. ISSN 1350-2387. A summary is available at https://speleotrove.com/decimal/DPDecimal.html
 
 [Cowlishaw decTest] M. F. Cowlishaw, *General Decimal Arithmetic Testcases*, version 2.44, IBM, 24 March 2009. Available: https://speleotrove.com/decimal/dectest.pdf (testcase files at https://speleotrove.com/decimal/)
 
