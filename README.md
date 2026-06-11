@@ -14,7 +14,7 @@ title: decimal128 for multiple platforms
 
 [UBD in-memory representation](UBD.md)
 
-[Cross-Platform Core Architecture](XPlatformCoreArchitecture.md)
+[Cross-Platform Core Architecture](CrossPlatformArchitecture.md)
 
 [Kotlin decimal128 implementation](https://decimal128.com/decimal128-kotlin)
 

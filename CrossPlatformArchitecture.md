@@ -330,6 +330,14 @@ So the pattern is: the core pays for performance with weaker typing; the wrapper
 - `TOWARD_POSITIVE = 3`
 - `TOWARD_NEGATIVE = 4`
 
+**Exception754** (core-internal; *not* visible to the wrapper) enumerates the five IEEE 754-2019 exceptions. Its integer values are **load-bearing bit positions** within the accumulated status-flag word, so the ordering is fixed and must not be reordered. Unlike `Rounding`, the core enum is deliberately *not* exposed across the boundary at all: the user-facing exception type is a separate, idiomatic per-language enum in the wrapper, and the two cross strictly as `Int` (the `Int`-only option of 6.1) — even on Swift, where wrapper and core share a package, the boundary is kept `Int`-typed for uniformity with the C/JVM cores. SCREAMING_SNAKE_CASE per 6.2:
+
+- `INVALID_OPERATION = 0`
+- `DIVISION_BY_ZERO  = 1`
+- `OVERFLOW          = 2`
+- `UNDERFLOW         = 3`
+- `INEXACT           = 4`
+
 **FormatStyle** (user-facing, with distinct wrapper and core implementations) has four values; like `Rounding`, it exists in both the wrapper and core forms described in 6.3. The first three are required for IEEE 754-2019 compliance:
 
 - `AUTO`
