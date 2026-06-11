@@ -1,15 +1,27 @@
 Rosetta.md
-Thu 11 Jun 2026
+Thu 11 Jun 2026  ·  updated to reflect the implemented state
 
-Plan to consolidate the three decimal128 test harnesses — fptest, Intel, and
-dectest — into one runner over a single canonical test-case format.
+Plan (now implemented) to consolidate the decimal128 test harnesses — fptest,
+Intel, and dectest — into one runner over a single canonical test-case format.
 
 The name is the point. The Rosetta Stone carried the same text in three
-scripts; our three suites carry the same information — operation, operands,
-result, flags — in three encodings. The job is to decode all three into one
+scripts; the three decimal floating point test suites carry the same information — operation, operands,
+result, flags — in three encodings. The job is to decode them into one
 canonical language. And there is a second translation underneath: the
 canonical harness is then ported to Kotlin, Java, and C. Rosetta is about
-both axes — three formats into one, one harness into four languages.
+both axes — many formats into one, one harness into four languages.
+
+STATUS (2026-06-11). The Swift consolidation is COMPLETE (Phases 0–4): one
+canonical harness in Tests/Decimal128Tests/rosetta/ runs all three corpora
+through one dispatch core; the legacy per-op runners are gone. Two things have
+been added since the original plan and are folded into the sections below:
+  - a FOURTH source, `native` — hand-authored, born-canonical test lines (§12);
+  - a portability-hardening pass that realizes P1 in the harness code itself:
+    the canonical op is now an `Int`-backed `CanonicalOp` enum (§6), the dispatch
+    returns a `DispatchResult` struct (§7), all text munging is behind a
+    `RosettaText` primitive layer (§5), and the port-path uses only the portable
+    subset — counted `while` loops, named functions (no operator overloads),
+    structs (no tuples), no closures/HOFs, and no optionals across seams (§13).
 
 
 ================================================================================
@@ -55,29 +67,33 @@ P5. A conscious include/exclude decision on *every* operator (§6). Silence is
 
 
 ================================================================================
-3. TC — the canonical test case (pure data)
+3. RosettaCase — the canonical test case (pure data)
 ================================================================================
 
-One neutral value type that all three parsers produce. Everything is a string
-or a small int — trivially serializable, trivially portable.
+One neutral value type that every parser produces. Everything is a string or a
+small int (the canonical op is an `Int`-backed enum) — trivially serializable,
+trivially portable.
 
-    enum Source { case fptest, intel, dectest }
+    enum Source { case fptest, intel, dectest, native }   // native: §12
 
-    struct TC {
+    struct RosettaCase {
         let source: Source
-        let text: String          // original line, for diagnostics
-        let canonicalOp: String   // resolved by stage-1 map; == a function name key
-        let operands: [String]    // 1...3, verbatim from the source
-        let resultStr: String     // verbatim from the source
-        let expectedFlags: String // canonical letter string, see §4
-        let rounding: String      // Round's SCREAMING_SNAKE case name; → Round at ctx build
-        // context — defaults for intel/fptest, directive-derived for dectest
-        let precision: Int        // 34 unless dectest says otherwise
-        let maxExp: Int           // 6144
-        let minExp: Int           // -6143
-        // source-specific raw metadata used only by quirk steps (§7)
-        let traps: String?        // fptest trap column; nil elsewhere
+        let text: String           // original line, for diagnostics
+        let canonicalOp: CanonicalOp  // resolved by stage-1 map; the stage-2 dispatch key (§6)
+        let operands: [String]     // 1...3, verbatim from the source
+        let resultStr: String      // verbatim from the source
+        let expectedFlags: String  // canonical letter string, see §4
+        let rounding: String       // Round's SCREAMING_SNAKE case name; → Round at ctx build
+        // source-specific raw metadata used only by quirk steps (§8)
+        let traps: String?         // fptest trap column; nil elsewhere
     }
+
+No precision/exponent context fields: the library is always and only
+decimal128 (precision 34, Emax 6144, Emin -6143), so they would be constants
+masquerading as data. Their one consumer — restricting dectest's multi-
+precision ln/exp/log10 blocks to precision 34 — is a PARSE-TIME vector filter:
+the dectest parser drops a non-34 block, so it never becomes a RosettaCase (it is not
+carried and guarded at run time).
 
 Operand and result strings stay verbatim. Decoding to D128/Int/Bool is the
 dialect's job (§5), done at run time, because each suite encodes operands
@@ -107,11 +123,11 @@ Rules:
     tokens. This guarantees canonical `xuozi` order and dedup, so "ox" can
     never miscompare against "xo". Empty set → "".
   - Comparison is canonical string equality: render `ctx.flags` through the
-    same function, string-compare to `TC.expectedFlags`. That *is* the "exact
+    same function, string-compare to `RosettaCase.expectedFlags`. That *is* the "exact
     flags everywhere" rule.
   - The flag string is the *signaled-exceptions* column only. fptest's separate
-    *trap* column is input metadata for the vector-filter (§7), NOT the
-    expected flags.
+    *trap* column is input metadata for the trap un-wrap normalize step (§8),
+    NOT the expected flags.
 
 Cleanup: `getFptestExceptionsString()` is now a misnomer (it is neither
 fptest-specific nor dectest-specific — it is *the* standard). Rename to a
@@ -122,17 +138,24 @@ neutral `exceptionLetters()`. This touches the Intel/dectest diagnostics too.
 5. Parsers and the dialect
 ================================================================================
 
-Three parsers, each a variant of the existing one, each producing `[TC]`:
+Four parsers, each producing `[RosettaCase]`:
 
   - IntelParser   — keep line tokenization, flag-byte decode, rounding-int
-                    decode. Emit TC with canonical flags + a canonical rounding string.
+                    decode. Emit RosettaCase with canonical flags + a canonical rounding string.
   - DectestParser — keep directive accumulation (precision/min/maxExp/rounding),
-                    `->` split, condition tokens. Emit TC carrying its context.
+                    `->` split, condition tokens. Emit RosettaCase carrying its context.
   - FptestParser  — promote the inline `Fptest` struct in TestFptestDecimal to a
                     first-class parser. Decode `=0 > < 0 =^` rounding, `xuozi`
-                    flags, trap column → TC.traps.
+                    flags, trap column → RosettaCase.traps.
+  - NativeParser  — the 4th source (§12): a native line IS a printed RosettaCase,
+                    so the parse is trivial (split the canonical fields) and there
+                    is no stage-1 map — it is born canonical.
 
-Canonical rounding vocabulary — the strings stored in `TC.rounding` are `Round`'s
+All four call the same text primitives (tokenize, hasPrefix, trim, …), which
+live behind named functions in `RosettaText` so the Foundation/Swift string
+idioms are confined to ONE file the port reimplements (§13).
+
+Canonical rounding vocabulary — the strings stored in `RosettaCase.rounding` are `Round`'s
 own SCREAMING_SNAKE_CASE case names, so the runner's string→`Round` step is a
 direct lookup (and ports as data):
 
@@ -150,13 +173,15 @@ Each parser maps its native rounding into one of these:
 
 What still differs per source at *run* time is the operand/result *encoding*.
 That is the dialect — a small table of decode functions, selected by
-`TC.source`:
+`RosettaCase.source`:
 
     decodeOperand(_ s: String, _ ctx: Context) -> D128
         intel:   "[hex]" BID (bid128ParseIntelHex → d128_fromBID) or decimal
         dectest: "#"DPD (dpd128ParseDecTestHex → d128_fromDPD) or d128_parse_ctx
                  (observes parse-time flags on ctx)
         fptest:  "Q"/"S" → QNAN0/SNAN0, else d128_parseOrNaN
+        native:  all forms (Q/S, "#"DPD, "[hex]" BID, else decimal); a malformed
+                 string is a loud authoring error, not a silent NaN
 
     decodeResult is the same family, plus the primitive parses (Int/Int64/Bool)
     used by non-D128 result arms.
@@ -170,10 +195,11 @@ there is no comparator field.
 ================================================================================
 
 STAGE 1 — source-specific normalization. Each source has TWO maps that
-*partition* its operator universe:
+*partition* its operator universe (native is the exception: it is born
+canonical, so it has no stage-1 map — §12):
 
-    intelInclude:  "bid128_add"  -> "d128_add_ctx"      // conscious INCLUDE
-                   "bid128_mul"  -> "d128_multiply_ctx"
+    intelInclude:  "bid128_add"  -> .d128_add_ctx       // conscious INCLUDE
+                   "bid128_mul"  -> .d128_multiply_ctx
                    ...
     intelExclude:  "bid128_sin"  -> "trig — not required by IEEE 754 decimal"
                    "bid128_cos"  -> "trig — out of scope"
@@ -183,10 +209,13 @@ The exclusion map is a blacklist that *carries a reason* — the decision is
 documented, not just made. It echoes the existing decision log (nextafter
 declined, dq rotate/shift won't-do, etc.).
 
-The canonical string IS the function name, treated as an *opaque key*. It looks
-like the Swift symbol as a mnemonic, but nothing resolves it reflectively — the
-stage-2 switch is explicit. So Kotlin/Java/C reuse the same keys; only stage 2
-changes per language.
+The canonical key is a `CanonicalOp` enum case whose identifier IS the
+function-name mnemonic (`d128_add_ctx`). It reads like the Swift symbol but
+nothing resolves it reflectively — the stage-2 switch is explicit. C cannot
+`switch` on a string, so the port must turn the token into an int before dispatch
+regardless; making the Swift reference key on the enum keeps all four switches
+identical (§13). So Kotlin/Java/C reuse the same enum; only stage 2 changes per
+language.
 
 INVARIANT (enforced by a meta-test per source — `testIntelOperatorCoverage`,
 etc.): every distinct operator token that appears in the corpus is in EXACTLY
@@ -200,21 +229,24 @@ This proves a conscious decision exists for every function, catches corpus
 drift loudly (a new op in a refreshed readtest.in fails the build until
 decided), and doubles as the coverage report: include.keys = what we test,
 exclude = what we consciously skip, with reasons. No third "unknown" bucket
-can exist. Both maps are pure string→string data and port verbatim.
+can exist. Both maps are pure String→CanonicalOp data (i.e. String→Int) and
+port verbatim.
 
-STAGE 2 — dispatch. One shared switch whose entire vocabulary is canonical
-names. By the time a case reaches it, the source format is fully behind us:
+STAGE 2 — dispatch. One shared switch whose entire vocabulary is `CanonicalOp`
+cases. By the time a case reaches it, the source format is fully behind us:
 the switch never sees "+", "bid128_add", or "add".
 
     switch tc.canonicalOp {
-      case "d128_add_ctx":      ...        // arm knows it returns D128
-      case "d128_compare_ctx":  ...        // arm knows it returns Comparison754
-      case "d128_isNAN":        ...        // arm knows it returns Bool
+      case .d128_add_ctx:      ...        // arm knows it returns D128
+      case .d128_compare_ctx:  ...        // arm knows it returns Comparison754
+      case .d128_isNaN:        ...        // arm knows it returns Bool
       ...
-    }
+    }                                     // EXHAUSTIVE — no `default`
 
 One arm per function, period — not functions × suites. The set of case labels
-IS the list of operations the harness tests.
+IS the list of operations the harness tests. The switch is exhaustive over
+CanonicalOp (no `default`), so a new op without an arm is a COMPILE error, not a
+runtime "no arm" — the old not-yet-wired histogram is therefore gone.
 
 
 ================================================================================
@@ -236,13 +268,18 @@ solve that in Swift but not in C (P1). The portable device is a tagged union:
 In C this is a `{ kind; union }` struct; in Kotlin/Java a sealed type. Every
 dispatch arm returns BOTH the observed and the expected as a `ResultValue` of
 the same kind — the arm knows its return type and how to parse the expected
-string, so no metadata table is needed:
+string, so no metadata table is needed. The pair is a struct, not a tuple (C has
+no tuples), and the return is non-optional (the switch is exhaustive):
 
-    func dispatch(_ tc: TC, _ a: D128, _ b: D128, _ c: D128,
-                  _ ctx: Context) -> (observed: ResultValue, expected: ResultValue)
+    struct DispatchResult { let observed: ResultValue; let expected: ResultValue }
 
-The runner loop then compares by kind — `.dec` → `d128_bitwiseEQ`, everything
-else → `==` — and compares the flag strings (§4). One comparison site, not 17.
+    func run(_ tc: RosettaCase, _ ctx: Context) -> DispatchResult
+
+The arm decodes the operands it needs through the dialect on the LIVE ctx,
+left-to-right (dectest accumulates parse flags in operand order). The runner
+loop then compares by kind via the NAMED function `ResultValue.equalsByKind`
+(not an `==` overload — §13) — `.dec` → `d128_bitwiseEQ`, everything else → value
+equality — and compares the flag strings (§4). One comparison site, not 17.
 
 
 ================================================================================
@@ -262,22 +299,60 @@ inside the relevant D128/Int arms):
   - int-returning invalid sentinel: accept Int.min or Int32.min when invalid is
     signaled (folded into the `.int` arm compare).
 
+FPTEST EXPECTATION NORMALIZE — trap un-wrap (gated source == .fptest, applied
+to *expected* inside the D128 arm). This is the resolution of Phase 0's
+trap-wrapped question: it is a value TRANSFORM, not a skip.
+
+  An fptest line with a `traps` column has the overflow/underflow trap enabled,
+  so it carries the IEEE 754-1985 trap-handler's *wrapped* result: the true
+  value with its exponent offset by ±bias so it is representable for the handler
+  to inspect. For decimal128 the bias is 9216 = 3·Emax/2 (the 1985 binary trap
+  formula 3·2^(w−2) — 192 single, 1536 double — generalized to decimal). NOTE
+  the provenance: the wrap is the 1985 trap model, dropped from 754-2008/2019
+  default handling; "9216" is not printed in current 754 — it is what the
+  fptest/FPgen corpus encodes.
+
+  This non-trapping, 754-2019-default library delivers ±inf (overflow) or the
+  subnormal/zero (underflow) instead. The wrapped *value* is recoverable, so we
+  un-wrap rather than skip: scale the expected back by the bias with the test's
+  rounding context, which re-applies the same range-clamp/rounding the operator
+  did, and bit-compare against the observed default result.
+
+    - overflow  (`scaleB(expected, +9216)`): re-overflows to ±inf / largest
+      finite. Gated on our own result having overflowed (`ctx.isOverflow()`).
+    - underflow (`scaleB(expected, −9216)`): re-rounds onto the subnormal grid.
+      Gated on our result being finite and non-normal.
+    `trapWrapDelta(...) -> Int?` (formerly the skip predicate `isBadCase`)
+    returns the scaleB delta or nil. All such vectors reconcile bit-for-bit
+    (603 overflow + 300 exact-underflow; no inexact-underflow in the corpus).
+
+  The signaled-FLAG column is NOT checked for these vectors — it follows 1985
+  trap conventions (overflow without the implied inexact; tininess-before-
+  rounding underflow) this library does not mirror. Only the value is asserted.
+  (Trapping itself is unimplemented but planned; the value is identical
+  regardless of delivery, and "was the handler's value used" is a separate
+  future test.)
+
 VECTOR FILTER (per-source skip of individual erroneous/out-of-scope *lines*
 within an *included* operator — distinct from the operator-level exclusion of
 §6):
 
-  - fptest trap-wrapped overflow/underflow: fptest expects the IEEE
-    trap-handler's ±9216-biased result; this non-trapping library delivers the
-    default (±inf / subnormal). The `isBadCase` logic moves here.
   - fptest `u` tininess divergence: with flags now compared exactly (P3, §4),
     the `u`-divergent vectors go on this skip list rather than relaxing the flag
-    comparison (resolution pending Phase 0 — see §10).
+    comparison (resolution pending — see §10). Distinct from the trap un-wrap
+    above: these are non-trapped lines where tininess detection itself differs.
   - Intel per-line skip lists; dectest `#` encoding placeholders and
     unsupported-rounding blocks (up / 05up / half_down).
 
 LADDER SIBLINGS (orthogonal, retained): the `_rnd` / `_tte` / quiet no-flag-sink
-forms checked bit-identical against the `_ctx` result. Keep BinarySibling /
-TernarySibling; the D128 arms invoke them.
+forms checked bit-identical against the `_ctx` result, for every source (internal
+consistency is source-independent). `RosettaSiblings.check` re-decodes the
+operands on a throwaway ctx and compares each applicable sibling; the sibling
+list is `[Sibling { label; value }]` (a struct, not a `(String, D128)` tuple).
+
+NATIVE has NO quirk steps: a native case (§12) is born canonical and takes the
+plain reconcile path (value-by-kind + flags-exact) with no normalize, no
+trap-unwrap, and no skip filters.
 
 
 ================================================================================
@@ -285,18 +360,20 @@ TernarySibling; the D128 arms invoke them.
 ================================================================================
 
 PHASE 0 — fptest → bitwise (BEFORE anything else; de-risks the whole plan).
-  - In the existing TestFptestDecimal, switch result comparison from
-    compareQuiet754 (numeric) to d128_bitwiseEQ. Keep the trap-wrapped filter
-    and the `#`/d64 skips.
-  - Triage the fallout: cohort mismatches or NaN-payload mismatches are either
-    (a) real bugs, surfaced with numbers, or (b) vectors for the filter.
-  - Decide the `u` flag question with data in hand (§10).
-  - Rename getFptestExceptionsString() → exceptionLetters() (§4).
-  Exit: fptest green under bitwise comparison.
+  DONE. Result comparison switched compareQuiet754 → d128_bitwiseEQ; `#`/d64
+  skips kept; getFptestExceptionsString() → exceptionLetters() (§4).
+  - Triage: ZERO bitwise fallout — the library already produces bit-exact
+    cohorts, signs, and NaN payloads. No real bugs, no new filter material.
+  - The trap-wrapped vectors were NOT left as skips: they became the trap
+    un-wrap NORMALIZE step (§8) — 903 vectors (603 overflow + 300 exact-
+    underflow) reconcile bit-for-bit, converting skips into real coverage.
+  - The `u` flag question was not forced (no value mismatch depended on it); it
+    stays the one open `u`-divergence vector-filter item (§10).
+  Exit (met): fptest green under bitwise comparison.
 
 PHASE 1 — canonical model.
-  - Add Source, TC, ResultValue, canonical flag rendering.
-  - Three parser variants emitting [TC] (reuse existing parse logic).
+  - Add Source, RosettaCase, ResultValue, canonical flag rendering.
+  - Three parser variants emitting [RosettaCase] (reuse existing parse logic).
   - Three include/exclude map pairs + the operator-coverage meta-tests.
   Exit: every corpus operator is consciously include/exclude; meta-tests green.
 
@@ -313,23 +390,41 @@ PHASE 3 — shims (zero churn).
   Exit: old names delegate to Rosetta; full suite green.
 
 PHASE 4 — migrate (later, separate pass).
-  - Move call sites onto Rosetta directly; delete the old runner types.
+  DONE. Moved call sites onto Rosetta; deleted ~85 legacy files (80 per-op tests
+  + 3 legacy runners + sibling/env helpers). Coverage now comes from the three
+  parity sweeps + the meta-tests; 100 hand-written _2019 cases are preserved in
+  _754_2019.dectest.
+
+PHASE 5 — native source. DONE. Added `native` as the 4th Source (§12): a
+  born-canonical printed-RosettaCase format for ops/arms no corpus exercises
+  (propagate min/max, specific FormatStyles, hand-built NaN payloads).
+
+PHASE 6 — portability hardening (§13). DONE. Tightened the harness code to the
+  portable subset so the C/Java/Kotlin dispatch transliterates line-by-line:
+  CanonicalOp enum, exhaustive switch, DispatchResult struct, RosettaText
+  primitive layer, counted while-loops (no HOFs/for-in/closures), named
+  equalsByKind (no operator overload), Sibling struct (no tuple).
+
+(Phases 1–3 — canonical model, engine, shims — are likewise complete; see the
+STATUS note at the top.)
 
 
 ================================================================================
 10. Open items / risks
 ================================================================================
 
-  - Phase 0 fallout: how many fptest vectors fail under bitwise, and how they
-    split between real bugs and filter material. Unknown until run.
-  - The `u` tininess flag divergence: skip the divergent vectors (current
-    plan), or is it a real tininess-detection bug to fix? Decide in Phase 0.
-  - dectest variable precision: the multi-precision transcendental files
-    (ln/exp/log10) carry blocks at many precisions; the library is fixed
-    decimal128. TC carries precision, but the runner must keep restricting to
-    the precision-34 blocks (today's precisionFilter) — as a vector filter or a
-    context guard. Confirm placement.
-  - NaN bitwise exactness for dectest/fptest payloads beyond the Intel
+  - [RESOLVED — Phase 0] fptest bitwise fallout: ZERO. No real bugs, no new
+    filter material; trap-wrapped vectors handled by the §8 un-wrap normalize.
+  - [OPEN] The `u` tininess flag divergence: skip the divergent vectors
+    (current plan), or is it a real tininess-detection bug to fix? Not forced by
+    Phase 0 (no value mismatch depended on it). Note these are the *non-trapped*
+    underflow lines — the trapped ones are now value-asserted via §8 and their
+    1985-convention flags are deliberately not checked.
+  - [RESOLVED] dectest variable precision: RosettaCase carries NO precision/exponent
+    fields (library is always decimal128). The multi-precision transcendental
+    blocks (ln/exp/log10) are dropped at PARSE time — a vector filter that never
+    emits a RosettaCase for a non-precision-34 block, not a carried context guard.
+  - [OPEN] NaN bitwise exactness for dectest/fptest payloads beyond the Intel
     divergences already handled by the normalize step.
 
 
@@ -338,11 +433,102 @@ PHASE 4 — migrate (later, separate pass).
 ================================================================================
 
   VERBATIM (shared data / logic; transliterates mechanically):
-    TC, ResultValue, Source; the three parsers; the include/exclude map pairs
-    and their reasons; canonical flag rendering; the runner loop and by-kind
-    comparison; the vector-filter skip lists; the Intel-normalize logic.
+    RosettaCase, ResultValue, DispatchResult, Source, CanonicalOp; the four
+    parsers; the include/exclude map pairs and their reasons; canonical flag
+    rendering; the runner loop and by-kind comparison (equalsByKind); the
+    vector-filter skip lists; the Intel-normalize logic; the counted-loop bodies.
 
-  PER-LANGUAGE (the one artifact that genuinely differs):
-    the stage-2 dispatch switch bodies — because they hold the actual library
-    calls, and the function symbols differ per language. Its *keys* are the
-    shared canonical strings.
+  PER-LANGUAGE (the artifacts that genuinely differ):
+    1. the stage-2 dispatch switch BODIES — they hold the actual library calls,
+       and the function symbols differ per language. Its *keys* are the shared
+       CanonicalOp cases (Int-backed).
+    2. the `RosettaText` primitive BODIES — the host's string API (or
+       strtok/strncmp/strchr/…); the parsers call only the named primitives.
+    3. `CanonicalOp.name` / `.byName` — the explicit enum↔string maps (C/Java/
+       Kotlin spell the enum and its name table their own way).
+
+  Everything outside those three transliterates; see §13 for the discipline that
+  makes that true.
+
+
+================================================================================
+12. The native source (the 4th source)
+================================================================================
+
+`native` is a fourth `Source`, added after the original three-corpus plan. A
+native line IS a printed `RosettaCase`: it is born canonical, so it has NO
+stage-1 map and NO quirk steps — it goes straight to the stage-2 switch and the
+plain reconcile path (value-by-kind + flags-exact). It exists to test ops and
+arms that no external corpus exercises (the NaN-propagating min/max forms,
+specific FormatStyles, hand-built NaN payloads, isQNaN, toExp/toRaw, …).
+
+Line format (whitespace-separated; `//` and blank lines ignored):
+
+    <canonicalOp> <ROUNDING> <op1> [op2 [op3]] -> <result> [flags]
+
+    d128_add_ctx     TIES_TO_EVEN  1.5  2.5  -> 4.0
+    d128_divide_ctx  TIES_TO_EVEN  1    3    -> 0.3333333333333333333333333333333333  x
+    d128_isLess_ctx  TIES_TO_EVEN  -Inf 0    -> 1
+
+  - <canonicalOp> is a CanonicalOp NAME (the mnemonic), resolved via
+    `CanonicalOp.byName` — the inverse of `CanonicalOp.name`. Unknown → loud error.
+  - <ROUNDING> is Round's SCREAMING_SNAKE name (the same vocabulary as §5).
+  - operands/result are decimal strings, with `Q`/`S` (payload-0 NaNs), `#`DPD,
+    and `[hex]` BID available for exact NaN payloads / bit patterns.
+  - flags are the canonical `xuozi` letters (§4), rendered through the one
+    function so order/dedup are canonical.
+
+Native is STRICTER than the corpus paths: it has no skip filters (a skipped case
+is a failure), and — because the stage-2 switch is exhaustive over CanonicalOp —
+a missing arm is a compile error, not a runtime skip. Cases live as
+`Tests/Decimal128Tests/Resources/native/*.txt`, plus inline lines and an
+`assertOne` single-line path for debugging. A handful of structurally bespoke
+checks (parse round-trips, sqrt-bracket, raw NaN-payload getters) stay outside
+the native format on purpose.
+
+
+================================================================================
+13. Portability hardening (realizing P1 in the harness code)
+================================================================================
+
+P1 asks for a Swift reference that *ports mechanically*. The original plan met
+that at the design level (tagged union not generics, opaque keys not reflection).
+A follow-up pass tightened the harness CODE to the portable subset, so the
+C/Java/Kotlin dispatch transliterates line-by-line instead of being reinvented:
+
+  - CANONICAL OP IS AN ENUM. The canonical key is an `Int`-backed `CanonicalOp`
+    enum whose case identifiers ARE the function-name mnemonics (`d128_add_ctx`,
+    `d128_isFinite`). C cannot `switch` on a string, so the port must turn the
+    token into an int before dispatch anyway; keying the Swift reference on the
+    enum keeps all four switches identical. The include maps are
+    `String→CanonicalOp` (i.e. String→Int) — as portable as the former
+    String→String. The stage-2 switch is EXHAUSTIVE (no `default`): a new op
+    without an arm is a compile error, not a runtime "no arm". `CanonicalOp.name`
+    is an explicit (non-reflective) switch; `byName` its inverse, used by native.
+
+  - STRUCTS, NOT TUPLES. Dispatch returns `DispatchResult { observed; expected }`
+    (a C struct / JVM class). The sibling list is `[Sibling { label; value }]`,
+    not `[(String, D128)]`.
+
+  - NAMED FUNCTIONS, NOT OPERATORS. `ResultValue` by-kind equality is
+    `ResultValue.equalsByKind(a, b)`, not an `==` overload.
+
+  - A TEXT-PRIMITIVE LAYER. Every Foundation/Swift string idiom the parsers need
+    (tokenize, split-lines, hasPrefix, take/drop, trim, removingChar, allCharsIn,
+    indexOf→-1) lives behind named primitives in `RosettaText`. The parser bodies
+    call only these; the port reimplements ONE file (strtok/strncmp/strchr/…) and
+    the parsers transliterate unchanged.
+
+  - COUNTED LOOPS, NO HOFs/CLOSURES. The port-path logic uses the counted-loop
+    idiom (`var i = 0; while i < n { … ; i += 1 }`, braces always) — no `map`/
+    `filter`/`compactMap`, no `for-in`, no nested capturing closures. (Diagnostic
+    `print`/`joined` and the `@Test` bodies stay idiomatic — they are scaffolding,
+    not ported logic.)
+
+  - NO SEAM OPTIONALS. The optional dispatch return is gone (exhaustive switch);
+    the one `D128?` sibling optional became a Bool gate. The remaining `-> T?`
+    parser returns ("is this line a case?") are the one acknowledged boundary
+    optional, mapping to C's `bool f(out T)`.
+
+What is deliberately NOT yet converted (idiomatic, low-value to force now):
+`guard … else`, `Set`/dictionary literals, and the parser `-> T?` returns above.
