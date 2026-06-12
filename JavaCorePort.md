@@ -36,9 +36,12 @@ References: `CrossPlatformArchitecture.md` (the constraint regime, cited as
   `divRem_q256r64_256x64`, `U128`, `U256`, `Residue`, `Verify.verify/demand/
   impossible`, etc. Core-Java calls these unchanged.
 - **Scope.** `Sources/Core` = 52 files, ~8,168 lines.
-- **Swift Core is already in the portable subset.** Zero `switch`; one `for-in`
-  (Flags); one operator overload (`Flags.==`); Int-backed simple enums. The
-  port is largely line-by-line transliteration, not a restructuring.
+- **Swift Core is already in the portable subset.** Zero `switch`; zero
+  `for-in`; one operator overload (`Flags.==`); Int-backed simple enums; **no
+  closures outside the verify/demand suppliers** (the former Padé-constant
+  `.map`/`.enumerated` chains and the `Flags` `.filter/.map/.joined` chain were
+  converted to counted loops — see §2). The port is line-by-line
+  transliteration, not a restructuring.
 - **Foundation usage is negligible.** `BExpMinMax.swift` (import appears
   unused); `IntegerParsePrint.swift` (`String(decoding: bytes, as: UTF8.self)`
   → `new String(bytes, 0, len, StandardCharsets.US_ASCII)`).
@@ -58,6 +61,19 @@ Core is **shippable logic**, so the constraint regime (§3) binds it fully:
   "overloads" (§8). No method dispatch, default params (except verify/demand/
   impossible source-location), tagged params, closures (except the
   verify/demand `BooleanSupplier`), or operator overloads.
+
+  **Padé constant tables (`D128ExpConstants`/`D128LogConstants`).** The `D38`
+  weight arrays are built at module load from `[String]` literals through two
+  counted-loop helpers in `D38.swift` — `parseD38Weights([String]) -> [D38]`
+  (parse each coefficient) and `negateOddIndexed([D38]) -> [D38]` (derive the
+  denominator `Q(z) = P(−z)` by negating odd-index weights). Transliterate the
+  helpers to `static D38[]` methods with `for` loops; the module-global `let`s
+  become Java `static final D38[]` filled in a `static {}` block. These were
+  the last `.map`/`.enumerated` chains in Core; together with the former
+  `Flags.filter/.map/.joined` (removed when `Flags.description` adopted the
+  canonical `xuozi` letter form, dropping `getSetExceptions`,
+  `Exception754: CaseIterable`, and `Set<Exception754>`), Core now carries no
+  closures outside verify/demand.
 - **Types:** signed `long` dwords everywhere (§4.3); `int` for in-memory
   scalars (qExp etc., §4.4); primitive integer types and arrays thereof. Native
   128-bit types never appear in Core — they are confined to the Primitive layer.
@@ -70,7 +86,7 @@ Core is **shippable logic**, so the constraint regime (§3) binds it fully:
   SCREAMING_SNAKE_CASE names (§6.2).
 - **Memory:** `Decimal128` is a heap `final` class with `long ubdHi64, ubdLo64`
   (§4.1; the `int TBD` padding field per §4.1 is optional, deferred). All result
-  aggregates (`Quot128Residue`, `Dec38`, U128/U256) are **immutable final
+  aggregates (`Quot128Residue`, `D38`, U128/U256) are **immutable final
   classes, value-returned** — the settled decision. No ThreadLocal pool now.
 - **Errors:** no exceptions in core logic; conditions flow through return values
   and `Context` flags. Internal checks via `Verify.verify/demand/impossible`
@@ -97,7 +113,7 @@ Sanctioned divergences from Swift to expect (§10): heap class vs struct;
    dispatch over the Primitive `divPow10_*`/barrett/knuth kernels — the
    `div_128_pow10_*`/`div_256_pow10_*` names in Swift Core are Core functions,
    not Primitive.)
-5. **Extended precision:** Dec38 + AddSub/Compare/Div/Fma/Finalize/
+5. **Extended precision:** D38 + AddSub/Compare/Div/Fma/Finalize/
    RoundToIntegral/Sqrt.
 6. **D128 arithmetic:** ArithAddSub, ArithMul, ArithDiv, ArithCompare, ArithFma.
 7. **Serde:** SerdeBid, SerdeDpd.
@@ -168,8 +184,8 @@ unlock before the next begins.
 - Tiers 3–4: Finalize/Round machinery and the Core divPow10 family. The rounding
   heart all arithmetic depends on. Validate via any op whose arm exists.
 
-**Phase D — IEEE-required arithmetic (+ Dec38).**
-- Tier 6 ops in order: add/sub → mul → div → compare → fma, plus the Dec38
+**Phase D — IEEE-required arithmetic (+ D38).**
+- Tier 6 ops in order: add/sub → mul → div → compare → fma, plus the D38
   engine (tier 5) that fma/div/sqrt need. Wire each op's dispatch arm as it
   lands; corpus vectors validate immediately.
 
@@ -182,7 +198,7 @@ unlock before the next begins.
   StripTrailingZeros, LogBScaleB, BExpMinMax + their arms.
 
 **Phase G — transcendentals (deferred ordering).**
-- Exp, Log (ln/log10) + Dec38 Padé support + their constants and arms. Last,
+- Exp, Log (ln/log10) + D38 Padé support + their constants and arms. Last,
   per IEEE-required-first.
 
 Validation is continuous (corpus vectors per arm) — there is no separate
