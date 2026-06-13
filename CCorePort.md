@@ -47,7 +47,7 @@ on `decimal128-c` `main`):
 
 - Every seam symbol Core needs now exists in `decimal128-c/primitive`, name-
   compatible and GMP-oracle tested: `pow10Dw0/Dw1`, `pow10_256Dw0..3`,
-  `pow10U128`, `isLt/isGe_pow10_34_bool_128`, `calcDigitLenInt`,
+  `pow10U128`, `isLt/isGe_pow10_34_bool_128`, `digitLen_int_32`,
   `cmp_int_256x256`, the `Quot256Rem128/Rem256/Residue` aggregates, and the
   `U256↔double` sqrt bridge (`u128FromDouble`, `u256ToFloorDouble`). 21/21 ctest.
 - The C primitive headers were renamed to the cross-core **PascalCase** base
@@ -73,7 +73,7 @@ retained for provenance but is done.
   `divPow10_q128res_*`, `divRem_q256r64_256x64`, the `U128`/`U256` dword structs,
   `Residue`, `verify`/`demand`/`impossible`, …) **plus** the formerly-missing
   Core-driven symbols (`Quot256*` aggregates, `U256↔double` bridge, the pow10
-  accessors, `cmp_int_256x256`, `calcDigitLenInt`) — all added and tested before
+  accessors, `cmp_int_256x256`, `digitLen_int_32`) — all added and tested before
   core. Headers are PascalCase, matching the HLL file names.
 - **Representation is settled by the Primitive layer.** `U128`/`U256` are dword
   `struct`s (`int64_t dw0..dw3`, dw0 least significant, §4.2/§4.3); native
@@ -193,7 +193,7 @@ is pushed into Primitive. The critical seam Core calls (PORTING-NOTES §1):
 
 - Dword accessors over flat limb tables: `pow10Dw0(p)/pow10Dw1(p)`,
   `pow10_256Dw0..3(i)`, `POW10_34/_38`, `isLt/isGe_pow10_34_bool_128`,
-  `MASK54L`, `calcDigitLenInt`, the `cmp_int_256x256` compare, the
+  `MASK54L`, `digitLen_int_32`, the `cmp_int_256x256` compare, the
   `Quot256Rem128 / Quot256Rem256 / Quot256Residue` aggregates, and the
   `U256↔double` sqrt-seed bridges.
 
@@ -207,7 +207,7 @@ Primitive**, all now **added** name-compatibly with GMP-oracle + death tests:
 | `U256↔double` bridge (`u128FromDouble`, `u256ToFloorDouble`) | added (`U256Double.h/.c`) |
 | `pow10Dw0/Dw1`, `pow10_256Dw0..3`, `pow10U128` | added (`PrimitiveTables.h`) |
 | `isLt/isGe_pow10_34_bool_128` | added (`PrimitiveTables.h`) |
-| `calcDigitLenInt` | added (`CalcBitLenDigitLen.h/.c`) |
+| `digitLen_int_32` | added (`CalcBitLenDigitLen.h/.c`) |
 | `cmp_int_256x256` | added (`U256.h`) — the one the Swift-Core grep alone could **not** surface (Swift Core uses native `<` on `U256`; only the JVM/C cores need the named compare) |
 
 Lesson recorded for the Rosetta/core port to come: a Swift-Core-only grep misses

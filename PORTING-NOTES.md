@@ -33,7 +33,7 @@ divergence is pushed into the **primitive layer**. The critical seam Core calls:
 
 - Dword accessors over flat limb tables: `pow10Dw0(p)/pow10Dw1(p)`,
   `pow10_256Dw0..3(i)`, plus `POW10_34/_38`, `isLt/isGe_pow10_34_bool_128`,
-  `MASK54L`, `calcDigitLenInt`, the `cmp_int_256x256` compare, the `Quot256Rem128
+  `MASK54L`, `digitLen_int_32`, the `cmp_int_256x256` compare, the `Quot256Rem128
   / Rem256 / Residue` aggregates, and the `U256<->double` sqrt-seed bridges.
 
 In the Kotlin port these were **missing from primitive** and had to be added
