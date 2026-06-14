@@ -287,6 +287,15 @@ Core functions that require temporary space are allowed to perform one ThreadLoc
 
 The existing Kotlin implementation passes all basic arithmetic operations and `pown(int)` while allocating at most 32 bytes per operation, as demonstrated by the jmh benchmarking harness. (See anticipated companion paper)
 
+### 4.8 JVM Field Ordering (Header-Gap Packing)
+
+On the JVM a heap object carries a 12-byte header, so a 4-byte `Int` field sits naturally in the gap before the 8-byte (`Long`) fields reach their 8-byte boundary (Section 4.1). For aggregate types that pair a small `Int` field with 64-bit limbs, **Java and Kotlin therefore declare the `Int` field first**, ahead of the limbs, so the source order reflects the physical layout and the object packs with no trailing padding. **Swift and C keep the small field last**: as header-less value types (a Swift `struct`, a C aggregate) their declaration order instead matches the C aggregate-literal order, which the compile-time constant tables depend on.
+
+This is the one place the otherwise-uniform field declaration order deliberately diverges by platform. It is purely a layout/source-clarity choice with **no behavioral effect** — constructors and accessors address fields by name, and the type is never serialized in field order. Instances:
+
+- **Quot128Residue** — `residue` is declared before the quotient limbs on Kotlin/Java, after them on Swift/C (Section 5.2).
+- **D38** — `qExpSign` is declared first on Java/Kotlin; Swift and C keep `coeffLo64, coeffHi64, qExpSign` (qExpSign last), matching the C aggregate literal used by D38's compile-time constant tables.
+
 ## 5. Calling Conventions and Multi-Value Return
 
 ### 5.1 The Asymmetry
