@@ -294,7 +294,7 @@ On the JVM a heap object carries a 12-byte header, so a 4-byte `Int` field sits 
 This is the one place the otherwise-uniform field declaration order deliberately diverges by platform. It is purely a layout/source-clarity choice with **no behavioral effect** — constructors and accessors address fields by name, and the type is never serialized in field order. Instances:
 
 - **Quot128Residue** — `residue` is declared before the quotient limbs on Kotlin/Java, after them on Swift/C (Section 5.2).
-- **D38** — `qExpSign` is declared first on Java/Kotlin; Swift and C keep `coeffLo64, coeffHi64, qExpSign` (qExpSign last), matching the C aggregate literal used by D38's compile-time constant tables.
+- **D38** — `qExpAndSignBit` is declared first on Java/Kotlin; Swift and C keep `coeffLo64, coeffHi64, qExpAndSignBit` (qExpAndSignBit last), matching the C aggregate literal used by D38's compile-time constant tables.
 
 ## 5. Calling Conventions and Multi-Value Return
 
