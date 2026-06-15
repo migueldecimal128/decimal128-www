@@ -1,0 +1,42 @@
+In [[computing]], '''decimal128''' is a [[decimal floating-point]] format defined by the [[IEEE 754|IEEE 754 Standard for Floating-Point Arithmetic]]. It is one of the standard's basic [[interchange format]]s, designed to offer exact decimal representation with high precision. Introduced in [[IEEE 754-2008]] and retained in [[IEEE 754-2019]], decimal128 encodes a sign, a base-10 [[significand]], and an [[exponent]] into 128 bits (16 bytes). The exponent provides an extremely wide dynamic range&mdash;far larger than typical applications require&mdash;so that 34-digit precision, not range, is the notable characteristic of decimal128.
+
+== Comparison with binary floating-point ==
+
+The differences below concern the representation of fractional values&mdash;those with digits to the right of the [[radix point]]. We compare the fundamental characteristics of decimal and [[binary floating-point]], using decimal128 and the common [[double-precision floating-point format|binary64 (double precision)]] format as representatives, across four dimensions.
+
+{| class="wikitable"
+|-
+! Dimension !! binary64 (double) !! decimal128
+|-
+! Numeric base
+| Base 2 &mdash; most decimal fractions (e.g. 0.1) have no finite expansion, so values are inherently approximate
+| Base 10 &mdash; any decimal fraction within range is represented exactly as written
+|-
+! Precision
+| ≈15 significant decimal digits (53-bit significand)
+| Exactly 34 significant decimal digits
+|-
+! Rounding
+| Rounds to a binary place value; cannot honor a decimal convention such as "round to the nearest cent"
+| Application controls the rounding rule (roundTiesToEven, roundTiesToAway, …) and the decimal place
+|-
+! Text conversion
+| A decimal literal is lossily mapped to the nearest binary value; only a hexadecimal format renders it exactly
+| Each printed decimal string maps exactly to one encoding, preserving trailing zeros
+|}
+
+The first is numeric base. Decimal floating-point represents values in base 10, so decimal fractions can be represented exactly as written. Binary floating-point uses base 2, which is incapable of representing most decimal fractions such as 0.1. The reason is mathematical: a fraction has a finite expansion in a given base only when the denominator's prime factors are all factors of the base. Base 10 has prime factors 2 and 5, while base 2 has only 2. A value such as 0.1 (one tenth, denominator 2 × 5) therefore terminates in base 10 but not in base 2, where the denominator's factor of 5 forces a non-terminating, repeating expansion. Binary64 is thus inherently approximate for most fractional decimal values, while decimal128 represents any decimal fraction within its range exactly.
+
+The second dimension is precision: binary64 provides the binary equivalent of roughly 15 decimal digits, meaning at most 15 reliably survive a round-trip from text to binary and back. Precision is the most notable dimension that distinguishes the decimal floating-point formats from one another. The 7- and 16-digit precisions offered by [[decimal32 floating-point format|decimal32]] and [[decimal64 floating-point format|decimal64]] are inadequate for most applications, making decimal128 with 34-digit precision the preferred choice.
+
+The third dimension is rounding. Some form of rounding must take place when the exact numeric result exceeds the available precision. Decimal floating-point gives the application explicit control over the rounding rule, such as roundTiesToEven or roundTiesToAway, and the number of decimal places, so that arithmetic conforms to a prescribed rounding convention. Contrast this with binary floating-point. The same rounding modes exist, but they round to a binary place value rather than a decimal one, so they cannot honor a decimal convention such as "round to the nearest cent."
+
+The fourth dimension is text conversion. A text literal with fractional digits (e.g. "0.1") that is parsed into binary floating-point becomes the nearest representable binary value, a lossy conversion that cannot be performed by visual inspection. The stored binary value generally does not equal the written decimal value. Binary floating-point printing algorithms perform the reverse operation, emitting the shortest decimal string that parses back to the stored binary value. These algorithms usually conceal the underlying inaccuracy, but small errors accumulate through repeated arithmetic operations and surface as surprising and puzzling results. IEEE 754 also defines a hexadecimal text format that renders a binary floating-point value exactly, sidestepping this lossy base-10-to-base-2 conversion. Decimal floating-point requires no equivalent: its ordinary decimal text is already exact, because the text and the stored decimal value share the same base (base 10). Each printed decimal string maps to a single decimal floating-point representation, including its trailing zeros.
+
+== Cohorts ==
+
+Because decimal128 does not normalize its significand, a value with fewer than 34 significant digits has more than one valid encoding. Writing the value one as 1, 1.0, and 1.00 produces three distinct encodings, which in [[scientific notation]] are 1e0, 10e-1, and 100e-2. The trailing zeros are not cosmetic: each one appears in the coefficient (1, 10, 100) and is offset by a smaller exponent (0, −1, −2), so the written form is preserved exactly in the encoding. These encodings are numerically equal but distinct in memory, differing in coefficient and exponent. The set of all encodings of a given numeric value is called its [[Cohort (floating point)|cohort]].
+
+This retention of trailing zeros is deliberate. The choice of encoding records the ''quantum'', the place value of the least significant digit, and therefore the number of digits written after the decimal point. In measurement and engineering, that number conveys the precision of a result: 1.0 asserts accuracy to the tenths place, while 1.00 asserts accuracy to the hundredths. The two are numerically equal but express different claims about how precisely the value is known. The same applies to financial reporting, where monetary amounts are shown to a fixed number of fractional digits determined by the currency, so a value is printed with its full minor-unit places rather than with trailing zeros removed&mdash;for example, 123.00.
+
+Binary floating-point cannot preserve this distinction, because normalization collapses every value to a single encoding. Decimal128 retains it, so a quantity carries not only its value but the precision to which that value was measured or computed.
