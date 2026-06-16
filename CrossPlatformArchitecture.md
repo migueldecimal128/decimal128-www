@@ -84,6 +84,46 @@ sequencing, and the settled decisions (immutable value-return memory model;
 IEEE-required ops first; the Rosetta harness co-evolved with Core so each
 operator is validated against its real corpus vectors as it lands).
 
+### 2.4.3 2026-06-15
+
+**All four core implementations now exist, are physically split into the
+Primitive and Core layers described here, and pass the three-corpus validation
+suite (IBM/Cowlishaw dectest, IBM FPgen/fptest, Intel `libbid`) through a
+Rosetta harness.** This supersedes the two snapshots above, both of which are
+now out of date:
+
+- **C** — the Core **now exists** and is complete, contradicting §2.4.1. The
+  Primitive, Core, and Rosetta layers are separate CMake modules; all arithmetic
+  (add/sub/mul/div/fma), rounding/finalize, BID/DPD serde, parse/print, sqrt, the
+  D38 extended-precision engine, and the exp/ln transcendentals are implemented.
+  Phases A–G landed June 12–15; the full ctest suite is green.
+- **Java** — the Core is **substantially complete**, contradicting §2.4.2's
+  "planned next." The Primitive port is done and the Core (≈50 source files,
+  the full `d128_*` operator surface in `tte`/`rnd`/`ctx` forms) passes its
+  dectest/fptest/Intel/Rosetta corpora. Remaining work is the value-return→fill-in
+  allocation optimization, not missing operators.
+- **Kotlin** — the layered/UBD **rework anticipated in §2.4.1 is done**. This is
+  no longer the legacy monolith: Primitive and Core are separate modules on the
+  UBD in-memory format, green on jvm, macosArm64 native, and wasmJs.
+- **Swift** — the Primitive/Core split called for in §2.4.1's "immediate next
+  steps" is in place (separate SwiftPM `Primitive` and `Core` targets); the Core
+  is complete and validated.
+
+**The state across all four ports is now symmetric: core-complete, wrapper-absent.**
+No port exposes a user-facing **wrapper** yet. Swift's `Core` is `package`-scoped
+with no public `Decimal128`, operators, or protocol conformances; C exposes only
+the Rosetta test harness, not a public `d128.h` user API; the Java and Kotlin
+`wrapper/` modules are declared but empty. The wrapper layer (Section 2.3) is
+therefore the next frontier, and — because every core is independently validated —
+the choice of which wrapper to build first is **open across all four ports**, not
+constrained to a single port with a ready core.
+
+A consequence worth noting: the §2.3 development-leverage wrappers
+(**swift-over-C**, **Kotlin/Native-over-C**) are no longer blocked on an
+unwritten C core. The C core is real and self-validated, so those wrappers shift
+from "needed to bring the C core up" to "a second, cross-language confirmation of
+an already-passing core" — still valuable, but no longer on the critical path.
+
 
 ## 3. The Cross-Language Constraint Regime
 
@@ -363,12 +403,24 @@ So the pattern is: the core pays for performance with weaker typing; the wrapper
 - `UNDERFLOW         = 3`
 - `INEXACT           = 4`
 
-**FormatStyle** (user-facing, with distinct wrapper and core implementations) has four values; like `Rounding`, it exists in both the wrapper and core forms described in 6.3. The first three are required for IEEE 754-2019 compliance:
+**FormatStyle** (the *conceptual* name; user-facing, with distinct wrapper and core implementations) has four values; like `Rounding`, it exists in both the wrapper and core forms described in 6.3. The first three are required for IEEE 754-2019 compliance:
 
 - `AUTO`
 - `EXPONENTIAL`
 - `ENGINEERING`
 - `COEFFICIENT_QEXP` (under consideration; retained for now)
+
+**Per-language wrapper spelling.** `FormatStyle` is only the conceptual/core
+name. The Swift wrapper must *not* call its enum `FormatStyle`: Foundation owns
+that name (the `FormatStyle` protocol and its `IntegerFormatStyle` /
+`NumberFormatStyleConfiguration` family), and a public top-level `FormatStyle`
+would collide and read as a Foundation conformance it isn't. The Swift wrapper
+therefore names the enum **`DecimalStyle`** (camelCase cases
+`automatic` / `exponential` / `engineering` / `coefficientExponent`, raw values
+mirroring the core `FORMAT_*` codes), used as `value.string(.engineering)`. The
+sibling rounding enum is the user-facing **`Rounding`** (§6.4 above), distinct
+from the core `Round`. Other ports pick their own collision-free spelling; the
+*concept* and the integer values stay uniform.
 
 ## 7. Interchange Formats
 
