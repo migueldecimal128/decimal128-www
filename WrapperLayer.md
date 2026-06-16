@@ -2,8 +2,9 @@
 
 *Derived from the Swift reference wrapper (`decimal128-swift`, target
 `Decimal128` over `Core`). This document is the spec for porting the wrapper to
-the other languages. Kotlin is now done (`decimal128-kotlin` `wrapper/` module —
-see §8); next Rust/Python/Go/Scala per CrossPlatformArchitecture.md §2.3.*
+the other languages. Kotlin and Java are now done (`decimal128-kotlin` /
+`decimal128-java` `wrapper/` modules — see §8); next Rust/Python/Go/Scala per
+CrossPlatformArchitecture.md §2.3.*
 
 ## 1. Purpose and Scope
 
@@ -316,7 +317,7 @@ Key techniques (transliterate these):
 - **Flag-accumulation fidelity** is the recurring failure source — combined
   parse-flags + op-flags must match the corpus; expect a handful to diagnose.
 
-## 8. Current State (Swift reference, 2026-06-15)
+## 8. Current State (Swift reference, 2026-06-16)
 
 The Swift wrapper is complete and validated against all three corpora **through
 the public API**, zero failures:
@@ -349,6 +350,44 @@ wrapper Rosetta currently **copies** the neutral corpus harness + 13 MB corpora
 from `core/src/commonTest` into its own test set (a deliberate choice, accepting
 drift); de-duplicating it via a shared test module is on the punchlist
 (*"Revisit shared Rosetta harness (Kotlin)"*).
+
+The **Java** wrapper (`decimal128-java` `wrapper/` module, package
+`com.decimal128.decimal128java.wrapper`) is complete and validated, with pass
+counts **identical** to Swift and Kotlin:
+
+| corpus | passed |
+|---|---|
+| dectest | 12,382 |
+| fptest | 19,915 |
+| Intel | 14,210 |
+| **total** | **46,507** |
+
+**7** source files (not 13): Java has no extension functions, so the entire
+`Decimal128` surface is one class, with 6 supporting public types
+(`Rounding`, `DecimalStyle`, `DecimalFlags`, `DecimalComparison`, `IEEEClass`,
+`DecimalContext`). A 36-test unit suite + `WrapperRosetta` run green. Java
+divergences beyond Kotlin's (§5):
+
+- **No operator overloading** → the bare arithmetic is named, BigDecimal-style:
+  `add`/`subtract`/`multiply`/`divide` (each with `(…, Rounding)` and
+  `(…, DecimalContext)` overloads), unary minus → `negate()`, bit-level magnitude
+  → `abs()`. No compound assignment.
+- **No computed properties** → classification/accessors are methods: `isNaN()`,
+  `nextUp()`, `floatingPointClass()`, `ctx.raisedFlags()`.
+- **No value class** → `final class Decimal128` wrapping core `D128`
+  (package-private ctor); `equals`/`hashCode` left at identity defaults, no
+  `Comparable` (same deferral as Kotlin, §4.2).
+- **Nullable parse** → `static Decimal128 parse(String)` returns `null` (matching
+  the core's `d128_parse`), not `Optional`.
+- **`DecimalFlags`** is an immutable `final class` wrapping `int`
+  (`contains`/`union`/`subtracting` + 5 bit constants + `NONE`) — `new
+  DecimalFlags(coreInt)` is the zero-translation crossing.
+- **Rosetta test layout** — same copy-the-harness choice, but Java's neutral
+  harness types (`RosettaCase` record, `CanonicalOp`, `Source`, `TestResource`)
+  are **package-private** and Java has no module-internal escape, so
+  `WrapperRosetta`/`TestWrapperRosetta` live IN the `core.rosetta` package (not
+  `wrapper`) and import the public wrapper types. (Kotlin's `internal` allowed the
+  test to sit in the `wrapper` package.) De-dup is the same punchlist item.
 
 Next port: Rust/Python/Go/Scala.
 
