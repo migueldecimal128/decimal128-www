@@ -127,6 +127,32 @@ the Swift/Java source with a script rather than hand-transcribing.
 
 ## 6. Wrapper
 
-Out of scope for the core port (and not yet started in any port). The
-public-API/`wrapper` layer (CrossPlatformArchitecture §2.3, §4.3) comes after a
-green core + Rosetta.
+Out of scope for the *core* port, but the **wrapper layer is now the next thing to
+build in C** — the Swift, Kotlin, and Java wrappers are all done and validated
+(46,507 vectors through the public API, 0 failures). The authority is
+**[WrapperLayer.md](WrapperLayer.md)** — read §1–5 for the surface and §8/§9 for
+the per-port state and the C-specific lessons. This section is the C-port landing
+note; the grounded C facts below were verified against `decimal128-c` (re-check,
+they drift):
+
+- **Don't transliterate the class structure.** C surrenders almost no idiom (the
+  whole regime exists so the Core's `d128_*` surface is already idiomatic C), so the
+  C "wrapper" is a **public umbrella header** (`decimal128.h` — does NOT exist yet;
+  the 26 `core/include/D128*.h` are the granular engine headers) re-exporting the
+  curated `d128_*` subset, **free functions, not a class**. Optional C `enum`
+  typedefs (`Rounding`/`DecimalStyle`/`IEEEClass`/`DecimalComparison`) over the codes
+  are cosmetic (C `enum` ≡ `int`).
+- **Two prior decisions do NOT transfer.** (a) Parse: C's core already returns
+  `bool d128_parse(const char *s, D128 *out)` — follow that, don't invent a
+  null/sentinel. (b) The hi/lo-pair interchange that *hides* `U128` (forced in
+  Kotlin/Java) is **open, not forced** — `U128` is a plain C struct a caller can take
+  directly; pick hi/lo `uint64_t` only for public-header cleanliness.
+- **Rosetta: link, don't copy.** Java/Kotlin had to copy the harness (its types were
+  package/module-private). In C, `rosetta/` is a **standalone library with public
+  headers** (`rosetta/include/Rosetta*.h`) — the C wrapper-rosetta should *link* it
+  and write only a `WrapperRosetta` that re-points dispatch + comparison to the
+  public wrapper functions. No copy, no corpus duplication.
+- **Transfers unchanged:** the exact pass-count target (46,507, 0 failures, same
+  intentional skips); `abs`/`negate` are bit-level, not GDAS computational; the
+  wrapper-rosetta replaces the core harness's dispatch/runner/compare with its own
+  and reuses only the parsers + case + maps + skips + render + text.
