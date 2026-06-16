@@ -1,9 +1,9 @@
 # The Wrapper Layer — Design and Porting Spec
 
-*First draft. Derived from the Swift reference wrapper (`decimal128-swift`,
-target `Decimal128` over `Core`). This document is the spec for porting the
-wrapper to the other languages (Kotlin next; then Rust/Python/Go/Scala per
-CrossPlatformArchitecture.md §2.3).*
+*Derived from the Swift reference wrapper (`decimal128-swift`, target
+`Decimal128` over `Core`). This document is the spec for porting the wrapper to
+the other languages. Kotlin is now done (`decimal128-kotlin` `wrapper/` module —
+see §8); next Rust/Python/Go/Scala per CrossPlatformArchitecture.md §2.3.*
 
 ## 1. Purpose and Scope
 
@@ -236,7 +236,10 @@ The behavior and surface shape are uniform; these implementation points are
 idiom-forced and expected to differ:
 
 1. **128-bit interchange type** — native `UInt128` (Swift) vs a synthesized
-   representation elsewhere (§4.7).
+   representation elsewhere (§4.7). Kotlin (no native 128-bit unsigned) exposes a
+   **hi/lo `Long` pair**: `Decimal128.fromBID(high, low)` / `fromDPD(high, low)`
+   and `bidBitPatternHigh`/`bidBitPatternLow` (+ dpd). The core `U128` is built/
+   read only inside those bodies — it never appears in a public signature.
 2. **Class enum** — stdlib `FloatingPointClassification` (Swift) vs a custom
    `IEEEClass: Int` (§4.9).
 3. **Numeric protocols** — `AdditiveArithmetic`/`Numeric`/`SignedNumeric` (Swift)
@@ -247,6 +250,22 @@ idiom-forced and expected to differ:
    thread-marking spell differently per language.
 6. **Operator overloading & value-class** conventions — per the
    `port-conventions` memory.
+7. **Argument labels** — Swift's external labels (`quantized(to:)`,
+   `multiplied(by:)`, `isTotallyOrdered(belowOrEqualTo:)`) have no Kotlin
+   equivalent. Fold the label into the method name
+   (`isTotallyOrderedBelowOrEqualTo`) or keep a plain parameter the caller may
+   name (`quantized(to = …)`). Beware the hard keywords `by`/`as` — illegal as
+   parameter names (use `dividingBy`, `other`).
+8. **Equality / ordering surface** — where `==`/`<` are operators distinct from
+   hashing (Swift), conform IEEE `Equatable`/`Comparable` and defer `Hashable`
+   (§4.2). Where `==`≡`equals` and `<`≡`compareTo` (Kotlin), IEEE semantics make
+   an unlawful `equals`/`Comparable` (NaN) and pair badly with the deferred
+   `Hashable`, so expose IEEE comparison **only** through named methods
+   (`isEqual`/`isLess`/`isLessThanOrEqualTo`/`isUnordered`/`compared`) and leave
+   `equals`/`hashCode`/`Comparable` at their defaults — deferred alongside
+   `Hashable`. (The compound operators `+=`/`-=`/`*=` still come for free, synthesized
+   from `plus`/`minus`/`times`.) Static factories (`minimum`, `fromBID`, …) become
+   `companion object` extensions so call sites read `Decimal128.minimum(a, b)`.
 
 ## 6. Gotchas (learned building the Swift reference)
 
@@ -310,8 +329,28 @@ the public API**, zero failures:
 | **total** | **~46,500 vectors** |
 
 Remaining skips are all intentional (§7). Public unit tests live alongside in
-`WrapperTests`. The Kotlin wrapper is the next port (the `decimal128-kotlin`
-`wrapper/` module is empty; Primitive + Core are complete on jvm/native/wasmJs).
+`WrapperTests`.
+
+The **Kotlin** wrapper (`decimal128-kotlin` `wrapper/` module, package
+`com.decimal128.decimal128kotlin.wrapper`) is complete and validated on **all
+three KMP targets** (jvm, macosArm64, wasmJs/Node), with pass counts **identical**
+to the Swift reference:
+
+| corpus | passed |
+|---|---|
+| dectest | 12,382 |
+| fptest | 19,915 |
+| Intel | 14,210 |
+| **total** | **46,507** |
+
+13 source files transliterate the Swift surface (the §5 divergences applied);
+a 36-test public unit suite + the 3-corpus `WrapperRosetta` run green. The
+wrapper Rosetta currently **copies** the neutral corpus harness + 13 MB corpora
+from `core/src/commonTest` into its own test set (a deliberate choice, accepting
+drift); de-duplicating it via a shared test module is on the punchlist
+(*"Revisit shared Rosetta harness (Kotlin)"*).
+
+Next port: Rust/Python/Go/Scala.
 
 ---
 
