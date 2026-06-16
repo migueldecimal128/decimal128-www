@@ -389,7 +389,40 @@ divergences beyond Kotlin's (§5):
   `wrapper`) and import the public wrapper types. (Kotlin's `internal` allowed the
   test to sit in the `wrapper` package.) De-dup is the same punchlist item.
 
-Next port: Rust/Python/Go/Scala.
+Next port: the **C wrapper** (`decimal128-c`), then Rust/Python/Go/Scala.
+
+## 9. Lessons for the C port (before it starts)
+
+C is a different kind of target, and the biggest risk is mechanically
+transliterating the Swift/Java *class* structure. Three things to internalize:
+
+1. **C surrenders almost no idiom**, so the wrapper is far lighter than elsewhere.
+   The whole cross-platform regime exists so the Core's public `d128_*` surface is
+   *already* idiomatic C — `Int`-only codes, value structs, no exceptions,
+   `bool` + out-param returns. The C "wrapper" is therefore **a public umbrella
+   header** (`decimal128.h`, which does not exist yet — the granular engine headers
+   `D128*.h` do) re-exporting the curated `d128_*` subset, plus optional C `enum`
+   typedefs over the codes (cosmetic — C `enum` ≡ `int`) and a thin
+   `DecimalContext`/`DecimalFlags` facade. **Free functions, not receivers**; no
+   operators, no methods, no value-class. The Swift/Java method *names* still inform
+   the public function names.
+2. **Two prior decisions do NOT transfer to C.** (a) The `parse → null`/optional
+   decision: C's core already returns `bool d128_parse(const char *s, D128 *out)` —
+   follow that idiom, don't invent a sentinel. (b) The hi/lo-pair interchange that
+   *hides* `U128` (forced in Kotlin/Java by the no-primitive-in-signature rule) is
+   **open, not forced**, in C — `U128` is a plain C struct a caller can take
+   directly; choose hi/lo `uint64_t` only for public-header cleanliness.
+3. **The copy-vs-share Rosetta question is already answered for C.** Java/Kotlin had
+   to *copy* the neutral harness because its types were package-/module-private (a
+   standing de-dup punchlist item). In C, `rosetta/` is a **standalone library with
+   public headers** — the C wrapper-rosetta should **link** it and write only a
+   `WrapperRosetta` that re-points dispatch + comparison to the public wrapper
+   functions. No copy, no corpus duplication.
+
+What *does* transfer unchanged: the exact pass-count target (46,507, 0 failures,
+same intentional skips, §7); `abs`/`negate` are bit-level, not GDAS (§4.4); the
+wrapper-rosetta replaces the core harness's dispatch/runner/compare with its own and
+reuses only the parsers + case + maps + skips + render + text.
 
 ---
 
