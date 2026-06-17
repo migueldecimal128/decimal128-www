@@ -125,6 +125,162 @@ from "needed to bring the C core up" to "a second, cross-language confirmation o
 an already-passing core" — still valuable, but no longer on the critical path.
 
 
+## 2.5 Core Sub-Tiers and Per-Port Realization
+
+§2.1 names three layers — Primitive, Core, Wrapper. In practice the **Core**
+layer subdivides into five packages distinguished by IEEE 754-2019 clause and by
+dependency direction, and the **Wrapper** layer carries more than one public
+package. This section fixes the canonical *tier taxonomy* and records how each
+port *realizes* it, because the realization mechanism differs fundamentally by
+language and the structure is therefore **not** path-identical across ports.
+
+### 2.5.1 The Tiers
+
+| Tier | Layer | Responsibility | IEEE 754-2019 basis |
+|---|---|---|---|
+| **primitive** | Primitive | U128/U256 fixed-width unsigned arithmetic, the `divPow10` kernels, pow10 tables. *Not decimal-specific.* | — (substrate) |
+| **core** | Core | The decimal128 value and its *required* operations: add/sub/mul/div, fma, **sqrt**, compare, roundToIntegral, scaleB, logB, **parse** (string→decimal), the finalize/rounding engine, the D38 extended-precision engine. | §5 (required ops), §5.3.3 (scaleB/logB), §5.12 (parse) |
+| **math** | Core | The *recommended* elementary functions: exp, exp10, expm1, compound, ln, log10, log2, pow, pown, rootn (+ their constants). | §9.2 (recommendedOperations) |
+| **print** | Core | decimal → string: format/print. (The reverse direction, parse, is cyclic with `core` and lives there.) | §5.12 (convertToDecimalCharacter) |
+| **interchange** | Core | bytes ↔ decimal: BID and DPD encode/decode. | §5.7 (interchange formats) |
+| **finance** | Core (engine) | Domain functions built on core+math: interest, annuities, NPV/IRR/MIRR, amortization. *Not part of IEEE 754.* | — (domain) |
+| **wrapper** | Wrapper | The user-facing public surface: the first-class `Decimal128` type with its operators/methods, plus a separate public **finance** package. | — (presentation) |
+
+Dependency direction is strictly downward:
+
+```
+primitive  ←  core  ←  { math, print, interchange }  ←  finance  ←  wrapper
+```
+
+Two boundary rules that are easy to get wrong:
+
+- **`sqrt` belongs in `core`, not `math`.** squareRoot is a §5 *required*,
+  correctly-rounded operation, peer to divide — not a §9.2 recommended function.
+  `pow`/`pown`/`rootn`/`compound` are §9.2 and belong in `math`, even though
+  `rootn(2)` and `sqrt` may share kernels (shared helpers live in the lower tier,
+  `core`, and `math` calls down into them).
+- **`finance` is a domain slice, not an IEEE tier.** It has an engine part in the
+  Core layer (above `core`/`math`) and a public part in the Wrapper layer. It is
+  the one tier with its own *public* package, because it is opt-in and addresses a
+  different audience than the number type itself.
+- **`parse` stays in `core`; only `print` is its own tier.** Parsing builds and
+  *correctly rounds* a value (it needs core finalize/round/D38), and `core` in turn
+  parses string literals to build its constants — a genuine `core ↔ parse` cycle.
+  Co-locating parse in `core` keeps that cycle intra-tier; printing is a clean
+  one-directional leaf (`print → core` only, nothing in core prints), so it alone
+  becomes the `print` tier. This is why the tier is `print`, not `text`.
+
+### 2.5.2 Per-Port Realization
+
+The tiers are conceptual. Each language expresses them with whatever native
+mechanism gives a public/internal boundary; there is no common path syntax.
+
+- **Java / Kotlin** — *packages* (path-significant, compiler-enforced). Internal
+  tiers nest under `….internal.*`; the public tiers are the front-door package and
+  a sibling `finance` package. Kotlin uses the identical package names — the
+  `internal` segment is legal (cf. `kotlinx.coroutines.internal`) — and presents
+  the value type via `typealias Decimal128 = D128`, so the engine source keeps the
+  transliteration-faithful `D128` name.
+- **Swift** — *SwiftPM targets* + *access control*. `Primitive` and `Core` are
+  targets; the public surface is the `Decimal128` target. The Core sub-tiers are
+  **not** separate targets — they are `package`/`internal`-scoped symbols within
+  `Core`, optionally grouped into cosmetic subfolders. There is no reverse-DNS
+  prefix; module names are bare.
+- **C** — *directory-per-layer* + *CMake static libraries* + *header
+  partitioning*. `primitive/` and `core/` are libraries with `include/`+`src/`;
+  namespacing is by symbol prefix (`u128_`, `u256_`, `d128_`). The public/internal
+  boundary is the *installed* header set (the future `wrapper/` umbrella
+  `decimal128.h`), not a path; `static` gives translation-unit privacy.
+
+| Tier | Java / Kotlin package | Swift | C |
+|---|---|---|---|
+| primitive | `com.decimal128.<port>.internal.primitive` | `Primitive` target | `primitive/` lib, `u128_`/`u256_` |
+| core | `….internal.core` | `Core` target (pkg/internal) | `core/` lib, `d128_` |
+| math | `….internal.math` | ″ | ″ |
+| print | `….internal.print` | ″ | ″ |
+| interchange | `….internal.interchange` | ″ | ″ |
+| finance (engine) | `….internal.finance` | ″ | ″ |
+| wrapper (front door) | `com.decimal128.<port>` | `Decimal128` target (`public`) | `wrapper/` umbrella `decimal128.h` |
+| finance (public) | `com.decimal128.<port>.finance` | `public` in `Decimal128` (or own target) | public finance header |
+
+`<port>` ∈ { `java`, `kotlin` } (and `scala`, … as ports are added). The port
+segment is justified by the multiplatform family — it marks *which* port, not
+noise — and only a *leading* `java`/`javax` segment is reserved, which these names
+avoid.
+
+### 2.5.3 The Parity Principle
+
+**Cross-port structural parity holds at the tier level, not the path level.**
+`com.decimal128.java.internal.math`, Swift's `Core` target, and C's `core/` are
+the *same tier* realized three different ways; their paths neither do nor should
+match. The reliable cross-port locator for a piece of logic is the **filename +
+symbol prefix** (`D128Exp.{java,kt,swift}` / `d128_exp*.c`, all carrying
+`d128_exp_*`), which transliteration already keeps aligned — not the directory.
+
+Consequently:
+
+- In **Java/Kotlin**, the package layout is *load-bearing* (it is the
+  public/internal boundary) and must be maintained exactly.
+- In **Swift/C**, directories are *semantically inert*. Subfoldering the Core to
+  mirror the tiers is optional cosmetics for navigation only; it must not be
+  treated as an obligation, and in C it carries real cost (CMake source lists,
+  relative `#include` churn) for navigation-only benefit. Group there for local
+  ergonomics if desired, not for parity.
+
+### 2.5.4 Current Realization
+
+This taxonomy is the **target** structure; realization is in progress.
+
+- **Java** (`decimal128-java`, 2026-06-17) is realized to the target: public front
+  door `com.decimal128.java`, internals under
+  `com.decimal128.java.internal.{primitive,core,math,print,interchange,finance}`,
+  Gradle `group = com.decimal128`. One deliberate deviation: the public **Finance**
+  face stays in the front-door package (not a sibling `…java.finance`) because it
+  uses `Decimal128`'s package-private internals and a separate package would force
+  widening that access (a semantic change); the *engine* `BasicFinance` did move to
+  `…internal.finance`. `parse`+`ParseStatus` stay in `core` (the verified `core ↔
+  parse` cycle). Tiers are packages **inside** the `core` Gradle module; `primitive`
+  is its own module. The public faces also live in the `core` module — the former
+  separate `wrapper` module was folded in by the value-type merge (§2.5.5) so that
+  the public `Decimal128` and the `internal.*` engine that takes/returns it can form
+  the legal intra-module package cycle that merge requires.
+- **Kotlin** (`decimal128-kotlin`) still carries the pre-refactor names
+  (`…decimal128kotlin.wrapper`); it mirrors the Java layout (identical package names,
+  `typealias Decimal128 = D128`) in a pending pass.
+- **Swift / C** keep the math/print/interchange/finance code as flat files within the
+  single `Core` target / `core/` library — semantically inert subfoldering only
+  (§2.5.3), which is the intended end state for those ports, not pending work.
+
+### 2.5.5 The Java Value-Type Merge (Java-only divergence)
+
+A Java-only step (done 2026-06-17), separate from the tier taxonomy above, folds the
+wrapper *object* away so that **`Decimal128` IS the value**, not a box around it.
+
+- **Java** — the public `com.decimal128.java.Decimal128` now holds the 128-bit datum
+  directly as two `long`s (`ubdLo64`/`ubdHi64`, **private**) and its methods dispatch
+  to the `d128_*` engine, which **stays** in `internal.*` (the tiers above are
+  unchanged). The old separate engine type `internal.core.D128` and the wrapper's
+  `core` field are gone; the only engine churn was the `D128 → Decimal128` type-token
+  rename in signatures/bodies. The `wrapper` Gradle module was folded into `core`
+  (one allocation per value, no pointer hop). The raw layout stays sealed two ways:
+  the fields are `private` behind `public static` bit-accessors (`d128_ubdLo64`,
+  `d128_hi49`, `d128_u128`, …), and a `module-info.java` on `core` exports **only**
+  `com.decimal128.java` while keeping `internal.*` concealed (it `requires` the
+  `primitive` module non-transitively). The one accepted Java limit: a few of
+  `Decimal128`'s own public engine members name the internal `U128` type — they
+  cannot be sealed (the class is in the exported package) but are unusable by
+  consumers since `primitive` is not exported.
+- **Swift** keeps a `package struct D128` engine behind a separate `public`
+  `Decimal128` face — no physical merge (Swift has real `package`/`internal` access,
+  so the value struct and engine already share a target without a wrapper object).
+- **Kotlin** keeps the engine type named `D128` and aliases it (`typealias
+  Decimal128 = D128`) — no merge, since Kotlin can alias where Java cannot.
+
+So `Decimal128.java` is a single value-plus-engine-statics class whose filename
+diverges from `D128.{kt,swift}` / `d128_*.c`: a sanctioned filename-parity exception
+for Java alone. `module-info.java` likewise exists only in the Java port. See
+`WrapperLayer.md` §10.
+
 ## 3. The Cross-Language Constraint Regime
 
 ### 3.1 Rationale

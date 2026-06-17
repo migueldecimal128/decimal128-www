@@ -351,9 +351,10 @@ from `core/src/commonTest` into its own test set (a deliberate choice, accepting
 drift); de-duplicating it via a shared test module is on the punchlist
 (*"Revisit shared Rosetta harness (Kotlin)"*).
 
-The **Java** wrapper (`decimal128-java` `wrapper/` module, package
-`com.decimal128.decimal128java.wrapper`) is complete and validated, with pass
-counts **identical** to Swift and Kotlin:
+The **Java** wrapper (`decimal128-java` `wrapper/` module, public package
+`com.decimal128.java` — over engine internals at
+`com.decimal128.java.internal.*`, per the §2.5 restructure of 2026-06-17) is
+complete and validated, with pass counts **identical** to Swift and Kotlin:
 
 | corpus | passed |
 |---|---|
@@ -385,8 +386,9 @@ divergences beyond Kotlin's (§5):
 - **Rosetta test layout** — same copy-the-harness choice, but Java's neutral
   harness types (`RosettaCase` record, `CanonicalOp`, `Source`, `TestResource`)
   are **package-private** and Java has no module-internal escape, so
-  `WrapperRosetta`/`TestWrapperRosetta` live IN the `core.rosetta` package (not
-  `wrapper`) and import the public wrapper types. (Kotlin's `internal` allowed the
+  `WrapperRosetta`/`TestWrapperRosetta` live IN a `…java.rosetta` package
+  alongside the copied harness (not directly in the public `com.decimal128.java`
+  package) and import the public wrapper types. (Kotlin's `internal` allowed the
   test to sit in the `wrapper` package.) De-dup is the same punchlist item.
 
 Next port: the **C wrapper** (`decimal128-c`), then Rust/Python/Go/Scala.
@@ -423,6 +425,59 @@ What *does* transfer unchanged: the exact pass-count target (46,507, 0 failures,
 same intentional skips, §7); `abs`/`negate` are bit-level, not GDAS (§4.4); the
 wrapper-rosetta replaces the core harness's dispatch/runner/compare with its own and
 reuses only the parsers + case + maps + skips + render + text.
+
+## 10. Done (Java only, 2026-06-17): the `D128 → Decimal128` merge
+
+> **STATUS: DONE.** Implemented as described below, with two deviations from the
+> original plan: (1) only the `wrapper` + `core` Gradle modules were consolidated —
+> `primitive` stayed its own module (it takes/returns no `Decimal128`, so no cycle);
+> (2) `module-info.java` exports **only** `com.decimal128.java` — there is no public
+> `.finance` package (the `Finance` facade lives in the front-door package, §2.5.4),
+> so nothing else is exported. Gate met: `./gradlew clean build` + three-corpus
+> Rosetta green at both levels; `jar --describe-module` shows only
+> `com.decimal128.java` exported. See `CrossPlatformArchitecture.md` §2.5.5.
+
+A Java-specific refactor that removes the wrapper *object*. Before the merge,
+Java was two heap objects per value — `final class Decimal128 { final D128 core }`
+over the engine `D128` (§8, line "wrapping core `D128`"). Swift hides this with
+`package struct D128` + a public `Decimal128`; Kotlin with `typealias Decimal128 =
+D128`. Java has neither, so it merges physically.
+
+- **Dispatch model — engine stays in `internal.*`, tiers preserved.** `Decimal128`
+  *becomes* the value (the two `long`s directly → one allocation, no pointer hop)
+  and its public methods are one-line dispatches —
+  `Decimal128 add(Decimal128 o) { return d128_add_tte(this, o); }` — to the `d128_*`
+  engine that remains in `internal.{core,math,print,interchange,finance}` (the §2.5
+  layout). The only engine change is the `D128 → Decimal128` type-token rename in
+  signatures; bodies are untouched (the already-sanctioned heap-class divergence).
+  The old wrapper class + `core` field + delegations are deleted.
+- **One Gradle module.** `Decimal128` (public) and the `internal.*` engine that
+  takes/returns it form a package cycle — legal *within* one module, forbidden
+  across the current `wrapper`/`core`/`primitive` split — so those consolidate into
+  one Gradle module (tiers stay as *packages*).
+- **JPMS = optional enforcement, not the mechanism.** A `module-info.java` exporting
+  only `com.decimal128.java` (the `Finance` facade lives in that same front-door
+  package, so there is nothing else to export) upgrades `internal.*` from "internal
+  by convention" (classes technically public on the classpath) to compiler-enforced
+  hiding. The merge itself works without it (dispatch + visibility do the job). As
+  built, `core` also `requires` the `primitive` module non-transitively.
+- **The one Java limit.** The `internal.*` engine reads `Decimal128`'s representation
+  across a package boundary, and Java has no `package` access (Swift's mechanism).
+  So either keep the `long` fields `private` and expose `public static` bit-accessors
+  (`d128_qExp`/`d128_signFlag`/…) on `Decimal128` — the raw layout stays hidden, only
+  the accessor *functions* are visible — or leave it convention-only like today's
+  `public D128`. JPMS seals the `internal.*` engine functions but **cannot** seal
+  `Decimal128`'s own members (it is in the exported package).
+- **Math face** = methods on `Decimal128` (already how the wrapper exposes
+  `exp`/`ln`/…; no `DecimalMath` type). **Name** = `Decimal128`.
+
+Gate: `./gradlew build` + the three-corpus public-API Rosetta (§7) green, `jdeps`
+confirms `internal.*` is unreachable by a consumer, public FQN becomes the clean
+`com.decimal128.java.Decimal128` with no surface change beyond the rename. Sequenced
+*after* the §2.5 package-tier restructure (Java done: `com.decimal128.java` +
+`.internal.{primitive,core,math,print,interchange,finance}`). Swift/Kotlin do **not**
+merge; the `Decimal128.java` engine filenames diverging from `D128.{kt,swift}` /
+`d128_*.c` is a sanctioned filename-parity exception.
 
 ---
 
