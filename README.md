@@ -16,6 +16,8 @@ title: decimal128 for multiple platforms
 
 [Cross-Platform Core Architecture](CrossPlatformArchitecture.md)
 
+[BasicFinance — financial calculations](Finance.md)
+
 [Kotlin decimal128 implementation](https://decimal128.com/decimal128-kotlin)
 
 # other
