@@ -177,7 +177,7 @@ full idiom, unbound by the engine's constraint regime — the per-port divergenc
   no hi/lo split (unlike the JVM ports); the `U128` newtype surfaces only inside
   those bodies (§4.7).
 - **Parse**: `Decimal128::parse(&str) -> Option` (context-free);
-  `DecimalContext::parse_ieee(&str) -> Decimal128` (GDAS: round + flag, NaN on
+  `DecimalContext::parse_or_nan(&str) -> Decimal128` (GDAS: round + flag, NaN on
   malformed). `from_i128_exactly`/`from_u128_exactly -> Option` for the
   `exactly:` >34-digit failure (Option, not `TryFrom` — matches `init?`).
 - **Formatting** (`string(style)` + `Display`/`Debug`) is `std`-gated.
@@ -193,7 +193,7 @@ cash-flow APIs allocate).
 
 **Validation:** the **WrapperRosetta** (`tests/rosetta/wrapper.rs`) reuses the
 engine harness's corpus parsers but re-points dispatch + comparison at the
-**public** API only — operands via `from_bid/dpd_bits` / `parse_ieee` / `parse`,
+**public** API only — operands via `from_bid/dpd_bits` / `parse_or_nan` / `parse`,
 results compared by rendered string (dectest) / cohort (fptest) / canonical BID
 (Intel), the predicate family derived from the three-way `compared`. It shares
 the parsers in-crate (no copy — the Rust analog of the C "link, don't copy"

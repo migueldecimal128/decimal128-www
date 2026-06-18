@@ -70,7 +70,7 @@ the wrapper adds no arithmetic of its own.
 | `DecimalStyle` | enum:Int | `automatic`(0), `exponential`(1), `engineering`(2), `coefficientExponent`(3) |
 | `DecimalFlags` | OptionSet:Int | `invalidOperation`(1<<0), `divisionByZero`(1<<1), `overflow`(1<<2), `underflow`(1<<3), `inexact`(1<<4) |
 | `DecimalComparison` | enum | `ascending`, `equal`, `descending`, `unordered` |
-| `DecimalContext` | class (reference) | `rounding`, `raisedFlags`, `clearFlags()`, `parseIEEE(_:)` |
+| `DecimalContext` | class (reference) | `rounding`, `raisedFlags`, `clearFlags()`, `parseOrNaN(_:)` |
 | `floatingPointClass` | (Swift stdlib `FloatingPointClassification`) | the 10 IEEE classes; see §4.9 |
 
 All enum `rawValue`s **mirror the Core's load-bearing codes** (Round 0–4,
@@ -93,7 +93,7 @@ port re-checks against its own stdlib):
 - **`DecimalFlags`** — the raised-exception set.
 - **`DecimalContext`** — the arithmetic context. A bare `Context` is far too
   generic for a public top-level type.
-- **`parseIEEE`** — the context-aware parse entry point (§4.5).
+- **`parseOrNaN`** — the context-aware parse entry point (§4.5).
 
 Decimal-prefixed names (`DecimalStyle`, `DecimalFlags`, `DecimalContext`) echo
 Foundation's `Decimal` without colliding; a port may prefer its own prefix.
@@ -149,12 +149,12 @@ are the ones on the shared skip list.)
 
 - **`init?(parsing: String) -> Decimal128?`** — context-free, the Swift-optional
   idiom: returns `nil` for unparseable input, ties-to-even, no flags.
-- **`DecimalContext.parseIEEE(_ String) -> Decimal128`** — IEEE/GDAS
+- **`DecimalContext.parseOrNaN(_ String) -> Decimal128`** — IEEE/GDAS
   convertFromDecimalCharacter: rounds an over-precision literal by the context's
   rounding (raising `inexact`), and a malformed string yields a quiet **NaN** with
   `invalidOperation` (never nil/trap). Flags accumulate into the context.
 
-`parseIEEE` is **wrapper-only** — it composes the Core's `d128_parse_ctx`, no Core
+`parseOrNaN` is **wrapper-only** — it composes the Core's `d128_parse_ctx`, no Core
 change. Putting it on the context (the parse environment) also sidesteps a
 failable-vs-non-failable initializer collision.
 
@@ -288,7 +288,7 @@ the existing corpus parsers; only the dispatch + comparison are re-pointed.
 Key techniques (transliterate these):
 
 - **Operands** decode via public construction: `bid/dpdBitPattern` for hex,
-  `ctx.parseIEEE` for **dectest** decimals (round + flag on parse),
+  `ctx.parseOrNaN` for **dectest** decimals (round + flag on parse),
   context-free parse elsewhere, plus the `Q`/`S` NaN literals.
 - **dectest results** compare by **rendered string** (`string(.automatic)` =
   GDAS toString), with a **cohort fallback**: on a string miss (non-format op),
@@ -304,7 +304,7 @@ Key techniques (transliterate these):
   compare via the (canonical) `bidBitPattern` — DPD has redundant non-canonical
   encodings (the `dqcan` vectors) a UBD-internal library canonicalizes on decode,
   so raw-bit comparison is wrong.
-- **`parseIEEE` is gated to dectest** — Intel's `from_string` overflows to
+- **`parseOrNaN` is gated to dectest** — Intel's `from_string` overflows to
   Infinity and raises no GDAS parse flags, so Intel/fptest operands stay
   context-free.
 - **Reuse the Core harness's own skip lists** (`RosettaDectestSkips` /
