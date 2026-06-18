@@ -124,6 +124,27 @@ unwritten C core. The C core is real and self-validated, so those wrappers shift
 from "needed to bring the C core up" to "a second, cross-language confirmation of
 an already-passing core" — still valuable, but no longer on the critical path.
 
+### 2.4.4 2026-06-18
+
+**A fifth implementation now exists: a native Rust port (`decimal128-rust`),
+core-complete and passing the full four-corpus Rosetta suite.** Rust is a native
+transliteration of the Swift value-return arm — **not** a binding over
+`decimal128-c` — so the ecosystem's "every port is a native implementation"
+symmetry holds. It is a single crate (edition 2024): `pub(crate)` `primitive`
+and `core_` modules, native `u128` confined behind a dword-only newtype, `Cell`-
+based flag context, `#![forbid(unsafe_code)]`, and a no_std build. The Primitive
+and Core layers (the full `d128_*` §5 surface in `tte`/`rnd`/`ctx` forms **plus**
+the §9 math — exp/exp10, ln/log10, pow, pown, rootn, compound) are implemented,
+and the in-crate Rosetta harness passes **all four** corpora — dectest, fptest,
+Intel, **and native** — at **52 820 vectors, 0 failures** (bitwise value +
+exception flags). Notably the Rust port is the first to wire the *native* corpus
+into Rosetta, which is the sole conformance coverage for pow/pown/rootn/compound
+and the NaN-propagating min/max forms. See the companion **`RustCorePort.md`**
+for the as-built record and the D-R1…D-R12 decisions.
+
+**The state across all five ports is now symmetric: core-complete,
+wrapper-absent.**
+
 
 ## 2.5 Core Sub-Tiers and Per-Port Realization
 
