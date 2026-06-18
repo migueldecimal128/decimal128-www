@@ -145,6 +145,28 @@ for the as-built record and the D-R1…D-R12 decisions.
 **The state across all five ports is now symmetric: core-complete,
 wrapper-absent.**
 
+### 2.4.5 2026-06-18 (later)
+
+**Rust is no longer wrapper-absent: it now carries the full public surface.** The
+§2.4.4 "symmetric: wrapper-absent" snapshot held for only the rest of that day.
+The Rust port (`decimal128-rust`) added the public `Decimal128` **wrapper** and
+**BasicFinance** (Core engine + public `Finance` facade), so it now mirrors the
+Swift reference's *entire* stack — Primitive + Core + §9 math + wrapper + finance.
+It is validated both ways: the engine four-corpus Rosetta (52,820 / 0) **and** the
+public-API WrapperRosetta — the dectest + fptest + Intel corpora driven through
+the public `Decimal128` surface only — at **46,507 / 0**, the exact parity number
+of the Swift/Kotlin/Java wrappers. See the companion **`RustCorePort.md`** (§6)
+and **`WrapperLayer.md`** / **`Finance.md`**.
+
+This also corrects the standing "wrapper-absent" framing of the §2.4.x snapshots,
+which tracked only the *core* layer: the **Swift/Kotlin/Java** wrappers were in
+fact completed on 2026-06-16/17 (recorded in `WrapperLayer.md` §8, not here).
+So the wrapper state across the ports is: **Swift / Kotlin / Java / Rust** each
+have a complete public wrapper (Rust additionally with finance and the only one
+also carrying the full engine in one crate); **C** remains wrapper-absent (a
+public umbrella header is its planned form). Remaining wrapper ports: Python / Go
+/ Scala.
+
 
 ## 2.5 Core Sub-Tiers and Per-Port Realization
 
