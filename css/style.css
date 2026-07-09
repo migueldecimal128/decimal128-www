@@ -205,6 +205,14 @@ main {
   margin-bottom: 2.5rem;
 }
 
+.note {
+  font-weight: 700;
+}
+
+.note a {
+  font-weight: 400;
+}
+
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));

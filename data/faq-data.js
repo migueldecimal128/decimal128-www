@@ -26,7 +26,7 @@ const KB_DATA = [
   {
     id: "benefits-1",
     category: "Benefits",
-    question: "How will this decimal128 solution help you?",
+    question: "How will Miguel's decimal128 solution help you?",
     answer: "It will enable a software solution that:",
     list: [
       "Ensures exactness for decimals up to 34 digits of precision",
