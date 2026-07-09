@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Decimal128 — Home</title>
+  <meta name="description" content="Decimal128 builds open-source tools and shares them publicly on GitHub. This is our informational, read-only website.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="site-title" href="index.html">Decimal128</a>
+      <nav class="main-nav" aria-label="Primary">
+        <ul>
+          <li><a href="index.html" aria-current="page">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="knowledge-base.html">Knowledge Base</a></li>
+          <li><a href="https://github.com/abigail-128" target="_blank" rel="noopener">GitHub ↗</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <h1>Decimal128</h1>
+      <p>IEEE 754-2019 compliant decimal128 high-performance software solution created by Miguel.</p>
+    </div>
+  </section>
+
+  <main id="main-content">
+    <div class="container">
+
+      <section class="section">
+        <p>
+          Binary floating point (Float/Double) has been the primary floating-point
+          number format on general-purpose computers since the adoption of IEEE 754
+          in 1985. For mathematical reasons rooted in base 2, most decimal fractions
+          (like 0.10) cannot be represented exactly. In addition, correctly rounding
+          a decimal value to a given number of decimal places cannot be done in
+          binary — rounding 1.015 to the nearest cent should give 1.02 under
+          banker's rounding, but binary yields 1.01.
+        </p>
+        <p>
+          For domains such as finance, accounting, taxation, and payments, these
+          discrepancies are unacceptable. Legal, contractual, and audit requirements
+          demand arithmetic that produces exactly the same results as manual
+          decimal calculations. Decimal128 is the solution.
+        </p>
+        <p>
+          Currently the only fast hardware option for decimal is found on IBM Z
+          (mainframe) and POWER processors. Slower software implementations are
+          required for all other general purpose computers. Intel libbid is an
+          implementation in C, available to C and C++ developers via gcc compiler
+          extensions. Java BigDecimal is widely used, but is not IEEE 754 compliant.
+          Python has excellent Decimal support that predates IEEE 754 decimal
+          floating point, but Python is relatively slow and Python is not
+          frequently used in commercial financial applications.
+        </p>
+        <p>
+          I developed an IEEE 754-2019 compliant decimal128 high-performance
+          software architecture, implemented in eight programming languages -
+          C, C#, Java, Kotlin KMP, Swift, Rust, Go, and Python.
+        </p>
+        <p>
+          This implementation guarantees identical, auditable, spec-compliant
+          decimal arithmetic on every platform for financial systems:
+        </p>
+        <ul>
+          <li>Ensures exactness for decimals up to 34 digits of precision</li>
+          <li>Provides five rounding directions with correct status-flag behavior</li>
+          <li>Outperforms the IBM (libdecnumber) and Intel (libbid) reference libraries, and Python's libmpdec</li>
+          <li>Passes all three major industry correctness suites: IBM decTest, IBM fptest, and Intel libbid test vectors</li>
+          <li>Removes the industry-wide barrier of "no good decimal option"</li>
+        </ul>
+        <p>
+          My solution makes it possible to move decimal financial workloads off
+          the IBM mainframe to the cloud without sacrificing the numerical
+          correctness, determinism, or auditability that regulated environments
+          depend on. My solution also runs natively on iOS and Android through
+          native Swift and Kotlin implementations — reaching mobile fintech,
+          payments, and point-of-sale applications, which have only limited,
+          slow, non-standardized decimal options.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>Find out More about Miguel</h2>
+        <p>
+          <a href="https://www.linkedin.com/in/michael-howard-26880b416/" target="_blank" rel="noopener">https://www.linkedin.com/in/michael-howard-26880b416/</a>
+        </p>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <span>&copy; 2026 Decimal128. Content is provided for information only.</span>
+      <span><a href="https://github.com/abigail-128" target="_blank" rel="noopener">View our GitHub organisation</a></span>
+    </div>
+  </footer>
+</body>
+</html>
