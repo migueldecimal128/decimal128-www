@@ -7,29 +7,36 @@ sites automatically; there is no local build step required to publish.
 ## Structure
 
 ```
-index.md                Home page content (Markdown)
-about.md                 About page content (Markdown)
-knowledge-base.md         Knowledge Base page (mostly a shell — see below)
-_data/faqs.yml            Knowledge base questions/answers — edit this file
-_layouts/default.html     Shared page shell: nav bar, header, footer (HTML)
-css/style.css             All styling (HTML/CSS)
-js/search.js              Client-side search + category filter logic (JS)
-js/faq-data.js            Auto-generated from _data/faqs.yml at build time — don't edit
-_config.yml                Site title/tagline and Jekyll settings
+index.md                    Home page content (Markdown)
+about.md                     About page content (Markdown)
+qa.md                         Q&A page (mostly a shell — see below)
+for-business-leaders.md        For Business Leaders page content (Markdown)
+benchmarks.md                  Benchmarks page content (Markdown)
+_data/faqs.yml                Q&A questions/answers — edit this file
+_layouts/default.html         Shared page shell: nav bar, header, footer (HTML)
+css/style.css                 All styling (HTML/CSS)
+js/search.js                  Client-side search + category filter logic (JS)
+js/faq-data.js                Auto-generated from _data/faqs.yml at build time — don't edit
+_config.yml                    Site title/tagline and Jekyll settings
 ```
 
 ## Editing content (no HTML needed)
 
-- **Page text** — edit `index.md` or `about.md` directly. These are plain
-  Markdown: blank line between paragraphs, `## Heading` for a section
-  heading, `- item` for a bulleted list, `[link text](https://...)` for a
-  link, `**bold**` for bold text.
-- **Knowledge base questions** — edit `_data/faqs.yml`. Copy an existing
-  entry and change the `question`/`answer`/`category`/`tags`. New
-  `category` values automatically get their own filter button on the
-  Knowledge Base page — no other changes needed. Optional fields:
+- **Page text** — edit `index.md`, `about.md`, `for-business-leaders.md`,
+  or `benchmarks.md` directly. These are plain Markdown: blank line
+  between paragraphs, `## Heading` for a section heading, `- item` for a
+  bulleted list, `[link text](https://...)` for a link, `**bold**` for
+  bold text.
+- **Q&A questions** — edit `_data/faqs.yml`. Copy an existing entry and
+  change the `question`/`answer`/`category`/`tags`. New `category` values
+  automatically get their own filter button on the Q&A page — no other
+  changes needed. Optional fields:
   - `list`: a bulleted list of points shown under the answer
   - `links`: a list of `{ text, url }` shown as clickable links under the answer
+- **Adding a brand new page** — create a new `.md` file at the repository
+  root with front matter like the other pages (`layout: default`,
+  `permalink`, `title`, `description`, `heading`), then add a matching
+  `<li>` link to it in the nav list in `_layouts/default.html`.
 - **Nav bar, header, footer, and overall look** — these live in
   `_layouts/default.html` and `css/style.css`. This part is meant to be
   maintained by someone comfortable with HTML/CSS; everyday content edits
@@ -37,11 +44,11 @@ _config.yml                Site title/tagline and Jekyll settings
 
 ## About the search
 
-The knowledge base search is entirely client-side JavaScript (`js/search.js`).
+The Q&A search is entirely client-side JavaScript (`js/search.js`).
 `js/faq-data.js` is generated automatically by Jekyll from `_data/faqs.yml`
 every time the site builds — GitHub Pages does this on every push, so
 editing `_data/faqs.yml` and pushing is all that's needed to update the
-knowledge base. There is no server, database, or separate indexing step
+Q&A page. There is no server, database, or separate indexing step
 (deliberately avoiding tools like Pagefind, which need their own Node.js
 build step).
 

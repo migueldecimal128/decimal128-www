@@ -1,9 +1,9 @@
 ---
 layout: default
-permalink: /knowledge-base.html
-title: "Knowledge Base — Decimal128"
+permalink: /qa.html
+title: "Q&A — Decimal128"
 description: "Search frequently asked questions about Decimal128, organised by topic. No account or sign-up needed."
-heading: "Knowledge Base"
+heading: "Q&A"
 extra_js:
   - js/faq-data.js
   - js/search.js
