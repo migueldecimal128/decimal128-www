@@ -1,0 +1,38 @@
+# Knowledge base content.
+#
+# Each entry becomes one question in the searchable Knowledge Base page.
+# To add a new question, copy an existing entry below and edit it — no
+# HTML or JavaScript knowledge needed. "category" groups questions under
+# filter buttons on the page; reuse an existing category name to add to
+# it, or introduce a new one and it appears automatically.
+#
+# Optional fields:
+#   list:  a bulleted list of points shown under the answer
+#   links: a list of { text, url } shown as clickable links under the answer
+
+- id: implementations-1
+  category: Implementations
+  question: "What are the languages the solution is written in?"
+  answer: "C, C#, Java, Kotlin KMP, Swift, Rust, Go, and Python."
+  tags: [languages, implementations, cross-platform]
+
+- id: benefits-1
+  category: Benefits
+  question: "How will Miguel's decimal128 solution help you?"
+  answer: "It will enable a software solution that:"
+  list:
+    - "Ensures exactness for decimals up to 34 digits of precision"
+    - "Provides five rounding directions with correct status-flag behavior"
+    - "Outperforms the IBM (libdecnumber) and Intel (libbid) reference libraries, and Python's libmpdec"
+    - "Passes all three major industry correctness suites: IBM decTest, IBM fptest, and Intel libbid test vectors"
+    - "Removes the industry-wide barrier of \"no good decimal option\""
+  tags: [benefits, precision, rounding, performance, compliance]
+
+- id: resources-1
+  category: Resources
+  question: "Where can I find out more about decimal128 floating point?"
+  answer: "Find more information here:"
+  links:
+    - text: "Decimal128 floating-point format — Wikipedia"
+      url: "https://en.wikipedia.org/wiki/Decimal128_floating-point_format"
+  tags: [decimal128, "ieee 754", reference]

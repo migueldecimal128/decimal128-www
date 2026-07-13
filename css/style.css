@@ -201,6 +201,15 @@ main {
   padding: 2.5rem 0 3rem;
 }
 
+main code {
+  background: var(--color-accent);
+  color: var(--color-primary);
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.85em;
+  font-family: inherit;
+}
+
 .section {
   margin-bottom: 2.5rem;
 }
