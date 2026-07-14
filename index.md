@@ -63,12 +63,6 @@ Android — reaching mobile fintech, payments, and point-of-sale
 applications, which have only had limited, slow, non-standardized
 decimal options.
 
-## Find out More about Miguel
-
-<https://www.linkedin.com/in/michael-howard-26880b416/>
-
-**Miguel has a Business Advisor, Abigail. To learn more about Abigail visit:** <https://www.linkedin.com/in/abigailhoward/>
-
 ## Further Reading
 
 [Decimal128 floating-point format — Wikipedia ↗](https://en.wikipedia.org/wiki/Decimal128_floating-point_format)
