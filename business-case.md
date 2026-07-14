@@ -16,14 +16,14 @@ Over time, Miguel's version can save thousands of dollars monthly by eliminating
 
 <div markdown="1" class="table-fixed">
 
-| | IBM Z (mainframe) | Intel libbid decimal128 | Java BigDecimal | Python Decimal | Miguel's Version |
+| | IBM Z (mainframe) | Intel libbid decimal128 | Java BigDecimal | Python Decimal | **Miguel's Version** |
 | --- | --- | --- | --- | --- | --- |
-| Hardware vs software | hardware | software | software | software | **software** |
-| Compliance (IEEE 754-2019) | ✅ | ✅ | ❌ | ❌ | ✅ |
-| Speed | fastest | fast | medium | slow | fast |
-| Cost | \$\$\$\$ | free | free | free | TBD |
-| Operating System | System Z mainframe | Linux, Mac OS | Linux, Mac OS, Windows, System Z mainframe | Linux, Mac OS, Windows | Linux, Mac OS, Windows, System Z mainframe, iOS, Android, JavaScript, WASM |
-| Languages | COBOL, Java, TBD | C/C++ | Java, Kotlin JVM | Python | C, C#, Java, Kotlin KMP, Swift, Rust, Go, Python, Zig |
+| **Hardware vs software** | hardware | software | software | software | **software** |
+| **Compliance (IEEE 754-2019)** | ✅ | ✅ | ❌ | ❌ | **✅** |
+| **Speed** | fastest | fast | medium | slow | **fast** |
+| **Cost** | \$\$\$\$ | free | free | free | **TBD** |
+| **Operating System** | System Z mainframe | Linux, Mac OS | Linux, Mac OS, Windows, System Z mainframe | Linux, Mac OS, Windows | **Linux, Mac OS, Windows, System Z mainframe, iOS, Android, JavaScript, WASM** |
+| **Languages** | COBOL, Java, TBD | C/C++ | Java, Kotlin JVM | Python | **C, C#, Java, Kotlin KMP, Swift, Rust, Go, Python, Zig** |
 
 </div>
 
