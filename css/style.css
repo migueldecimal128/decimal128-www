@@ -250,12 +250,21 @@ main tbody tr:nth-child(even) {
 }
 
 /* Highlights the last column (Miguel's Version in the Business Case table)
-   with a bold outline and tinted background so it stands out from the
-   other columns being compared. */
+   with a bold outline around the whole column (not between each row) and a
+   tinted background so it stands out from the other columns being compared. */
 .table-fixed th:last-child,
 .table-fixed td:last-child {
-  border: 2px solid var(--color-primary);
+  border-left: 2px solid var(--color-primary);
+  border-right: 2px solid var(--color-primary);
   background: var(--color-accent);
+}
+
+.table-fixed thead th:last-child {
+  border-top: 2px solid var(--color-primary);
+}
+
+.table-fixed tbody tr:last-child td:last-child {
+  border-bottom: 2px solid var(--color-primary);
 }
 
 .note {
