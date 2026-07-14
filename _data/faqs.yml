@@ -70,6 +70,16 @@
     WebAssembly. None of it depends on decimal floating-point hardware —
     the arithmetic is entirely in software.
 
+- id: general-6
+  category: "General / Overview"
+  question: "Who is Miguel?"
+  answer: >-
+    Miguel is a retired serial entrepreneur and engineer hoping to change
+    the world one decimal128 software implementation at a time.
+  links:
+    - text: "Miguel's LinkedIn"
+      url: "https://www.linkedin.com/in/miguel-decimal128-howard/"
+
 - id: correctness-1
   category: "Correctness & Conformance"
   question: "Is the arithmetic correctly rounded?"
