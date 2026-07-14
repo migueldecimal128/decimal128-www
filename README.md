@@ -11,6 +11,7 @@ index.md                    Home page content (Markdown) — includes what used 
 qa.md                         Q&A page (mostly a shell — see below)
 business-case.md                Business Case page content (Markdown)
 benchmarks.md                  Benchmarks page content (Markdown)
+whitepapers.md                 Whitepapers page content (Markdown)
 _data/faqs.yml                Q&A questions/answers — edit this file
 _layouts/default.html         Shared page shell: nav bar, header, footer (HTML)
 css/style.css                 All styling (HTML/CSS)
@@ -21,8 +22,8 @@ _config.yml                    Site title/tagline and Jekyll settings
 
 ## Editing content (no HTML needed)
 
-- **Page text** — edit `index.md`, `business-case.md`, or `benchmarks.md`
-  directly. These are plain Markdown: blank line
+- **Page text** — edit `index.md`, `business-case.md`, `benchmarks.md`, or
+  `whitepapers.md` directly. These are plain Markdown: blank line
   between paragraphs, `## Heading` for a section heading, `- item` for a
   bulleted list, `[link text](https://...)` for a link, `**bold**` for
   bold text.
