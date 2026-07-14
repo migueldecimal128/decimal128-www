@@ -34,7 +34,7 @@ applications.
 
 ## The Solution
 
-I developed an IEEE 754-2019 compliant decimal128 high-performance
+Miguel developed an IEEE 754-2019 compliant decimal128 high-performance
 software architecture, implemented in eight programming languages —
 C, C#, Java, Kotlin KMP, Swift, Rust, Go, and Python.
 
