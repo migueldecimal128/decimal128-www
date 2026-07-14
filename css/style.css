@@ -249,6 +249,15 @@ main tbody tr:nth-child(even) {
   table-layout: fixed;
 }
 
+/* Highlights the last column (Miguel's Version in the Business Case table)
+   with a bold outline and tinted background so it stands out from the
+   other columns being compared. */
+.table-fixed th:last-child,
+.table-fixed td:last-child {
+  border: 2px solid var(--color-primary);
+  background: var(--color-accent);
+}
+
 .note {
   font-weight: 700;
 }
