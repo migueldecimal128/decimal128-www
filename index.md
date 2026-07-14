@@ -62,7 +62,3 @@ The Swift and Kotlin implementations run natively on iOS and
 Android — reaching mobile fintech, payments, and point-of-sale
 applications, which have only had limited, slow, non-standardized
 decimal options.
-
-## Further Reading
-
-[Decimal128 floating-point format — Wikipedia ↗](https://en.wikipedia.org/wiki/Decimal128_floating-point_format)
