@@ -14,6 +14,8 @@ Miguel's version of Decimal128 eliminates this tradeoff, delivering a compliant 
 
 Over time, Miguel's version can save thousands of dollars monthly by eliminating the cost of leasing IBM mainframe capacity. If you are currently using a slow software solution, Miguel's version will decrease your time to output for calculations, enabling your batch processing jobs to complete faster and ensure internal and external SLA's.
 
+<div markdown="1" class="table-fixed">
+
 | | IBM Z (mainframe) | Intel libbid decimal128 | Java BigDecimal | Python Decimal | Miguel's Version |
 | --- | --- | --- | --- | --- | --- |
 | Hardware vs software | hardware | software | software | software | software |
@@ -22,6 +24,8 @@ Over time, Miguel's version can save thousands of dollars monthly by eliminating
 | Cost | \$\$\$\$ | free | free | free | TBD |
 | Operating System | System Z mainframe | Linux, Mac OS | Linux, Mac OS, Windows, System Z mainframe | Linux, Mac OS, Windows | Linux, Mac OS, Windows, System Z mainframe, iOS, Android, JavaScript, WASM |
 | Languages | COBOL, Java, TBD | C/C++ | Java, Kotlin JVM | Python | C, C#, Java, Kotlin KMP, Swift, Rust, Go, Python, Zig |
+
+</div>
 
 Real world examples where decimal128 is required:
 

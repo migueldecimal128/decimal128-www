@@ -216,10 +216,11 @@ main code {
 
 main table {
   width: 100%;
-  table-layout: fixed;
   border-collapse: collapse;
   margin: 1.5rem 0;
   font-size: 0.95rem;
+  display: block;
+  overflow-x: auto;
 }
 
 main th,
@@ -238,6 +239,14 @@ main th {
 
 main tbody tr:nth-child(even) {
   background: var(--color-bg-alt);
+}
+
+/* Scoped to tables that should have evenly-sized columns regardless of
+   content length (e.g. the Business Case comparison table). Most tables
+   (long technical tables with varied column widths) should NOT use this —
+   they read better sized to their content. */
+.table-fixed table {
+  table-layout: fixed;
 }
 
 .note {
