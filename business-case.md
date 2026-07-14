@@ -1,9 +1,9 @@
 ---
 layout: default
-permalink: /for-business-leaders.html
-title: "For Business Leaders — Decimal128"
+permalink: /business-case.html
+title: "Business Case — Decimal128"
 description: "How Decimal128 helps business leaders in finance, accounting, and payments avoid the cost of incorrect decimal arithmetic."
-heading: "For Business Leaders"
+heading: "Business Case"
 ---
 
 Placeholder content — this page is a work in progress.

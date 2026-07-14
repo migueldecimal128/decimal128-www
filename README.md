@@ -7,10 +7,9 @@ sites automatically; there is no local build step required to publish.
 ## Structure
 
 ```
-index.md                    Home page content (Markdown)
-about.md                     About page content (Markdown)
+index.md                    Home page content (Markdown) — includes what used to be the About page
 qa.md                         Q&A page (mostly a shell — see below)
-for-business-leaders.md        For Business Leaders page content (Markdown)
+business-case.md                Business Case page content (Markdown)
 benchmarks.md                  Benchmarks page content (Markdown)
 _data/faqs.yml                Q&A questions/answers — edit this file
 _layouts/default.html         Shared page shell: nav bar, header, footer (HTML)
@@ -22,8 +21,8 @@ _config.yml                    Site title/tagline and Jekyll settings
 
 ## Editing content (no HTML needed)
 
-- **Page text** — edit `index.md`, `about.md`, `for-business-leaders.md`,
-  or `benchmarks.md` directly. These are plain Markdown: blank line
+- **Page text** — edit `index.md`, `business-case.md`, or `benchmarks.md`
+  directly. These are plain Markdown: blank line
   between paragraphs, `## Heading` for a section heading, `- item` for a
   bulleted list, `[link text](https://...)` for a link, `**bold**` for
   bold text.
