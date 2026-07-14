@@ -107,6 +107,7 @@
     filtered.forEach((entry) => {
       const details = document.createElement("details");
       details.className = "kb-entry";
+      details.id = "kb-entry-" + entry.id;
 
       const summary = document.createElement("summary");
       summary.innerHTML = "<span>" + highlight(entry.question, term) + "</span>";
@@ -162,6 +163,42 @@
     render();
   });
 
+  function resetFilters() {
+    query = "";
+    searchInput.value = "";
+    activeCategory = "All";
+    categoryContainer.querySelectorAll(".kb-category-btn").forEach((b) => {
+      b.setAttribute("aria-pressed", String(b.dataset.category === "All"));
+    });
+  }
+
+  function openAndScrollTo(id) {
+    let target = document.getElementById(id);
+    if (!target) {
+      resetFilters();
+      render();
+      target = document.getElementById(id);
+    }
+    if (target) {
+      target.open = true;
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
+
+  function bindIndexLinks() {
+    document.querySelectorAll('.qa-index a[href^="#kb-entry-"]').forEach((link) => {
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        openAndScrollTo(link.getAttribute("href").slice(1));
+      });
+    });
+  }
+
   buildCategoryButtons();
   render();
+  bindIndexLinks();
+
+  if (window.location.hash.indexOf("#kb-entry-") === 0) {
+    openAndScrollTo(window.location.hash.slice(1));
+  }
 })();

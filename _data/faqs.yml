@@ -1,38 +1,338 @@
 # Knowledge base content.
 #
-# Each entry becomes one question in the searchable Knowledge Base page.
+# Each entry becomes one question in the searchable Q&A page.
 # To add a new question, copy an existing entry below and edit it — no
 # HTML or JavaScript knowledge needed. "category" groups questions under
-# filter buttons on the page; reuse an existing category name to add to
-# it, or introduce a new one and it appears automatically.
+# filter buttons (and the Table of Contents) on the page; reuse an
+# existing category name to add to it, or introduce a new one and it
+# appears automatically. Entries render in the order they appear here.
 #
 # Optional fields:
 #   list:  a bulleted list of points shown under the answer
 #   links: a list of { text, url } shown as clickable links under the answer
 
-- id: implementations-1
-  category: Implementations
-  question: "What are the languages the solution is written in?"
-  answer: "C, C#, Java, Kotlin KMP, Swift, Rust, Go, and Python."
-  tags: [languages, implementations, cross-platform]
+- id: general-1
+  category: "General / Overview"
+  question: "What is decimal128 and why would I want it?"
+  answer: >-
+    decimal128 does arithmetic on decimal numbers and gives back the exact
+    answer a person would get working it out by hand — no hidden rounding
+    drift. It carries 34 significant decimal digits, far more than everyday
+    money or measurement math needs, and stores values like 0.1 exactly
+    instead of as the nearest binary approximation. You want it wherever
+    results have to match human, accounting, or regulatory expectations —
+    finance, tax, billing, and commerce. (It is the 128-bit decimal
+    floating-point format standardized in IEEE 754-2019.)
 
-- id: benefits-1
-  category: Benefits
-  question: "How will Miguel's decimal128 solution help you?"
-  answer: "It will enable a software solution that:"
-  list:
-    - "Ensures exactness for decimals up to 34 digits of precision"
-    - "Provides five rounding directions with correct status-flag behavior"
-    - "Outperforms the IBM (libdecnumber) and Intel (libbid) reference libraries, and Python's libmpdec"
-    - "Passes all three major industry correctness suites: IBM decTest, IBM fptest, and Intel libbid test vectors"
-    - "Removes the industry-wide barrier of \"no good decimal option\""
-  tags: [benefits, precision, rounding, performance, compliance]
+- id: general-2
+  category: "General / Overview"
+  question: "Why not just use binary floating-point (double)?"
+  answer: >-
+    Binary floating-point cannot represent common decimal fractions such as
+    0.1 or 0.2 exactly, so everyday sums drift and round the wrong way. In
+    every language that uses double (binary64), 0.1 + 0.2 evaluates to
+    0.30000000000000004 — not 0.3. If that is acceptable for your work, keep
+    using binary floating-point. If it is not — because cents have to stay
+    cents, or a total has to match what a person gets by hand — use
+    decimal128, which carries those values exactly.
 
-- id: resources-1
-  category: Resources
-  question: "Where can I find out more about decimal128 floating point?"
-  answer: "Find more information here:"
-  links:
-    - text: "Decimal128 floating-point format — Wikipedia"
-      url: "https://en.wikipedia.org/wiki/Decimal128_floating-point_format"
-  tags: [decimal128, "ieee 754", reference]
+- id: general-3
+  category: "General / Overview"
+  question: "How many languages are supported by this decimal128 implementation?"
+  answer: >-
+    There are eight native implementations — Swift, C, C#, Java, Kotlin
+    Multiplatform, Rust, Go, and Zig — each a full decimal128 core written
+    in that language with no drop-down to C. Python is supported
+    additionally through a thin wrapper over the C core. Swift is the
+    reference implementation that the other ports are validated against.
+
+- id: general-4
+  category: "General / Overview"
+  question: "Is this a binding over a single C library?"
+  answer: >-
+    No. Each supported language (except Python) has its own native core
+    written in that language — no JNI, cgo, or FFI call into a shared C
+    engine. That makes every port a first-class citizen of its host
+    language: it offers performance benefits, since there is no boundary to
+    cross on every operation, and it provides auditability, since the whole
+    implementation can be read and reviewed in one language. It also lets
+    the ports be verified against one another. (See Why native ports
+    instead of one shared C engine?.)
+
+- id: general-5
+  category: "General / Overview"
+  question: "Which platforms does it run on?"
+  answer: >-
+    Anywhere its host language runs — the portability comes from the
+    language toolchains, not from CPU features. The native ports compile
+    for commodity CPUs (x86-64, arm64); the JVM ports run wherever a JVM
+    does; and Kotlin Multiplatform additionally targets JavaScript and
+    WebAssembly. None of it depends on decimal floating-point hardware —
+    the arithmetic is entirely in software.
+
+- id: correctness-1
+  category: "Correctness & Conformance"
+  question: "Is the arithmetic correctly rounded?"
+  answer: >-
+    Yes — correctly rounded is the bar, not merely faithful or within one
+    ulp. For every operation on every input the goal is the answer the
+    standard prescribes: the correctly-rounded result, the correct sign of
+    zero, the exact NaN payload, and the exact set of signaled exceptions.
+    This holds under ties-to-even and each of the other IEEE 754 rounding
+    modes, selectable per operation.
+
+- id: correctness-2
+  category: "Correctness & Conformance"
+  question: "Which test suites does it pass?"
+  answer: >-
+    Three independent external corpora, from three engineering traditions:
+    IBM/Cowlishaw's General Decimal Arithmetic decTest, IBM's FPgen fptest
+    hardware-verification vectors, and Intel's libbid implementation
+    vectors — plus a fourth in-house "swept" corpus that covers cases the
+    first three do not. Below the operation level, each port also validates
+    its primitive layer by whatever means fits that language best: some
+    compare the low-level integer kernels against a big-integer oracle
+    (Java uses java.math.BigInteger, Go uses math/big, C uses GMP, Kotlin
+    and Swift use their own portable big-integer packages), while others
+    prove the kernels algebraically against themselves (Rust reconstructs
+    the dividend from the quotient and remainder; Zig checks against native
+    ultra-wide-integer arithmetic). See ConformanceEvidence.md.
+
+- id: correctness-3
+  category: "Correctness & Conformance"
+  question: "How many test vectors are there?"
+  answer: >-
+    Over fifty thousand vectors across the four corpora, and every one
+    reconciles to a single answer — bit for bit — in each independent
+    language implementation. (See ConformanceEvidence.md and Rosetta.md.)
+
+- id: correctness-4
+  category: "Correctness & Conformance"
+  question: "How do you know all the ports agree with each other?"
+  answer: >-
+    A cross-port conformance harness (Rosetta) replays the same corpus
+    through every implementation and requires each to produce the identical
+    result bits. The three external suites are authored independently by
+    parties who never coordinated, so their agreement — like independent
+    scripts on the Rosetta Stone — is what makes the correctness claim
+    credible. See Rosetta.md.
+
+- id: correctness-5
+  category: "Correctness & Conformance"
+  question: "How are NaN, infinity, and signed zero handled?"
+  answer: >-
+    They follow IEEE 754-2019 exactly, including NaN payloads, signaling
+    vs. quiet NaNs, and the sign of zero, all checked by the test corpora.
+    In the UBD in-memory format, non-finite values are stored with
+    oversized coefficients so the common arithmetic path needs no separate
+    special-value check. (See UBD.md.)
+
+- id: performance-1
+  category: "Performance"
+  question: "Why is performance better?"
+  answer: >-
+    The primary reason is UBD, the in-memory format the cores compute on.
+    UBD extracts the coefficient with a single mask and the exponent with a
+    single shift, so decoding is cheap; more importantly, it is the
+    structural foundation that makes the fast paths for addition,
+    subtraction, and multiplication possible. Other levers build on top of
+    it: a hand-tuned, per-platform primitive layer for 128- and 256-bit
+    unsigned arithmetic; specialized divPow10 reciprocal-multiply kernels
+    that replace expensive hardware division when aligning coefficients;
+    and fast paths for the common alignment/rounding cases. See UBD.md and
+    BenchmarkResults.md.
+
+- id: performance-2
+  category: "Performance"
+  question: "How is performance measured?"
+  answer: >-
+    At two tiers. Op-level micro-benchmarks time individual operations
+    across an input-category taxonomy (e.g. add/sub and divide bands),
+    specified in BenchmarkMatrix.md with numbers in BenchmarkResults.md.
+    Application-level benchmarks run whole workloads — the telco billing
+    benchmark and several UW-Madison decimal applications — specified in
+    ApplicationBenchmark.md.
+
+- id: performance-3
+  category: "Performance"
+  question: "How does it compare to Java BigDecimal or Python's decimal?"
+  answer: >-
+    Those are the natural comparators and the application benchmark
+    includes a java.math.BigDecimal arm across all workloads. decimal128 is
+    a fixed-width 128-bit value, so the work per operation is bounded — a
+    structural advantage over arbitrary-precision BigDecimal, whose
+    coefficient (and cost) grows without limit. (On the JVM the value is
+    still a heap object, so there is per-operation allocation on Java and
+    Kotlin; the win is the fixed 128-bit width, not zero-allocation.)
+    (Editor: drop in the headline ratios you want to quote from
+    BenchmarkResults.md.)
+
+- id: performance-4
+  category: "Performance"
+  question: "Do you need decimal hardware to be fast?"
+  answer: >-
+    Dedicated decimal hardware is faster — no software implementation, this
+    one included, matches it. But that hardware is rare: today only IBM Z
+    and Power processors ship with it (Fujitsu's SPARC64 line, which also
+    had it, is end-of-life), while the mainstream x86-64 and arm64 CPUs
+    everyone actually runs on have none. On that commodity hardware
+    software is the only option, so the goal is to be as fast as software
+    decimal can be — following Intel's libbid thesis that a software
+    implementation can be practical — and the benchmarks are run there. (We
+    would gladly have used hardware decimal had Intel and Arm provided it.)
+
+- id: language-support-1
+  category: "Language Support & Ports"
+  question: "Which languages have a native core versus a wrapper?"
+  answer: >-
+    Eight native cores — Swift, C, C#, Java, Kotlin Multiplatform, Rust,
+    Go, and Zig — each fully written in its host language. Python is the
+    exception: it is a wrapper over the C core.
+
+- id: language-support-2
+  category: "Language Support & Ports"
+  question: "How is Python supported?"
+  answer: >-
+    Through a Cython wrapper over decimal128-c; the C core is vendored into
+    the Python package so it builds as a native extension. See
+    PythonWrapperPort.md.
+
+- id: language-support-3
+  category: "Language Support & Ports"
+  question: "Why is Swift the reference implementation?"
+  answer: >-
+    Swift is the port the others are translated from and validated against
+    — it fixes the semantics that every port must reproduce bit-for-bit.
+    When a design decision needs a single source of truth, the Swift core
+    is it. (Editor: add the historical reason Swift was chosen first, if
+    you want it on record.)
+
+- id: language-support-4
+  category: "Language Support & Ports"
+  question: "Does using it pull in a native/C dependency?"
+  answer: >-
+    For the seven non-C native ports (Swift, C#, Java, Kotlin, Rust, Go,
+    Zig), no — the core is pure host-language code with no FFI. Only the
+    Python package builds against the vendored C core, and C itself is, of
+    course, C.
+
+- id: architecture-1
+  category: "Architecture & Design"
+  question: "What are the primitive, core, and wrapper layers?"
+  answer: >-
+    Three layers with a clean split. The primitive layer is hand-tuned,
+    per-platform unsigned 128-/256-bit arithmetic (including the low-level
+    division kernels). The core is the cross-platform engine: alignment,
+    rounding, dispatch, encoding/decoding, and text parse/format —
+    identical everywhere. The wrapper adapts the core to each language's
+    idioms (operator overloading, naming, nullability). See
+    CrossPlatformArchitecture.md.
+
+- id: architecture-2
+  category: "Architecture & Design"
+  question: "Why native ports instead of one shared C engine?"
+  answer: >-
+    A native core in each language gives every port a first-class datatype
+    and sidesteps the whole FFI/JNI/cgo boundary — both its per-operation
+    overhead and its complexity. In particular it avoids the
+    heap-management and heap-reference problems that come with marshalling
+    values across a managed/native boundary: no pinning, no copying between
+    heaps, no lifetime coordination. And because the cores are written in a
+    deliberately restricted, mechanically translatable subset, the parallel
+    implementations stay mutually verifiable — they check each other. See
+    CrossPlatformArchitecture.md.
+
+- id: architecture-3
+  category: "Architecture & Design"
+  question: "What is UBD and why a custom in-memory format?"
+  answer: >-
+    UBD (Unpacked Binary Decimal) is the 16-byte in-memory representation
+    the cores compute on. The two IEEE interchange encodings (DPD and BID)
+    were designed for hardware and cost real work to decode in software.
+    UBD instead keeps the full coefficient range and NaN/infinity semantics
+    in 128 bits while exposing the coefficient through a single mask and
+    the exponent through a single shift. That cheap layout is what enables
+    the high-performance fast paths for addition, subtraction, and
+    multiplication — small enough that the AOT or JIT compiler can inline
+    them. See UBD.md.
+
+- id: architecture-4
+  category: "Architecture & Design"
+  question: "How do you keep the ports byte-for-byte identical?"
+  answer: >-
+    The core is written in a deliberately reduced set of language
+    constructs — chosen so the ports are near-mechanical transliterations
+    of each other. Swift is the reference language, but the constraints of
+    C drove many of the decisions, so the shared subset stays expressible
+    in every port. Because the core intentionally avoids language-specific
+    constructs and idioms, the core code in every port ends up looking much
+    like plain C regardless of the host language. The Rosetta harness then
+    proves it: the same tens of thousands of vectors must produce identical
+    result bits in every port. Divergence shows up as a Rosetta failure,
+    not a silent drift. (See CrossPlatformArchitecture.md and Rosetta.md.)
+
+- id: using-library-1
+  category: "Using the Library"
+  question: "How do I create and print a decimal128 value?"
+  answer: >-
+    TODO — add one short snippet per language (or the two or three headline
+    ones), showing construction from a string/literal and formatting back
+    to text. Link to WrapperLayer.md.
+
+- id: using-library-2
+  category: "Using the Library"
+  question: "What is the default rounding mode, and can I change it?"
+  answer: >-
+    The default is round-half-to-even (ties-to-even), the IEEE 754 default.
+    Other IEEE rounding modes are available and are selected through the
+    rounding / context API. (Editor: name the exact wrapper entry points
+    and list the supported modes; see WrapperLayer.md.)
+
+- id: using-library-3
+  category: "Using the Library"
+  question: "Is a decimal128 value thread-safe? Are decimal128 operations thread-safe?"
+  answer: >-
+    Yes, both. A decimal128 value is a small immutable 16-byte value, so it
+    is safe to share and copy across threads freely. The operations are
+    thread-safe too: each one reads its immutable inputs and returns a new
+    value without mutating anything shared, so concurrent operations on
+    different threads cannot interfere. The library never shares a context
+    object of its own; a context exists only if you construct one, and
+    sharing that across threads is your responsibility, not the library's.
+    See ConcurrencyModel.md for the full story on contexts and flags.
+
+- id: finance-1
+  category: "Finance Layer"
+  question: "What does the finance layer provide?"
+  answer: >-
+    BasicFinance is a small library of everyday financial calculations —
+    interest, annuities, mortgage amortization, and the discounted-cash-flow
+    trio NPV / IRR / MIRR — composed entirely from the existing decimal128
+    operations so the money math stays exact. A Finance wrapper is exposed
+    in every port except bare C. See Finance.md.
+
+- id: finance-2
+  category: "Finance Layer"
+  question: "Why does the finance layer live in Core rather than the wrapper?"
+  answer: >-
+    For cross-platform consistency. If each wrapper re-implemented, say,
+    irr in its host language, the iterative solvers could diverge in
+    iteration order or intermediate rounding. Placing the algorithms in
+    Core, over the byte-identical operations, means every platform runs the
+    one same computation and produces the one same bit pattern. See
+    Finance.md.
+
+- id: roadmap-1
+  category: "Project & Roadmap"
+  question: "How is it licensed?"
+  answer: >-
+    TODO — state the license for the ports (permissive) and note that the
+    application-benchmark repo is GPLv3 because it contains the UW-Madison
+    DFP suite. Confirm exact license names before publishing.
+
+- id: roadmap-2
+  category: "Project & Roadmap"
+  question: "What is planned next?"
+  answer: >-
+    TODO — summarize current priorities, or point readers at the tracked
+    Punchlist.md.

@@ -28,9 +28,13 @@ _config.yml                    Site title/tagline and Jekyll settings
   bulleted list, `[link text](https://...)` for a link, `**bold**` for
   bold text.
 - **Q&A questions** — edit `_data/faqs.yml`. Copy an existing entry and
-  change the `question`/`answer`/`category`/`tags`. New `category` values
-  automatically get their own filter button on the Q&A page — no other
-  changes needed. Optional fields:
+  change the `question`/`answer`/`category`. New `category` values
+  automatically get their own filter button *and* their own group in the
+  Table of Contents at the top of the Q&A page — no other changes needed.
+  Each entry's `id` must stay unique — it's used to build the "jump to this
+  question" links in the Table of Contents, so don't reuse an `id` from
+  another entry. Optional fields:
+  - `tags`: a few keywords to help search match this entry
   - `list`: a bulleted list of points shown under the answer
   - `links`: a list of `{ text, url }` shown as clickable links under the answer
 - **Adding a brand new page** — create a new `.md` file at the repository
