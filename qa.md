@@ -5,8 +5,8 @@ title: "Q&A — Decimal128"
 description: "Frequently asked questions about the multiplatform decimal128 project, organised by topic. No account or sign-up needed."
 heading: "Q&A"
 extra_js:
-  - js/faq-data.js
-  - js/search.js
+  - /js/faq-data.js
+  - /js/search.js
 ---
 
 Frequently asked questions about the multiplatform decimal128 project.

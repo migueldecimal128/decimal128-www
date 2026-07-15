@@ -6,7 +6,11 @@ description: "The provenance and validity of decimal128's conformance evidence �
 heading: "Three Scripts, One Truth"
 ---
 
+<div class="whitepaper" markdown="1">
+
 ### The provenance and validity of decimal128's conformance evidence
+
+<div class="whitepaper-abstract" markdown="1">
 
 *How do you know a decimal arithmetic library is correct? Not by trusting its
 author. You know it the way the Rosetta Stone was decoded: by taking the same
@@ -16,6 +20,8 @@ scripts — from IBM's software-decimal lineage, IBM's hardware-verification
 lineage, and Intel's implementation lineage — plus a fourth suite written to
 cover what the first three do not. Over fifty thousand test vectors reconcile to
 one answer, bit for bit, in eight independent language implementations.*
+
+</div>
 
 ---
 
@@ -353,3 +359,5 @@ Claims about correctness should be checkable by strangers. These are.
   *IEEE Trans. Computers*, 2009. Intel Decimal Floating-Point Math Library
   (`IntelRDFPMathLib`).
 - *IEEE Standard for Floating-Point Arithmetic*, IEEE 754-2008 and 754-2019.
+
+</div>
