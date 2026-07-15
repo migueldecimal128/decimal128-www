@@ -6,8 +6,9 @@ description: "The benchmark matrix for the multiplatform decimal128 library: per
 heading: "Benchmark Matrix"
 ---
 
+<div class="whitepaper" markdown="1">
 
-*First draft*
+<p class="whitepaper-meta">First draft</p>
 
 ## 1. Purpose and Scope
 
@@ -510,4 +511,6 @@ predates this taxonomy and feeds in until superseded (the Go port's `BENCHMARKS.
 
 ---
 
-*End of first draft.*
+<p class="whitepaper-meta">End of first draft.</p>
+
+</div>

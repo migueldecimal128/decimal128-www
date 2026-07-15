@@ -6,8 +6,9 @@ description: "The consolidated record of decimal128 as-measured benchmark result
 heading: "Benchmark Results Hub"
 ---
 
+<div class="whitepaper" markdown="1">
 
-*Created 2026-06-25. Living document — as-measured results.*
+<p class="whitepaper-meta">Created 2026-06-25. Living document — as-measured results.</p>
 
 This is the single consolidated record of decimal128 **as-measured** benchmark
 results across all ports and alternative implementations. It is **data only**:
@@ -1187,3 +1188,5 @@ Ratio = alt / ours (> 1 ⇒ d128 faster).
 | c | div | PT | P-fin | x86_64 | thru | 7.25 | mpdecimal | 95.74 | **13.21×** | xRc2 |  |
 <!-- END GENERATED pfin-rel-x86 -->
 
+
+</div>

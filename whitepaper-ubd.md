@@ -6,10 +6,15 @@ description: "UBD (Unpacked Binary Decimal) is a software-oriented in-memory for
 heading: "UBD (An Unpacked Binary Decimal Format for Fast Software Decoding of IEEE 754 decimal128)"
 ---
 
+<div class="whitepaper" markdown="1">
 
-**Abstract.** UBD (Unpacked Binary Decimal) is a software-oriented in-memory format for IEEE 754 decimal128, designed for fast decoding on general-purpose CPUs. The two interchange encodings defined by IEEE 754 — Densely Packed Decimal (DPD) and Binary Integer Decimal (BID) — were designed primarily for hardware implementation, which remains rare outside IBM processors. In software, both interchange formats carry a decode cost: DPD requires substantial work to unpack its declet-based coefficient, while BID, though cheaper to unpack, still makes exponent recovery and operand classification non-trivial. Consequently, most software implementations unpack each operand into a wider, more memory-hungry working representation. UBD instead fits the full decimal128 coefficient range and NaN/infinity semantics into 128 bits while making the binary coefficient accessible via a single masking operation and the quantum exponent via a single arithmetic shift. All non-finite special values are stored with oversized coefficients, eliminating a separate operand check on the fast path. The result makes common-case operand checks and field extractions for addition, subtraction, and multiplication trivial. Multiple implementations in different programming languages using UBD format pass the Cowlishaw/IBM `decTest`, IBM FPgen `fptest`, and Intel `libbid` decimal128 test-vector suites. 
+<div class="whitepaper-abstract" markdown="1">
+
+**Abstract.** UBD (Unpacked Binary Decimal) is a software-oriented in-memory format for IEEE 754 decimal128, designed for fast decoding on general-purpose CPUs. The two interchange encodings defined by IEEE 754 — Densely Packed Decimal (DPD) and Binary Integer Decimal (BID) — were designed primarily for hardware implementation, which remains rare outside IBM processors. In software, both interchange formats carry a decode cost: DPD requires substantial work to unpack its declet-based coefficient, while BID, though cheaper to unpack, still makes exponent recovery and operand classification non-trivial. Consequently, most software implementations unpack each operand into a wider, more memory-hungry working representation. UBD instead fits the full decimal128 coefficient range and NaN/infinity semantics into 128 bits while making the binary coefficient accessible via a single masking operation and the quantum exponent via a single arithmetic shift. All non-finite special values are stored with oversized coefficients, eliminating a separate operand check on the fast path. The result makes common-case operand checks and field extractions for addition, subtraction, and multiplication trivial. Multiple implementations in different programming languages using UBD format pass the Cowlishaw/IBM `decTest`, IBM FPgen `fptest`, and Intel `libbid` decimal128 test-vector suites.
 
 **Keywords:** decimal floating-point, IEEE 754, decimal128, DPD, BID, software arithmetic, in-memory encoding.
+
+</div>
 
 ---
 
@@ -346,6 +351,8 @@ UBD reframes the decimal128 storage question for the common case of software imp
 [Aharoni et al. 2003] M. Aharoni, S. Asaf, L. Fournier, A. Koifman, and R. Nagel, "FPgen — A Test Generation Framework for Datapath Floating-Point Verification," in *Proc. Eighth IEEE International High-Level Design Validation and Test Workshop (HLDVT)*, 2003, pp. 17–22. DOI: 10.1109/HLDVT.2003.1252469. Available: https://ieeexplore.ieee.org/document/1252469/. The associated IEEE 754R test suite (*fptest*) was distributed by IBM Research, Haifa.
 
 [Cowlishaw 2002] M. F. Cowlishaw, "Densely Packed Decimal Encoding," *IEEE Proceedings — Computers and Digital Techniques*, vol. 149, no. 3, pp. 102–104, May 2002. ISSN 1350-2387. A summary is available at https://speleotrove.com/decimal/DPDecimal.html
+
+</div>
 
 [Cowlishaw decTest] M. F. Cowlishaw, *General Decimal Arithmetic Testcases*, version 2.44, IBM, 24 March 2009. Available: https://speleotrove.com/decimal/dectest.pdf (testcase files at https://speleotrove.com/decimal/)
 
