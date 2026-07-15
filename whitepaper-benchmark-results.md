@@ -83,6 +83,7 @@ column** — 2–3× the pack-direct NQ, the one add/sub band where d128's align
 shows.
 
 <!-- BEGIN GENERATED add-pgen -->
+
 | port | add SQ | add NQ | add MQ | add OQ | add FQ |
 |------|-------:|-------:|-------:|-------:|-------:|
 | c      |  2.21 |  3.82 | 10.54 | 12.67 |  6.91 |
@@ -94,11 +95,13 @@ shows.
 | java‡  |  5.39 |  7.05 | 12.16 | 19.20 | 14.52 |
 | kotlin‡|  5.79 |  8.50 | 13.96 | 18.92 | 15.14 |
 | python | 22.33 | 22.73 | 32.66 | 45.71 | 33.56 |
+
 <!-- END GENERATED add-pgen -->
 
 **P-gen — d128 (ns/op) — x86_64 (Intel i9-9880H).**
 
 <!-- BEGIN GENERATED add-pgen-x86 -->
+
 | port | add SQ | add NQ | add MQ | add OQ | add FQ |
 |------|-------:|-------:|-------:|-------:|-------:|
 | c      |  9.54 | 12.06 | 27.62 | 36.16 | 27.27 |
@@ -110,11 +113,13 @@ shows.
 | java‡  | 13.94 | 19.56 | 36.25 | 60.81 | 41.83 |
 | kotlin‡| 17.50 | 24.80 | 42.21 | 64.15 | 46.78 |
 | python | 56.19 | 51.59 | 66.70 | 75.92 | 68.55 |
+
 <!-- END GENERATED add-pgen-x86 -->
 
 **P-max — d128 (ns/op):**
 
 <!-- BEGIN GENERATED add-pmax -->
+
 | port | add SQ | add OQ | add FQ |
 |------|-------:|-------:|-------:|
 | c      |  3.63 | 17.63 |  8.01 |
@@ -126,11 +131,13 @@ shows.
 | java‡  |  6.62 | 20.99 | 12.50 |
 | kotlin‡|  7.02 | 21.53 | 11.39 |
 | python | 26.31 | 50.06 | 35.72 |
+
 <!-- END GENERATED add-pmax -->
 
 **P-max — d128 (ns/op) — x86_64 (stress).**
 
 <!-- BEGIN GENERATED add-pmax-x86 -->
+
 | port | add SQ | add OQ | add FQ |
 |------|-------:|-------:|-------:|
 | c      | 11.44 | 40.12 | 22.29 |
@@ -142,6 +149,7 @@ shows.
 | java‡  | 22.46 | 62.81 | 33.34 |
 | kotlin‡| 27.61 | 85.16 | 39.24 |
 | python | 53.11 | 82.16 | 61.71 |
+
 <!-- END GENERATED add-pmax-x86 -->
 
 **Relational — d128 vs the universal reference `libbid`** (Intel BID, full 34-digit,
@@ -152,6 +160,7 @@ since d128 is timed in-port and libbid in C — same caveat as elsewhere. java/k
 BigDecimal pending.
 
 <!-- BEGIN GENERATED add-rel -->
+
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | c | add | SQ | P-gen | arm64 | thru | 2.21 | libbid | 9.61 | **4.35×** | Rc2 |  |
@@ -209,11 +218,13 @@ BigDecimal pending.
 | c | add | MQ | P-gen | arm64 | thru | 10.54 | mpdecimal | 27.50 | **2.61×** | Rc2 |  |
 | c | add | OQ | P-gen | arm64 | thru | 12.67 | mpdecimal | 46.18 | **3.64×** | Rc2 |  |
 | c | add | FQ | P-gen | arm64 | thru | 6.91 | mpdecimal | 39.34 | **5.69×** | Rc2 |  |
+
 <!-- END GENERATED add-rel -->
 
 **Relational vs peers — x86_64 (Intel i9-9880H).**
 
 <!-- BEGIN GENERATED add-rel-x86 -->
+
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | c | add | SQ | P-gen | x86_64 | thru | 9.54 | libbid | 30.50 | **3.20×** | xRc2 |  |
@@ -271,6 +282,7 @@ BigDecimal pending.
 | c | add | MQ | P-gen | x86_64 | thru | 27.62 | mpdecimal | 53.70 | **1.94×** | xRc2 |  |
 | c | add | OQ | P-gen | x86_64 | thru | 36.16 | mpdecimal | 128.81 | **3.56×** | xRc2 |  |
 | c | add | FQ | P-gen | x86_64 | thru | 27.27 | mpdecimal | 84.72 | **3.11×** | xRc2 |  |
+
 <!-- END GENERATED add-rel-x86 -->
 
 ## 2. Subtract — SQ · NQ · MQ · OQ · FQ
@@ -283,6 +295,7 @@ the relational peer table. arm64 (M3 Pro); `‡` = JVM escape-forced alloc-inclu
 **P-gen — d128 (ns/op).**
 
 <!-- BEGIN GENERATED sub-pgen -->
+
 | port | sub SQ | sub NQ | sub MQ | sub OQ | sub FQ |
 |------|-------:|-------:|-------:|-------:|-------:|
 | c      |  1.70 |  4.27 | 10.65 | 12.53 |  7.14 |
@@ -294,11 +307,13 @@ the relational peer table. arm64 (M3 Pro); `‡` = JVM escape-forced alloc-inclu
 | java‡  |  4.44 |  7.40 | 12.44 | 18.98 | 14.89 |
 | kotlin‡|  4.80 |  8.91 | 14.11 | 19.13 | 14.54 |
 | python | 20.81 | 22.63 | 32.93 | 44.53 | 33.51 |
+
 <!-- END GENERATED sub-pgen -->
 
 **P-gen — d128 (ns/op) — x86_64 (Intel i9-9880H).**
 
 <!-- BEGIN GENERATED sub-pgen-x86 -->
+
 | port | sub SQ | sub NQ | sub MQ | sub OQ | sub FQ |
 |------|-------:|-------:|-------:|-------:|-------:|
 | c      |  6.84 | 11.75 | 28.24 | 36.47 | 28.62 |
@@ -310,11 +325,13 @@ the relational peer table. arm64 (M3 Pro); `‡` = JVM escape-forced alloc-inclu
 | java‡  | 13.40 | 20.60 | 36.79 | 61.14 | 40.60 |
 | kotlin‡| 15.32 | 25.64 | 46.32 | 66.18 | 42.79 |
 | python | 51.26 | 53.81 | 68.59 | 77.70 | 71.00 |
+
 <!-- END GENERATED sub-pgen-x86 -->
 
 **P-max — d128 (ns/op):**
 
 <!-- BEGIN GENERATED sub-pmax -->
+
 | port | sub SQ | sub OQ | sub FQ |
 |------|-------:|-------:|-------:|
 | c      |  3.27 | 17.53 |  8.19 |
@@ -326,11 +343,13 @@ the relational peer table. arm64 (M3 Pro); `‡` = JVM escape-forced alloc-inclu
 | java‡  |  6.44 | 20.42 | 12.17 |
 | kotlin‡|  6.78 | 21.48 | 11.64 |
 | python | 27.28 | 50.38 | 35.83 |
+
 <!-- END GENERATED sub-pmax -->
 
 **P-max — d128 (ns/op) — x86_64 (stress).**
 
 <!-- BEGIN GENERATED sub-pmax-x86 -->
+
 | port | sub SQ | sub OQ | sub FQ |
 |------|-------:|-------:|-------:|
 | c      | 12.11 | 40.11 | 22.62 |
@@ -342,6 +361,7 @@ the relational peer table. arm64 (M3 Pro); `‡` = JVM escape-forced alloc-inclu
 | java‡  | 22.96 | 63.32 | 33.64 |
 | kotlin‡| 29.14 | 86.94 | 40.24 |
 | python | 58.23 | 91.32 | 64.61 |
+
 <!-- END GENERATED sub-pmax-x86 -->
 
 **Relational — d128 vs the universal reference `libbid`** (Intel BID, full 34-digit,
@@ -352,6 +372,7 @@ since d128 is timed in-port and libbid in C — same caveat as elsewhere. java/k
 BigDecimal pending.
 
 <!-- BEGIN GENERATED sub-rel -->
+
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | c | sub | SQ | P-gen | arm64 | thru | 1.70 | libbid | 9.27 | **5.45×** | Rc2 |  |
@@ -409,11 +430,13 @@ BigDecimal pending.
 | c | sub | MQ | P-gen | arm64 | thru | 10.65 | mpdecimal | 20.61 | **1.94×** | Rc2 |  |
 | c | sub | OQ | P-gen | arm64 | thru | 12.53 | mpdecimal | 45.47 | **3.63×** | Rc2 |  |
 | c | sub | FQ | P-gen | arm64 | thru | 7.14 | mpdecimal | 39.33 | **5.51×** | Rc2 |  |
+
 <!-- END GENERATED sub-rel -->
 
 **Relational vs peers — x86_64 (Intel i9-9880H).**
 
 <!-- BEGIN GENERATED sub-rel-x86 -->
+
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | c | sub | SQ | P-gen | x86_64 | thru | 6.84 | libbid | 33.26 | **4.86×** | xRc2 |  |
@@ -471,6 +494,7 @@ BigDecimal pending.
 | c | sub | MQ | P-gen | x86_64 | thru | 28.24 | mpdecimal | 54.74 | **1.94×** | xRc2 |  |
 | c | sub | OQ | P-gen | x86_64 | thru | 36.47 | mpdecimal | 126.85 | **3.48×** | xRc2 |  |
 | c | sub | FQ | P-gen | x86_64 | thru | 28.62 | mpdecimal | 85.83 | **3.00×** | xRc2 |  |
+
 <!-- END GENERATED sub-rel-x86 -->
 
 ## 3. Multiply — CP · WP · XP
@@ -490,6 +514,7 @@ the cheap multiply); **WP** scales via the 128-bit `recipMulPow10`; **XP** via t
 kernel.
 
 <!-- BEGIN GENERATED mul-pgen -->
+
 | port | mul CP | mul WP | mul XP |
 |------|-------:|-------:|-------:|
 | c      |  2.14 | 19.64 | 26.16 |
@@ -501,11 +526,13 @@ kernel.
 | java‡  |  5.04 | 20.37 | 44.81 |
 | kotlin‡|  4.98 | 16.44 | 46.14 |
 | python | 20.63 | 45.56 | 73.63 |
+
 <!-- END GENERATED mul-pgen -->
 
 **P-gen — d128 (ns/op) — x86_64 (Intel i9-9880H).**
 
 <!-- BEGIN GENERATED mul-pgen-x86 -->
+
 | port | mul CP | mul WP | mul XP |
 |------|-------:|-------:|-------:|
 | c      |  6.05 | 34.47 |  47.81 |
@@ -517,6 +544,7 @@ kernel.
 | java‡  | 13.47 | 52.25 |  77.62 |
 | kotlin‡| 14.25 | 47.77 |  85.09 |
 | python | 43.93 | 78.07 | 106.03 |
+
 <!-- END GENERATED mul-pgen-x86 -->
 
 C's `mul XP` 36.56 predates the `Finalize.c` wide-product finalize fix (commit d98fd85);
@@ -526,6 +554,7 @@ still due a refresh.
 **P-max — d128 (ns/op).** Only XP is feasible at 33–34 digits:
 
 <!-- BEGIN GENERATED mul-pmax -->
+
 | port | mul XP |
 |------|-------:|
 | c      | 28.16 |
@@ -537,11 +566,13 @@ still due a refresh.
 | java‡  | 44.19 |
 | kotlin‡| 44.63 |
 | python | 94.46 |
+
 <!-- END GENERATED mul-pmax -->
 
 **P-max — d128 (ns/op) — x86_64 (stress).**
 
 <!-- BEGIN GENERATED mul-pmax-x86 -->
+
 | port | mul XP |
 |------|-------:|
 | c      |  47.19 |
@@ -553,6 +584,7 @@ still due a refresh.
 | java‡  |  70.43 |
 | kotlin‡| 117.75 |
 | python | 122.50 |
+
 <!-- END GENERATED mul-pmax-x86 -->
 
 **Relational — d128 vs the universal reference `libbid`** (Intel BID, measured in the C
@@ -563,6 +595,7 @@ the peers in C (libbid/decQuad run `Rc`, mpdecimal run `Rmpd`). rust adds its co
 peer `rust_decimal` on the CP band. java/kotlin + BigDecimal pending.
 
 <!-- BEGIN GENERATED mul-rel -->
+
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | c | mul | CP | P-gen | arm64 | thru | 2.14 | libbid | 23.17 | **10.83×** | Rc2 | **no scaling** — the cheap multiply |
@@ -598,11 +631,13 @@ peer `rust_decimal` on the CP band. java/kotlin + BigDecimal pending.
 | c | mul | CP | P-gen | arm64 | thru | 2.14 | mpdecimal | 22.98 | **10.74×** | Rc2 | no-scale multiply vs libmpdec |
 | c | mul | WP | P-gen | arm64 | thru | 19.64 | mpdecimal | 53.52 | **2.73×** | Rc2 | 128-bit recipMulPow10 |
 | c | mul | XP | P-gen | arm64 | thru | 26.16 | mpdecimal | 72.93 | **2.79×** | Rc2 | **d128 wins the widest product vs libmpdec** (unlike decQuad) |
+
 <!-- END GENERATED mul-rel -->
 
 **Relational vs peers — x86_64 (Intel i9-9880H).**
 
 <!-- BEGIN GENERATED mul-rel-x86 -->
+
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | c | mul | CP | P-gen | x86_64 | thru | 6.05 | libbid | 46.01 | **7.60×** | xRc2 |  |
@@ -638,6 +673,7 @@ peer `rust_decimal` on the CP band. java/kotlin + BigDecimal pending.
 | c | mul | CP | P-gen | x86_64 | thru | 6.05 | mpdecimal | 63.68 | **10.53×** | xRc2 |  |
 | c | mul | WP | P-gen | x86_64 | thru | 34.47 | mpdecimal | 180.69 | **5.24×** | xRc2 |  |
 | c | mul | XP | P-gen | x86_64 | thru | 47.81 | mpdecimal | 231.72 | **4.85×** | xRc2 |  |
+
 <!-- END GENERATED mul-rel-x86 -->
 
 ## 4. Divide — CD · WD · XD (+ ET · PT)
@@ -656,6 +692,7 @@ CD/PT compact bands.
 **P-gen — d128 (ns/op).**
 
 <!-- BEGIN GENERATED div-pgen -->
+
 | port | div CD | div WD | div XD | div ET | div PT |
 |------|-------:|-------:|-------:|-------:|-------:|
 | c      | 41.70 | 39.15 | 37.09 |  8.00 |  3.17 |
@@ -667,11 +704,13 @@ CD/PT compact bands.
 | java‡  | 24.60 | 36.42 | 37.66 | 12.36 |  8.57 |
 | kotlin‡| 25.54 | 37.01 | 37.64 | 16.26 |  9.33 |
 | python | 66.43 | 71.20 | 73.00 | 25.17 | 19.43 |
+
 <!-- END GENERATED div-pgen -->
 
 **P-gen — d128 (ns/op) — x86_64 (Intel i9-9880H).**
 
 <!-- BEGIN GENERATED div-pgen-x86 -->
+
 | port | div CD | div WD | div XD | div ET | div PT |
 |------|-------:|-------:|-------:|-------:|-------:|
 | c      |  84.26 |  87.22 |  78.01 | 31.38 |  7.54 |
@@ -683,6 +722,7 @@ CD/PT compact bands.
 | java‡  |  87.51 | 113.52 | 120.99 | 45.60 | 23.29 |
 | kotlin‡|  95.05 | 120.83 | 133.07 | 52.46 | 27.10 |
 | python | 117.35 | 130.99 | 131.17 | 72.07 | 46.90 |
+
 <!-- END GENERATED div-pgen-x86 -->
 
 The C swept **PT** (3.16) is the coeff-1 (`1E3`) trivial encoding — ≡ the native ports'
@@ -692,6 +732,7 @@ is the strip form.
 **P-max — d128 (ns/op).** Only XD is feasible at 33–34-digit divisors:
 
 <!-- BEGIN GENERATED div-pmax -->
+
 | port | div XD |
 |------|-------:|
 | c      | 32.23 |
@@ -703,11 +744,13 @@ is the strip form.
 | java‡  | 29.51 |
 | kotlin‡| 32.89 |
 | python | 70.39 |
+
 <!-- END GENERATED div-pmax -->
 
 **P-max — d128 (ns/op) — x86_64 (stress).**
 
 <!-- BEGIN GENERATED div-pmax-x86 -->
+
 | port | div XD |
 |------|-------:|
 | c      |  72.46 |
@@ -719,6 +762,7 @@ is the strip form.
 | java‡  |  91.81 |
 | kotlin‡| 131.04 |
 | python | 125.25 |
+
 <!-- END GENERATED div-pmax-x86 -->
 
 The **JVM 128-bit divide is competitive-to-ahead** here — HotSpot runs `div XD` at
@@ -732,6 +776,7 @@ harness/packaging term, since d128 is timed in-port and the peers in C (libbid/d
 BigDecimal pending.
 
 <!-- BEGIN GENERATED div-rel -->
+
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | c | div | CD | P-gen | arm64 | thru | 41.70 | libbid | 37.17 | **0.89×** | Rc2 | 128÷64 quotient-first (§2.4.10); **libbid wins** — the compact-divide weakness persists |
@@ -789,11 +834,13 @@ BigDecimal pending.
 | c | div | XD | P-gen | arm64 | thru | 37.09 | mpdecimal | 143.98 | **3.88×** | Rc2 | Cowlishaw signature (CD 59 < WD 87 < XD 144) |
 | c | div | ET | P-gen | arm64 | thru | 8.00 | mpdecimal | 57.52 | **7.19×** | Rc2 | libmpdec has no exact early-out |
 | c | div | PT | P-gen | arm64 | thru | 3.17 | mpdecimal | 48.00 | **15.14×** | Rc2 | **d128's biggest divide win vs libmpdec** |
+
 <!-- END GENERATED div-rel -->
 
 **Relational vs peers — x86_64 (Intel i9-9880H).**
 
 <!-- BEGIN GENERATED div-rel-x86 -->
+
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | c | div | CD | P-gen | x86_64 | thru | 84.26 | libbid | 83.32 | **0.99×** | xRc2 |  |
@@ -851,6 +898,7 @@ BigDecimal pending.
 | c | div | XD | P-gen | x86_64 | thru | 78.01 | mpdecimal | 351.41 | **4.50×** | xRc2 |  |
 | c | div | ET | P-gen | x86_64 | thru | 31.38 | mpdecimal | 161.73 | **5.15×** | xRc2 |  |
 | c | div | PT | P-gen | x86_64 | thru | 7.54 | mpdecimal | 100.98 | **13.39×** | xRc2 |  |
+
 <!-- END GENERATED div-rel-x86 -->
 
 ## 5. FMA — FN (Barrett) · FF (fits-128) (run `Rprof`, arm64)
@@ -861,6 +909,7 @@ fits-128 fast path. The fast-path win (FN÷FF) is the whole story — universal 
 (JVM/BDN compress it via their packaging term). `‡` = JVM escape-forced. ns/op:
 
 <!-- BEGIN GENERATED fma -->
+
 | port | FN | FF | FN÷FF | run |
 |------|---:|---:|---:|-----|
 | c      |  79.12 | 41.31 | 1.92× | Rc2    |
@@ -872,11 +921,13 @@ fits-128 fast path. The fast-path win (FN÷FF) is the whole story — universal 
 | java‡  |  97.81 | 67.81 | 1.44× | Rjasw2 |
 | kotlin‡| 100.01 | 69.55 | 1.44× | Rkosw2 |
 | python | 135.43 | 88.16 | 1.54× | Rpysw2 |
+
 <!-- END GENERATED fma -->
 
 **FMA — d128 FN/FF band shape — x86_64 (Intel i9-9880H).**
 
 <!-- BEGIN GENERATED fma-x86 -->
+
 | port | FN | FF | FN÷FF | run |
 |------|---:|---:|---:|-----|
 | c      | 115.82 |  85.46 | 1.36× | xRc2    |
@@ -888,6 +939,7 @@ fits-128 fast path. The fast-path win (FN÷FF) is the whole story — universal 
 | java‡  | 216.24 | 194.37 | 1.11× | xRjasw2 |
 | kotlin‡| 243.77 | 207.41 | 1.18× | xRkosw2 |
 | python | 193.71 | 189.16 | 1.02× | xRpysw2 |
+
 <!-- END GENERATED fma-x86 -->
 
 **Peer head-to-head.** FMA is *not* peerless: every conformant reference exposes a true
@@ -897,6 +949,7 @@ fused-FMA peer pair against the libbid universal reference; `go`/`csharp` have n
 show `-`. d128's fits-128 FF path is the standout (libbid ≈1.4×, decQuad ≈1.5×, mpd ≈3.5×):
 
 <!-- BEGIN GENERATED fma-rel -->
+
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | c | fma | FN | FMA | arm64 | thru | 79.12 | libbid | 81.81 | **1.03×** | Rc2 |  |
@@ -921,11 +974,13 @@ show `-`. d128's fits-128 FF path is the standout (libbid ≈1.4×, decQuad ≈1
 | c | fma | FF | FMA | arm64 | thru | 41.31 | decQuad | 68.85 | **1.67×** | Rc2 |  |
 | c | fma | FN | FMA | arm64 | thru | 79.12 | mpdecimal | 85.72 | **1.08×** | Rc2 |  |
 | c | fma | FF | FMA | arm64 | thru | 41.31 | mpdecimal | 136.74 | **3.31×** | Rc2 |  |
+
 <!-- END GENERATED fma-rel -->
 
 **Relational vs peers — x86_64 (Intel i9-9880H).**
 
 <!-- BEGIN GENERATED fma-rel-x86 -->
+
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | c | fma | FN | FMA | x86_64 | thru | 115.82 | libbid | 157.23 | **1.36×** | xRc2 |  |
@@ -950,6 +1005,7 @@ show `-`. d128's fits-128 FF path is the standout (libbid ≈1.4×, decQuad ≈1
 | c | fma | FF | FMA | x86_64 | thru | 85.46 | decQuad | 162.64 | **1.90×** | xRc2 |  |
 | c | fma | FN | FMA | x86_64 | thru | 115.82 | mpdecimal | 254.18 | **2.19×** | xRc2 |  |
 | c | fma | FF | FMA | x86_64 | thru | 85.46 | mpdecimal | 343.82 | **4.02×** | xRc2 |  |
+
 <!-- END GENERATED fma-rel-x86 -->
 
 ## 6. P-fin — financial headline
@@ -966,6 +1022,7 @@ alloc-inclusive.
 **d128 band shape (ns/op):**
 
 <!-- BEGIN GENERATED pfin-matrix -->
+
 | port | add MIX | sub MIX | mul CP | mul WP | div CD | div WD | div ET | div PT |
 |------|-------:|-------:|-------:|-------:|-------:|-------:|-------:|-------:|
 | c      |  2.83 |  2.46 |  2.14 | 19.57 | 43.47 | 39.49 |  6.48 |  3.18 |
@@ -977,11 +1034,13 @@ alloc-inclusive.
 | java‡  |  5.77 |  5.14 |  4.69 | 20.00 | 28.24 | 37.60 | 12.39 |  8.72 |
 | kotlin‡|  6.86 |  5.57 |  4.93 | 17.66 | 28.82 | 38.22 | 16.66 |  9.65 |
 | python | 24.10 | 22.96 | 16.52 | 46.71 | 66.52 | 73.96 | 22.57 | 19.46 |
+
 <!-- END GENERATED pfin-matrix -->
 
 **P-fin — d128 band shape — x86_64 (Intel i9-9880H).**
 
 <!-- BEGIN GENERATED pfin-matrix-x86 -->
+
 | port | add MIX | sub MIX | mul CP | mul WP | div CD | div WD | div ET | div PT |
 |------|-------:|-------:|-------:|-------:|-------:|-------:|-------:|-------:|
 | c      | 10.44 |  8.37 |  6.03 | 36.31 |  74.91 |  94.45 | 16.55 |  7.25 |
@@ -993,6 +1052,7 @@ alloc-inclusive.
 | java‡  | 18.43 | 15.92 | 13.91 | 55.68 | 104.15 | 121.45 | 43.57 | 23.08 |
 | kotlin‡| 24.20 | 19.50 | 13.22 | 46.12 | 100.87 | 127.21 | 48.56 | 24.70 |
 | python | 51.17 | 49.73 | 40.98 | 77.69 | 115.69 | 130.48 | 56.06 | 46.20 |
+
 <!-- END GENERATED pfin-matrix-x86 -->
 
 **Relational — d128 vs idiom peer** (else the universal reference `libbid`; `-` where the peer
@@ -1001,6 +1061,7 @@ the CP/WP products, so multiply has no compact-peer column). C additionally vs d
 Ratio = alt / ours (> 1 ⇒ d128 faster).
 
 <!-- BEGIN GENERATED pfin-rel -->
+
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | c | add | MIX | P-fin | arm64 | thru | 2.83 | libbid | 10.87 | **3.84×** | Rc2 |  |
@@ -1091,11 +1152,13 @@ Ratio = alt / ours (> 1 ⇒ d128 faster).
 | c | div | WD | P-fin | arm64 | thru | 39.49 | mpdecimal | 85.11 | **2.16×** | Rc2 |  |
 | c | div | ET | P-fin | arm64 | thru | 6.48 | mpdecimal | 53.84 | **8.31×** | Rc2 |  |
 | c | div | PT | P-fin | arm64 | thru | 3.18 | mpdecimal | 44.54 | **14.01×** | Rc2 |  |
+
 <!-- END GENERATED pfin-rel -->
 
 **Relational vs peers — x86_64 (Intel i9-9880H).**
 
 <!-- BEGIN GENERATED pfin-rel-x86 -->
+
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | c | add | MIX | P-fin | x86_64 | thru | 10.44 | libbid | 30.88 | **2.96×** | xRc2 |  |
@@ -1186,6 +1249,7 @@ Ratio = alt / ours (> 1 ⇒ d128 faster).
 | c | div | WD | P-fin | x86_64 | thru | 94.45 | mpdecimal | 272.72 | **2.89×** | xRc2 |  |
 | c | div | ET | P-fin | x86_64 | thru | 16.55 | mpdecimal | 139.50 | **8.43×** | xRc2 |  |
 | c | div | PT | P-fin | x86_64 | thru | 7.25 | mpdecimal | 95.74 | **13.21×** | xRc2 |  |
+
 <!-- END GENERATED pfin-rel-x86 -->
 
 
