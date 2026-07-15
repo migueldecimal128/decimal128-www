@@ -225,9 +225,9 @@
   category: "Language Support & Ports"
   question: "How is Python supported?"
   answer: >-
-    Through a Cython wrapper over decimal128-c; the C core is vendored into
-    the Python package so it builds as a native extension. See
-    PythonWrapperPort.md.
+    Through a hand-written C extension over decimal128-c (CPython Limited API /
+    abi3); the C core is vendored into the Python package so it builds as a
+    native extension. See PythonWrapperPort.md.
 
 - id: language-support-3
   category: "Language Support & Ports"
