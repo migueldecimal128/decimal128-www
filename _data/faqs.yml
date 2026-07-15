@@ -74,8 +74,30 @@
   category: "General / Overview"
   question: "Who is Miguel?"
   answer: >-
-    Miguel is a retired serial entrepreneur and engineer hoping to change
-    the world one decimal128 software implementation at a time.
+    Miguel is a retired entrepreneur, engineer, and expert in database
+    technology with a broad computer systems background.
+
+    Early in his career Miguel co-authored the Microsoft Applesoft Compiler
+    for the Apple ][ computer. Miguel was then the first non-founder
+    employee of Datext, where he architected a specialized time-series
+    database for CD-ROM for the financial services industry, later
+    acquired by Lotus Development Corporation. Continuing his work with
+    CD-ROM databases, Miguel joined Ziff Communications as VP Technology
+    for the Computer Library Division. He then founded InterActive
+    WorkPlace, a sales force information system that was acquired by
+    Siebel Systems. Miguel later worked with Scalent Systems as Senior
+    Member, Technical Staff. Scalent was later acquired by Dell to become
+    the cornerstone of their data center automation suite.
+
+    In more recent years, Miguel focused his time on data warehousing,
+    applying Big Data technologies to solve traditional business data
+    processing problems for several major US financial institutions.
+    Miguel co-founded Podium Data, which was later acquired by Qlik.
+    Miguel has now been working on his decimal128 software solution,
+    hoping to revolutionize the financial world.
+
+    Before all this, Miguel worked as a research intern at Xerox PARC
+    while obtaining BS and MS degrees in Computer Science from MIT.
   links:
     - text: "Miguel's LinkedIn"
       url: "https://www.linkedin.com/in/miguel-decimal128-howard/"

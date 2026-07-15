@@ -121,9 +121,12 @@
       catLabel.textContent = entry.category;
       body.appendChild(catLabel);
 
-      const answer = document.createElement("p");
-      answer.innerHTML = highlight(entry.answer, term);
-      body.appendChild(answer);
+      entry.answer.split("\n").forEach((para) => {
+        if (!para.trim()) return;
+        const answer = document.createElement("p");
+        answer.innerHTML = highlight(para, term);
+        body.appendChild(answer);
+      });
 
       if (entry.list && entry.list.length) {
         const list = document.createElement("ul");
