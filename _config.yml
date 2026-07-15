@@ -1,4 +1,5 @@
 title: Decimal128
+baseurl: "/decimal128-www"
 tagline: "IEEE 754-2019 compliant decimal128 high-performance software solution created by Miguel."
 markdown: kramdown
 kramdown:
