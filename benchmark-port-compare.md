@@ -39,6 +39,7 @@ the pack-direct NQ, the one add/sub band where d128's alignment cost shows.
 **P-gen — arm64 (M3 Pro).**
 
 <!-- BEGIN GENERATED add-pgen -->
+
 | port | add SQ | add NQ | add MQ | add OQ | add FQ |
 |------|-------:|-------:|-------:|-------:|-------:|
 | c      |  2.16 |  3.96 | 10.80 | 12.07 |  7.07 |
@@ -50,11 +51,13 @@ the pack-direct NQ, the one add/sub band where d128's alignment cost shows.
 | java‡  |  5.47 |  7.32 | 22.11 | 30.33 | 22.14 |
 | kotlin‡|  6.02 |  7.43 | 21.91 | 38.01 | 18.26 |
 | python | 24.02 | 22.34 | 29.81 | 39.74 | 32.73 |
+
 <!-- END GENERATED add-pgen -->
 
 **P-gen — x86_64 (Intel i9-9880H).**
 
 <!-- BEGIN GENERATED add-pgen-x86 -->
+
 | port | add SQ | add NQ | add MQ | add OQ | add FQ |
 |------|-------:|-------:|-------:|-------:|-------:|
 | c      |  8.93 | 13.67 | 35.37 | 46.17 | 31.57 |
@@ -66,11 +69,13 @@ the pack-direct NQ, the one add/sub band where d128's alignment cost shows.
 | java‡  | 13.52 | 18.92 | 37.06 | 59.75 | 40.06 |
 | kotlin‡| 16.74 | 23.55 | 43.19 | 70.87 | 45.86 |
 | python | 46.56 | 48.77 | 64.72 | 72.84 | 64.31 |
+
 <!-- END GENERATED add-pgen-x86 -->
 
 **P-max — arm64 (stress).**
 
 <!-- BEGIN GENERATED add-pmax -->
+
 | port | add SQ | add OQ | add FQ |
 |------|-------:|-------:|-------:|
 | c      |  3.34 | 17.61 |  6.81 |
@@ -82,11 +87,13 @@ the pack-direct NQ, the one add/sub band where d128's alignment cost shows.
 | java‡  |  7.08 | 31.06 | 23.20 |
 | kotlin‡|  8.10 | 29.87 | 16.93 |
 | python | 27.17 | 43.17 | 30.49 |
+
 <!-- END GENERATED add-pmax -->
 
 **P-max — x86_64 (stress).**
 
 <!-- BEGIN GENERATED add-pmax-x86 -->
+
 | port | add SQ | add OQ | add FQ |
 |------|-------:|-------:|-------:|
 | c      | 14.53 | 53.22 | 27.95 |
@@ -98,6 +105,7 @@ the pack-direct NQ, the one add/sub band where d128's alignment cost shows.
 | java‡  | 20.69 | 62.75 | 33.91 |
 | kotlin‡| 29.23 | 85.48 | 39.82 |
 | python | 49.05 | 79.32 | 60.18 |
+
 <!-- END GENERATED add-pmax-x86 -->
 
 ## 2. Subtract — SQ · NQ · MQ · OQ · FQ
@@ -107,6 +115,7 @@ Same band structure as Add: compact SQ/NQ/MQ (recompacted) plus full-range OQ/FQ
 **P-gen — arm64 (M3 Pro).**
 
 <!-- BEGIN GENERATED sub-pgen -->
+
 | port | sub SQ | sub NQ | sub MQ | sub OQ | sub FQ |
 |------|-------:|-------:|-------:|-------:|-------:|
 | c      |  1.24 |  4.79 | 11.35 | 12.68 |  7.14 |
@@ -118,11 +127,13 @@ Same band structure as Add: compact SQ/NQ/MQ (recompacted) plus full-range OQ/FQ
 | java‡  |  4.41 |  7.15 | 22.10 | 29.43 | 20.77 |
 | kotlin‡|  5.01 |  7.74 | 22.09 | 39.16 | 18.04 |
 | python | 21.12 | 22.47 | 29.81 | 39.48 | 32.58 |
+
 <!-- END GENERATED sub-pgen -->
 
 **P-gen — x86_64 (Intel i9-9880H).**
 
 <!-- BEGIN GENERATED sub-pgen-x86 -->
+
 | port | sub SQ | sub NQ | sub MQ | sub OQ | sub FQ |
 |------|-------:|-------:|-------:|-------:|-------:|
 | c      |  5.57 | 14.00 | 35.32 | 46.78 | 32.92 |
@@ -134,11 +145,13 @@ Same band structure as Add: compact SQ/NQ/MQ (recompacted) plus full-range OQ/FQ
 | java‡  | 12.56 | 20.46 | 42.84 | 61.25 | 42.44 |
 | kotlin‡| 14.66 | 24.86 | 42.31 | 66.25 | 45.59 |
 | python | 42.63 | 48.62 | 64.47 | 73.37 | 65.59 |
+
 <!-- END GENERATED sub-pgen-x86 -->
 
 **P-max — arm64 (stress).**
 
 <!-- BEGIN GENERATED sub-pmax -->
+
 | port | sub SQ | sub OQ | sub FQ |
 |------|-------:|-------:|-------:|
 | c      |  3.26 | 18.31 |  8.92 |
@@ -150,11 +163,13 @@ Same band structure as Add: compact SQ/NQ/MQ (recompacted) plus full-range OQ/FQ
 | java‡  |  6.95 | 30.98 | 23.77 |
 | kotlin‡|  7.92 | 30.02 | 18.15 |
 | python | 28.53 | 43.43 | 30.21 |
+
 <!-- END GENERATED sub-pmax -->
 
 **P-max — x86_64 (stress).**
 
 <!-- BEGIN GENERATED sub-pmax-x86 -->
+
 | port | sub SQ | sub OQ | sub FQ |
 |------|-------:|-------:|-------:|
 | c      | 13.64 | 54.10 | 28.73 |
@@ -166,6 +181,7 @@ Same band structure as Add: compact SQ/NQ/MQ (recompacted) plus full-range OQ/FQ
 | java‡  | 23.96 | 68.05 | 33.36 |
 | kotlin‡| 28.04 | 88.63 | 39.53 |
 | python | 51.40 | 78.16 | 64.84 |
+
 <!-- END GENERATED sub-pmax-x86 -->
 
 ## 3. Multiply — CP · WP · XP
@@ -178,6 +194,7 @@ lands at ~29.2 post the `Finalize.c` wide-product finalize fix (commit d98fd85);
 **P-gen — arm64 (M3 Pro).**
 
 <!-- BEGIN GENERATED mul-pgen -->
+
 | port | mul CP | mul WP | mul XP |
 |------|-------:|-------:|-------:|
 | c      |  1.39 | 20.69 | 29.20 |
@@ -189,11 +206,13 @@ lands at ~29.2 post the `Finalize.c` wide-product finalize fix (commit d98fd85);
 | java‡  |  4.95 | 26.03 | 52.40 |
 | kotlin‡|  5.32 | 31.21 | 61.49 |
 | python | 19.12 | 38.31 | 47.89 |
+
 <!-- END GENERATED mul-pgen -->
 
 **P-gen — x86_64 (Intel i9-9880H).**
 
 <!-- BEGIN GENERATED mul-pgen-x86 -->
+
 | port | mul CP | mul WP | mul XP |
 |------|-------:|-------:|-------:|
 | c      |  4.69 | 46.64 | 56.37 |
@@ -205,11 +224,13 @@ lands at ~29.2 post the `Finalize.c` wide-product finalize fix (commit d98fd85);
 | java‡  | 14.13 | 52.55 | 78.46 |
 | kotlin‡| 14.59 | 46.83 | 85.48 |
 | python | 42.70 | 75.70 | 88.72 |
+
 <!-- END GENERATED mul-pgen-x86 -->
 
 **P-max — arm64 (stress).** Only XP is feasible at 33–34 digits.
 
 <!-- BEGIN GENERATED mul-pmax -->
+
 | port | mul XP |
 |------|-------:|
 | c      | 30.10 |
@@ -221,11 +242,13 @@ lands at ~29.2 post the `Finalize.c` wide-product finalize fix (commit d98fd85);
 | java‡  | 55.08 |
 | kotlin‡| 51.60 |
 | python | 47.60 |
+
 <!-- END GENERATED mul-pmax -->
 
 **P-max — x86_64 (stress).**
 
 <!-- BEGIN GENERATED mul-pmax-x86 -->
+
 | port | mul XP |
 |------|-------:|
 | c      |  59.92 |
@@ -237,6 +260,7 @@ lands at ~29.2 post the `Finalize.c` wide-product finalize fix (commit d98fd85);
 | java‡  |  76.60 |
 | kotlin‡| 120.09 |
 | python |  91.58 |
+
 <!-- END GENERATED mul-pmax-x86 -->
 
 ## 4. Divide — CD · WD · XD (+ ET · PT)
@@ -252,6 +276,7 @@ runs ~10.5 ns. The **JVM 128-bit divide is competitive-to-ahead** at XD — HotS
 **P-gen — arm64 (M3 Pro).**
 
 <!-- BEGIN GENERATED div-pgen -->
+
 | port | div CD | div WD | div XD | div ET | div PT |
 |------|-------:|-------:|-------:|-------:|-------:|
 | c      | 42.13 | 38.54 | 33.72 |  8.40 |  3.15 |
@@ -263,11 +288,13 @@ runs ~10.5 ns. The **JVM 128-bit divide is competitive-to-ahead** at XD — HotS
 | java‡  | 30.35 | 51.05 | 48.29 | 12.73 |  9.78 |
 | kotlin‡| 34.96 | 50.90 | 52.77 | 19.44 | 11.48 |
 | python | 58.75 | 65.11 | 63.27 | 24.44 | 18.25 |
+
 <!-- END GENERATED div-pgen -->
 
 **P-gen — x86_64 (Intel i9-9880H).**
 
 <!-- BEGIN GENERATED div-pgen-x86 -->
+
 | port | div CD | div WD | div XD | div ET | div PT |
 |------|-------:|-------:|-------:|-------:|-------:|
 | c      |  88.17 | 103.94 |  92.88 | 29.28 | 10.10 |
@@ -279,11 +306,13 @@ runs ~10.5 ns. The **JVM 128-bit divide is competitive-to-ahead** at XD — HotS
 | java‡  |  88.03 | 117.29 | 124.42 | 44.96 | 23.94 |
 | kotlin‡|  94.77 | 121.81 | 132.68 | 49.99 | 27.06 |
 | python | 115.88 | 125.94 | 117.43 | 64.53 | 44.58 |
+
 <!-- END GENERATED div-pgen-x86 -->
 
 **P-max — arm64 (stress).** Only XD is feasible at 33–34-digit divisors.
 
 <!-- BEGIN GENERATED div-pmax -->
+
 | port | div XD |
 |------|-------:|
 | c      | 32.31 |
@@ -295,11 +324,13 @@ runs ~10.5 ns. The **JVM 128-bit divide is competitive-to-ahead** at XD — HotS
 | java‡  | 39.81 |
 | kotlin‡| 39.60 |
 | python | 62.11 |
+
 <!-- END GENERATED div-pmax -->
 
 **P-max — x86_64 (stress).**
 
 <!-- BEGIN GENERATED div-pmax-x86 -->
+
 | port | div XD |
 |------|-------:|
 | c      |  89.06 |
@@ -311,6 +342,7 @@ runs ~10.5 ns. The **JVM 128-bit divide is competitive-to-ahead** at XD — HotS
 | java‡  |  97.53 |
 | kotlin‡| 135.64 |
 | python | 111.70 |
+
 <!-- END GENERATED div-pmax-x86 -->
 
 ## 5. FMA — FN (Barrett) · FF (fits-128)
@@ -323,6 +355,7 @@ compress it via their packaging term). `‡` = JVM escape-forced.
 **FN/FF band shape — arm64 (M3 Pro).**
 
 <!-- BEGIN GENERATED fma -->
+
 | port | FN | FF | FN÷FF | run |
 |------|---:|---:|---:|-----|
 | c      |  79.12 | 42.22 | 1.87× | Rc2    |
@@ -334,11 +367,13 @@ compress it via their packaging term). `‡` = JVM escape-forced.
 | java‡  | 104.26 | 75.19 | 1.39× | Rjasw2 |
 | kotlin‡| 111.02 | 88.17 | 1.26× | Rkosw2 |
 | python | 112.13 | 81.48 | 1.38× | Rpysw2 |
+
 <!-- END GENERATED fma -->
 
 **FN/FF band shape — x86_64 (Intel i9-9880H).**
 
 <!-- BEGIN GENERATED fma-x86 -->
+
 | port | FN | FF | FN÷FF | run |
 |------|---:|---:|---:|-----|
 | c      | 151.81 |  93.23 | 1.63× | xRc2    |
@@ -350,6 +385,7 @@ compress it via their packaging term). `‡` = JVM escape-forced.
 | java‡  | 220.62 | 198.30 | 1.11× | xRjasw2 |
 | kotlin‡| 259.22 | 225.88 | 1.15× | xRkosw2 |
 | python | 219.47 | 183.06 | 1.20× | xRpysw2 |
+
 <!-- END GENERATED fma-x86 -->
 
 

@@ -23,6 +23,7 @@ definition, categories, and method are in the **Key** below the tables.
 ## d128 vs alternatives — arm64 (M3 Pro)
 
 <!-- BEGIN GENERATED pfin-rel -->
+
 | port | op | cat | profile | arch | mode | ns | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | c | add | MIX | P-fin | arm64 | thru | 2.81 | libbid | 10.35 | **3.68×** | Rc2 |  |
@@ -113,11 +114,13 @@ definition, categories, and method are in the **Key** below the tables.
 | python | div | WD | P-fin | arm64 | thru | 66.13 | decimal.Decimal | 100.24 | **1.52×** | Rpysw2 | compact idiom peer |
 | python | div | ET | P-fin | arm64 | thru | 22.11 | decimal.Decimal | 85.68 | **3.88×** | Rpysw2 | compact idiom peer |
 | python | div | PT | P-fin | arm64 | thru | 18.32 | decimal.Decimal | 83.53 | **4.56×** | Rpysw2 | compact idiom peer |
+
 <!-- END GENERATED pfin-rel -->
 
 ## d128 vs alternatives — x86_64 (Intel i9-9880H)
 
 <!-- BEGIN GENERATED pfin-rel-x86 -->
+
 | port | op | cat | profile | arch | mode | ns | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | c | add | MIX | P-fin | x86_64 | thru | 10.01 | libbid | 31.03 | **3.10×** | xRc2 |  |
@@ -208,6 +211,7 @@ definition, categories, and method are in the **Key** below the tables.
 | python | div | WD | P-fin | x86_64 | thru | 126.57 | decimal.Decimal | 230.16 | **1.82×** | xRpysw2 | compact idiom peer |
 | python | div | ET | P-fin | x86_64 | thru | 55.53 | decimal.Decimal | 186.48 | **3.36×** | xRpysw2 | compact idiom peer |
 | python | div | PT | P-fin | x86_64 | thru | 43.66 | decimal.Decimal | 179.55 | **4.11×** | xRpysw2 | compact idiom peer |
+
 <!-- END GENERATED pfin-rel-x86 -->
 
 ## Key — profile, categories & method
