@@ -6,8 +6,16 @@ description: "Performance benchmarks comparing Decimal128 against the IBM libdec
 heading: "Benchmarks"
 ---
 
-Placeholder content — this page is a work in progress.
+How Decimal128 performs across the supported languages, measured against the
+IBM (decQuad), Intel (libbid), and Python (libmpdec) reference libraries and each
+language's idiomatic decimal type. The results are split into three views:
 
-This page will present performance benchmarks showing how Decimal128
-compares against the IBM (libdecnumber) and Intel (libbid) reference
-libraries, and Python's libmpdec, across the eight supported languages.
+- **[Op Benchmark Results](benchmark/op-results.html)** — d128 vs alternatives,
+  per operation band, with explicit ratios.
+- **[Port-Comparison Benchmark Results](benchmark/port-compare.html)** — each
+  port's own d128 band shape on identical operands (no alternatives).
+- **[FinMix Benchmark Results](benchmark/finmix.html)** — a realistic financial
+  operation mix (P-fin) versus peer implementations.
+
+Methodology and the operation-category taxonomy are in the
+[Benchmark Matrix](whitepapers/benchmark-matrix.html).
