@@ -15,7 +15,7 @@ base 2, most decimal fractions (like 0.10) cannot be represented
 exactly. In addition, correctly rounding a decimal value to a given
 number of decimal places cannot be done in binary — rounding 1.015
 to the nearest cent should give 1.02 under banker's rounding, but
-binary yields 1.01.
+binary floating-point arithmetic yields 1.01.
 
 For domains such as finance, accounting, taxation, and payments,
 these discrepancies are unacceptable. Legal, contractual, and audit
@@ -35,17 +35,17 @@ applications.
 ## The Solution
 
 Miguel developed an IEEE 754-2019 compliant decimal128 high-performance
-software architecture, implemented in eight programming languages —
-C, C#, Java, Kotlin KMP, Swift, Rust, Go, and Python.
+software architecture, implemented in nine programming languages —
+C, Java, Kotlin KMP, C#, Swift, Rust, Go, Zig, and Python.
 
 This implementation guarantees identical, auditable, spec-compliant
-decimal arithmetic on every platform for financial systems:
+decimal arithmetic on every platform:
 
 - Ensures exactness for decimals up to 34 digits of precision
-- Provides five rounding directions with correct status-flag behavior
+- Provides five rounding directions
 - Outperforms the IBM (libdecnumber) and Intel (libbid) reference libraries, and Python's libmpdec
 - Passes all three major industry correctness suites: IBM decTest, IBM fptest, and Intel libbid test vectors
-- Removes the industry-wide barrier of "no good decimal option"
+- Removes the "no good decimal option" barrier for the finance industry
 
 This solution makes it possible to move decimal financial workloads
 off the IBM mainframe to the cloud without sacrificing the numerical
@@ -56,9 +56,9 @@ The decimal128 architecture is implemented natively in eight
 programming languages, so systems built on different platforms can
 share exactly the same arithmetic behaviour:
 
-`C` · `C#` · `Java` · `Kotlin KMP` · `Swift` · `Rust` · `Go` · `Python`
+`C` · `Java` · `Kotlin KMP` · `C#` · `Swift` · `Rust` · `Go` · `Zig` · `Python`
 
 The Swift and Kotlin implementations run natively on iOS and
 Android — reaching mobile fintech, payments, and point-of-sale
-applications, which have only had limited, slow, non-standardized
+applications, which previously have only had limited, slow, non-standardized
 decimal options.
