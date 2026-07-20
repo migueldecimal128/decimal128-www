@@ -21,7 +21,7 @@ are split into three views:
 Methodology and the operation-category taxonomy are in the
 [Benchmark Matrix](whitepapers/benchmark-matrix.html).
 
-## Results by Language
+## Summary Tables
 
 <div class="kb-results">
 
