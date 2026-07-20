@@ -1,33 +1,75 @@
 # `_op-benchmark/` — the benchmark report generator
 
-This directory holds the benchmark **data** and the **generator** that renders it
-into the `benchmark-*.md` report pages one level up in this repo. Everything you
-need to change the layout of those reports is here — **you do not need any other
-repo, and you do not re-run any benchmarks.** (Re-running benchmarks is a separate
-job that needs the individual language ports; changing layout is not.)
+This directory holds the benchmark **data** (`.jsonl` store) and the **generator**
+(`gen_bench.py`) that renders it into the `benchmark-*.md` report pages one level up
+in this repo. Everything needed to regenerate or re-lay-out those reports is here —
+**no other repo is needed, and regenerating never re-runs a benchmark.**
 
 The `_` prefix keeps this whole directory out of the published Jekyll site.
 
-## Requirements
+Requires **Python 3 only** — no `pip install`, no dependencies (standard library
+only). If `python3 --version` works, you're ready.
 
-Python 3 only. No `pip install`, no dependencies — the generator uses just the
-standard library. If `python3 --version` works, you're ready.
+---
 
-## The two kinds of thing in here
+## ▶ Regenerate the report pages from the store (the procedure)
 
-- **The store (data — don't hand-edit):**
-  `results.<lang>.jsonl` (one per port), plus `runs.jsonl`, `impls.json`,
-  `annotations.jsonl`. These are the measured numbers. Layout work never touches them.
-- **The generator (`gen_bench.py`):** reads the store and writes tables into the
-  report pages. This, plus the `.md` pages, is what you edit for layout.
+Run these steps exactly, from **inside this `_op-benchmark/` directory**.
 
-(The `emit_*.py` scripts and `_proto/` produce *new numbers* — ignore them for
-layout work.)
+**1. Regenerate every report page that contains generated tables.** This rewrites
+the tables from the current `.jsonl` store, in place, leaving all hand-written prose
+untouched:
+
+```bash
+cd _op-benchmark        # if not already here
+for f in ../benchmark-*.md; do
+  if grep -q 'BEGIN GENERATED' "$f"; then
+    echo "splicing $f"
+    python3 gen_bench.py --splice "$f"
+  fi
+done
+```
+
+(This auto-finds the pages by their markers — currently the nine
+`../benchmark-vs-<port>.md` pages plus `../benchmark-port-compare.md` — so it stays
+correct if pages are added or removed. Pages without markers, e.g.
+`benchmark-key.md`, are correctly skipped.)
+
+**2. Verify the pages are now in sync with the store.** After step 1 this must report
+`[OK ]` for every block and no `[DIFF]`:
+
+```bash
+for f in ../benchmark-*.md; do
+  if grep -q 'BEGIN GENERATED' "$f"; then
+    python3 gen_bench.py --check "$f"
+  fi
+done
+```
+
+**3. Report what changed.** Summarize which `benchmark-*.md` files were modified
+(`git status --short ../benchmark-*.md`) so the human can review.
+
+**Do NOT commit or push as part of regenerating** — regenerating only edits the
+working-tree `.md` files. Committing/publishing to the live site is a separate,
+explicit step the human will ask for if they want it.
+
+That is the whole regeneration task. The rest of this file is reference.
+
+---
+
+## What's in here
+
+- **The store (data — never hand-edit):** `results.<lang>.jsonl` (one per port),
+  plus `runs.jsonl`, `impls.json`, `annotations.jsonl`. The measured numbers.
+- **The generator:** `gen_bench.py` — reads the store, writes tables into the report
+  pages. This plus the `.md` pages is what you edit for layout.
+- `emit_*.py` and `_proto/` produce *new numbers* (they re-run the language ports) —
+  **not** part of regenerating or re-laying-out reports. Ignore them for this work.
 
 ## How the pages are built: the marker contract
 
-Each report page (`../benchmark-vs-<port>.md`, `../benchmark-port-compare.md`) is
-**hand-written prose** with **generated tables** dropped into marker regions:
+Each report page is **hand-written prose** with **generated tables** inside marker
+regions:
 
 ```
 <!-- BEGIN GENERATED add-rel-c -->
@@ -35,69 +77,47 @@ Each report page (`../benchmark-vs-<port>.md`, `../benchmark-port-compare.md`) i
 <!-- END GENERATED add-rel-c -->
 ```
 
-- **Outside** the markers → yours to edit freely (headings, intros, captions,
-  section order, everything).
-- **Inside** the markers → generated. Anything you type there is **overwritten**
-  the next time you regenerate. Change these tables by editing `gen_bench.py`, not
-  the page.
+- **Outside** the markers → freely editable (headings, intros, captions, section
+  order, everything). Regenerating never touches this.
+- **Inside** the markers → generated; hand-edits there are **overwritten** on the
+  next `--splice`. Change these tables by editing `gen_bench.py`, not the page.
 
-Each marker's `<id>` (e.g. `add-rel-c`) maps to a spec in `gen_bench.py`'s `SPECS`
-dictionary. To see every table id and which page it lives in:
+Each marker `<id>` (e.g. `add-rel-c`) maps to an entry in `gen_bench.py`'s `SPECS`
+dict. List every table id and its page:
 
 ```bash
 grep -o 'BEGIN GENERATED [a-z0-9-]*' ../benchmark-*.md
 ```
 
-## Commands
+## The three commands
 
-Run these from inside this directory:
-
-```bash
-python3 gen_bench.py --emit <id>       # print ONE table to the screen (preview, writes nothing)
-python3 gen_bench.py --check <page.md> # show what WOULD change in a page, without writing
-python3 gen_bench.py --splice <page.md># regenerate every table in that page, in place
-```
-
-`--check` and `--splice` act only on the markers actually present in the file you
-pass, so you can regenerate one page at a time.
-
-**Regenerate everything** (after any generator change):
+Run from inside this directory:
 
 ```bash
-for p in c rust zig swift csharp go java kotlin python; do
-  python3 gen_bench.py --splice ../benchmark-vs-$p.md
-done
-python3 gen_bench.py --splice ../benchmark-port-compare.md
+python3 gen_bench.py --emit <id>        # print ONE table to stdout (preview; writes nothing)
+python3 gen_bench.py --check <page.md>  # report whether a page's tables match the store (writes nothing)
+python3 gen_bench.py --splice <page.md> # rewrite that page's tables in place from the store
 ```
 
-## Changing the layout — the two cases
+`--splice` is the only one that writes files. `--check`/`--splice` act only on the
+markers present in the file you pass, so you can work one page at a time.
 
-**1. Page layout** (headings, intros, column captions, section order, or moving a
-table to a different page): edit the `../benchmark-*.md` files directly, in the
-prose *outside* the markers.
-- To **move a table** to another spot or page: cut its whole
-  `<!-- BEGIN GENERATED <id> -->` … `<!-- END GENERATED <id> -->` block, paste the
-  marker pair where you want it (the body in between will be refilled), then
-  `--splice` that page. A given `<id>` should exist in only one page.
+## Changing the layout
 
-**2. Table layout** (columns, column order/names, row ordering, number
-formatting): edit `gen_bench.py`, then re-splice. The levers:
-- Column headers: the `REL_HEADER` / `PFIN_REL_HEADER` string constants near the
-  top of the render section.
-- What each table contains and how rows are ordered: the `render_*` functions
-  (`render_relational`, `render_relational_pfin`, `render_matrix`, `render_fma`) —
-  each has a docstring explaining its row order.
-- Which ports/columns appear: `ALL_PORTS` / `_REL_PORTS` and the per-spec entries
-  in the `SPECS` dictionary.
+**Page layout** (headings, intros, captions, section order): edit the
+`../benchmark-*.md` files directly, in the prose *outside* the markers. These edits
+are effective immediately — no regeneration needed. To **move a table** elsewhere,
+cut its whole `<!-- BEGIN GENERATED <id> -->` … `<!-- END GENERATED <id> -->` block
+to the new spot (an `<id>` should live in only one page), then `--splice` that page.
 
-To **add a brand-new table**: add a marker pair with a new `<id>` to a page, add a
-matching entry to `SPECS` in `gen_bench.py` (copy an existing one), then `--splice`
-that page.
+**Table layout** (columns, column order/names, row ordering, formatting): edit
+`gen_bench.py`, then re-splice (the procedure above). The levers:
+- Column headers — the `REL_HEADER` / `PFIN_REL_HEADER` string constants.
+- Table contents and row order — the `render_*` functions (`render_relational`,
+  `render_relational_pfin`, `render_matrix`, `render_fma`); each has a docstring
+  describing its row order.
+- Which ports/columns appear — `ALL_PORTS` / `_REL_PORTS` and the per-spec entries
+  in `SPECS`.
 
-## Suggested workflow
-
-1. Make your change (edit a page's prose, or edit `gen_bench.py`).
-2. Preview: `python3 gen_bench.py --check ../benchmark-vs-c.md` (or `--emit <id>`).
-3. Apply: `--splice` the affected page(s), or run the regenerate-everything loop.
-4. `git commit` — data, generator, and pages all live in this one repo, so it's a
-   single commit.
+To **add a new table**: add a marker pair with a new `<id>` to a page, add a matching
+`SPECS` entry (copy an existing one), then `--splice` that page.
