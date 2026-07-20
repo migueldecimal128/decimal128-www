@@ -8,20 +8,23 @@ heading: "Benchmarks"
 
 Miguel has benchmarked his solution across the supported languages, measured
 against the IBM (decQuad), Intel (libbid), and Python (libmpdec) reference
-libraries and each language's idiomatic decimal type. The detailed results
-are split into three views:
+libraries and each language's idiomatic decimal type. The detailed results are
+published **per language** — pick a language below for its realistic
+financial-mix (P-fin) headline followed by the per-operation band tables (add,
+subtract, multiply, divide, FMA), d128 vs the alternatives available to it, with
+explicit ratios.
 
-- **[FinMix Benchmark Results](benchmark/finmix.html)** — a realistic financial
-  operation mix (P-fin) versus peer implementations.
-- **[Op Benchmark Results](benchmark/op-results.html)** — d128 vs alternatives,
-  per operation band, with explicit ratios.
+Two cross-cutting views complement the per-language pages:
+
 - **[Port-Comparison Benchmark Results](benchmark/port-compare.html)** — each
-  port's own d128 band shape on identical operands (no alternatives).
+  port's own d128 band shape on identical operands (all ports, no alternatives).
+- **[Benchmark Key](benchmark/key.html)** — the shared legend: category codes,
+  magnitude profiles, timing modes, and method.
 
 Methodology and the operation-category taxonomy are in the
 [Benchmark Matrix](whitepapers/benchmark-matrix.html).
 
-## Summary Tables
+## Per-language results
 
 <div class="kb-results">
 
@@ -29,7 +32,7 @@ Methodology and the operation-category taxonomy are in the
   <summary>C</summary>
   <div class="kb-entry-body" markdown="1">
 
-Table coming soon.
+[**C Benchmark Results →**](benchmark/vs-c.html) — FinMix headline, then add / subtract / multiply / divide / FMA band tables (arm64 + x86_64), with ratios.
 
   </div>
 </details>
@@ -38,7 +41,7 @@ Table coming soon.
   <summary>C#</summary>
   <div class="kb-entry-body" markdown="1">
 
-Table coming soon.
+[**C# Benchmark Results →**](benchmark/vs-csharp.html) — FinMix headline, then add / subtract / multiply / divide / FMA band tables (arm64 + x86_64), with ratios.
 
   </div>
 </details>
@@ -47,7 +50,7 @@ Table coming soon.
   <summary>Java</summary>
   <div class="kb-entry-body" markdown="1">
 
-Table coming soon.
+[**Java Benchmark Results →**](benchmark/vs-java.html) — FinMix headline, then add / subtract / multiply / divide / FMA band tables (arm64 + x86_64), with ratios.
 
   </div>
 </details>
@@ -56,7 +59,7 @@ Table coming soon.
   <summary>Kotlin KMP</summary>
   <div class="kb-entry-body" markdown="1">
 
-Table coming soon.
+[**Kotlin Benchmark Results →**](benchmark/vs-kotlin.html) — FinMix headline, then add / subtract / multiply / divide / FMA band tables (arm64 + x86_64), with ratios.
 
   </div>
 </details>
@@ -65,7 +68,7 @@ Table coming soon.
   <summary>Swift</summary>
   <div class="kb-entry-body" markdown="1">
 
-Table coming soon.
+[**Swift Benchmark Results →**](benchmark/vs-swift.html) — FinMix headline, then add / subtract / multiply / divide / FMA band tables (arm64 + x86_64), with ratios.
 
   </div>
 </details>
@@ -74,7 +77,7 @@ Table coming soon.
   <summary>Rust</summary>
   <div class="kb-entry-body" markdown="1">
 
-Table coming soon.
+[**Rust Benchmark Results →**](benchmark/vs-rust.html) — FinMix headline, then add / subtract / multiply / divide / FMA band tables (arm64 + x86_64), with ratios.
 
   </div>
 </details>
@@ -83,7 +86,7 @@ Table coming soon.
   <summary>Go</summary>
   <div class="kb-entry-body" markdown="1">
 
-Table coming soon.
+[**Go Benchmark Results →**](benchmark/vs-go.html) — FinMix headline, then add / subtract / multiply / divide / FMA band tables (arm64 + x86_64), with ratios.
 
   </div>
 </details>
@@ -92,7 +95,7 @@ Table coming soon.
   <summary>Python</summary>
   <div class="kb-entry-body" markdown="1">
 
-Table coming soon.
+[**Python Benchmark Results →**](benchmark/vs-python.html) — FinMix headline, then add / subtract / multiply / divide / FMA band tables (arm64 + x86_64), with ratios.
 
   </div>
 </details>
@@ -101,7 +104,7 @@ Table coming soon.
   <summary>Zig</summary>
   <div class="kb-entry-body" markdown="1">
 
-Table coming soon.
+[**Zig Benchmark Results →**](benchmark/vs-zig.html) — FinMix headline, then add / subtract / multiply / divide / FMA band tables (arm64 + x86_64), with ratios.
 
   </div>
 </details>

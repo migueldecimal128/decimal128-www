@@ -8,26 +8,27 @@ heading: "Port-Comparison Benchmark Results"
 
 <div class="whitepaper" markdown="1">
 
-<p class="whitepaper-meta">Split out of `benchmark-op-results.md` 2026-07-17. Living document — as-measured results.</p>
+<p class="whitepaper-meta">Living document — as-measured results.</p>
 
 This document is the **cross-port d128 band-shape** tier: compact matrices of decimal128's
 own ns/op per operation band, every port on the **same** swept operands. It **does not
 compare against alternatives** — no libbid / idiom-peer / ratio columns. Those live in the
 companion reports:
 
-- **`benchmark-port-compare.md`** (this doc) — d128-only band matrices, port × band.
+- **`benchmark-port-compare`** (this doc) — d128-only band matrices, port × band.
   "How does each port's kernel shape up across the input bands, fast path vs slow path?"
-- **`benchmark-op-results.md`** — the same bands **vs alternatives** (libbid / decQuad /
-  mpdecimal / idiom peers), with explicit ratios. "How fast is d128 against the field?"
-- **`benchmark-finmix.md`** — the realistic financial operation mix (P-fin), vs peers.
+- **`benchmark-vs-<port>`** (per language) — the same bands **vs alternatives** (libbid /
+  decQuad / mpdecimal / idiom peers), with explicit ratios, plus the realistic financial
+  operation mix (P-fin). "How fast is d128, in this language, against the field?" See the
+  [Benchmarks](/benchmarks.html) hub for the per-language index.
 
 **Method.** Swept 4096-input average per band (bare `thru`; ns/op = `Time/4096` over the
 shared `decimal128-resources/swept/<profile>/` corpus, byte-identical operands every port).
 arm64 (M3 Pro) and x86_64 (Intel i9-9880H); JVM verify-off, `‡` = escape-forced
 alloc-inclusive. `P-gen` = general digit-length-uniform widths; `P-max` = 34-digit stress.
 Band/category codes (`SQ`/`NQ`/`MQ`/`OQ`/`FQ`, `CP`/`WP`/`XP`, `CD`/`WD`/`XD`/`ET`/`PT`,
-`FN`/`FF`) are defined in `BenchmarkMatrix.md` §3 (authoritative) and glossed in
-`benchmark-op-results.md`'s Key.
+`FN`/`FF`) are defined in `BenchmarkMatrix.md` §3 (authoritative) and glossed in the shared
+[Benchmark Key](key.html).
 
 ## 1. Add — SQ · NQ · MQ · OQ · FQ
 
