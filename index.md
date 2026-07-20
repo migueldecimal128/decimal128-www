@@ -63,8 +63,8 @@ decimal options.
 
 ## The Problem in Practice
 
-The same 0.1 + 0.2 calculation, run live in three different languages —
-every one of them lands on 0.30000000000000004 instead of 0.3.
+The calculation 0.1 + 0.2 in Binary Floating point results in
+0.30000000000000004 instead of 0.3.
 
 <div class="screenshot-gallery" markdown="0">
   <img src="images/java-example.png" alt="Java Playground running double sum = 0.1 + 0.2, printing sum: 0.30000000000000004">
