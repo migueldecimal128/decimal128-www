@@ -46,7 +46,7 @@ the pack-direct NQ, the one add/sub band where d128's alignment cost shows.
 | rust   |  2.73 |  4.97 | 13.87 | 10.88 |  6.65 |
 | zig    |  2.54 |  6.07 | 12.18 | 12.83 |  7.58 |
 | swift  |  4.15 |  5.99 | 15.93 | 17.68 | 12.84 |
-| csharp |  3.01 |  5.31 | 14.13 | 19.84 | 11.23 |
+| csharp |  6.06 |  5.04 | 19.04 | 36.36 | 30.60 |
 | go     |  5.07 | 10.38 | 21.83 | 32.50 | 19.99 |
 | java‡  |  5.47 |  7.32 | 22.11 | 30.33 | 22.14 |
 | kotlin‡|  6.02 |  7.43 | 21.91 | 38.01 | 18.26 |
@@ -82,7 +82,7 @@ the pack-direct NQ, the one add/sub band where d128's alignment cost shows.
 | rust   |  5.27 | 13.45 |  7.87 |
 | zig    |  3.85 | 16.86 |  7.66 |
 | swift  |  6.02 | 22.79 | 12.87 |
-| csharp |  4.46 | 25.32 |  9.49 |
+| csharp |  4.72 | 28.58 | 25.17 |
 | go     | 11.02 | 42.83 | 20.67 |
 | java‡  |  7.08 | 31.06 | 23.20 |
 | kotlin‡|  8.10 | 29.87 | 16.93 |
@@ -122,7 +122,7 @@ Same band structure as Add: compact SQ/NQ/MQ (recompacted) plus full-range OQ/FQ
 | rust   |  1.75 |  5.14 | 14.49 | 10.97 |  6.66 |
 | zig    |  1.56 |  7.64 | 13.51 | 14.44 |  9.31 |
 | swift  |  2.58 |  5.61 | 15.39 | 17.42 | 12.97 |
-| csharp |  2.06 |  8.61 | 14.98 | 21.18 | 11.78 |
+| csharp |  9.34 |  5.82 | 18.80 | 35.73 | 28.91 |
 | go     |  2.69 | 10.09 | 22.03 | 32.21 | 19.60 |
 | java‡  |  4.41 |  7.15 | 22.10 | 29.43 | 20.77 |
 | kotlin‡|  5.01 |  7.74 | 22.09 | 39.16 | 18.04 |
@@ -158,7 +158,7 @@ Same band structure as Add: compact SQ/NQ/MQ (recompacted) plus full-range OQ/FQ
 | rust   |  4.22 | 13.36 |  7.85 |
 | zig    |  3.75 | 19.00 | 10.28 |
 | swift  |  4.36 | 23.20 | 12.46 |
-| csharp |  6.15 | 25.56 |  9.23 |
+| csharp |  5.25 | 29.36 | 26.52 |
 | go     |  6.50 | 44.44 | 20.02 |
 | java‡  |  6.95 | 30.98 | 23.77 |
 | kotlin‡|  7.92 | 30.02 | 18.15 |
@@ -201,7 +201,7 @@ lands at ~29.2 post the `Finalize.c` wide-product finalize fix (commit d98fd85);
 | rust   |  1.56 | 14.17 | 25.22 |
 | zig    |  1.58 | 18.57 | 25.44 |
 | swift  |  4.06 | 20.99 | 27.65 |
-| csharp |  2.19 | 18.31 | 31.58 |
+| csharp |  2.54 | 33.22 | 52.65 |
 | go     |  2.50 | 27.04 | 37.51 |
 | java‡  |  4.95 | 26.03 | 52.40 |
 | kotlin‡|  5.32 | 31.21 | 61.49 |
@@ -237,7 +237,7 @@ lands at ~29.2 post the `Finalize.c` wide-product finalize fix (commit d98fd85);
 | rust   | 29.26 |
 | zig    | 25.52 |
 | swift  | 30.21 |
-| csharp | 32.90 |
+| csharp | 35.14 |
 | go     | 41.06 |
 | java‡  | 55.08 |
 | kotlin‡| 51.60 |
@@ -283,7 +283,7 @@ runs ~10.5 ns. The **JVM 128-bit divide is competitive-to-ahead** at XD — HotS
 | rust   | 26.16 | 35.28 | 39.49 |  9.49 |  3.98 |
 | zig    | 39.04 | 42.29 | 34.46 | 10.69 |  4.23 |
 | swift  | 33.87 | 44.84 | 44.18 |  8.53 |  7.63 |
-| csharp | 38.21 | 47.42 | 60.26 | 22.55 |  5.44 |
+| csharp | 34.65 | 56.44 | 60.06 | 18.92 |  9.36 |
 | go     | 46.91 | 59.31 | 60.13 | 14.92 |  6.56 |
 | java‡  | 30.35 | 51.05 | 48.29 | 12.73 |  9.78 |
 | kotlin‡| 34.96 | 50.90 | 52.77 | 19.44 | 11.48 |
@@ -319,7 +319,7 @@ runs ~10.5 ns. The **JVM 128-bit divide is competitive-to-ahead** at XD — HotS
 | rust   | 41.87 |
 | zig    | 31.25 |
 | swift  | 39.80 |
-| csharp | 54.49 |
+| csharp | 28.73 |
 | go     | 53.62 |
 | java‡  | 39.81 |
 | kotlin‡| 39.60 |
@@ -362,7 +362,7 @@ compress it via their packaging term). `‡` = JVM escape-forced.
 | rust   |  23.03 | 33.57 | 0.69× | Rrsw2  |
 | zig    |  66.93 | 44.61 | 1.50× | Rzgsw2 |
 | swift  |  85.36 | 44.53 | 1.92× | Rswsw2 |
-| csharp |  94.91 | 58.04 | 1.64× | Rcssw2 |
+| csharp |  93.71 | 71.25 | 1.32× | Rcs11  |
 | go     | 157.70 | 76.56 | 2.06× | Rgosw2 |
 | java‡  | 104.26 | 75.19 | 1.39× | Rjasw2 |
 | kotlin‡| 111.02 | 88.17 | 1.26× | Rkosw2 |

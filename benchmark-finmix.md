@@ -74,14 +74,22 @@ definition, categories, and method are in the **Key** below the tables.
 | swift | div | WD | P-fin | arm64 | thru | 48.13 | Foundation.Decimal | 693.33 | **14.41×** | Rswsw2 | compact idiom peer |
 | swift | div | ET | P-fin | arm64 | thru | 8.53 | Foundation.Decimal | 3720.17 | **436.13×** | Rswsw2 | compact idiom peer |
 | swift | div | PT | P-fin | arm64 | thru | 7.62 | Foundation.Decimal | 3623.83 | **475.57×** | Rswsw2 | compact idiom peer |
-| csharp | add | MIX | P-fin | arm64 | thru | 4.31 | System.Decimal | 2.71 | **0.63×** | Rcssw2 | compact idiom peer |
-| csharp | sub | MIX | P-fin | arm64 | thru | 3.66 | System.Decimal | 2.65 | **0.72×** | Rcssw2 | compact idiom peer |
-| csharp | mul | CP | P-fin | arm64 | thru | 1.56 | - | - | - | Rcssw2 |  |
-| csharp | mul | WP | P-fin | arm64 | thru | 18.08 | - | - | - | Rcssw2 |  |
-| csharp | div | CD | P-fin | arm64 | thru | 22.97 | System.Decimal | 10.88 | **0.47×** | Rcssw2 | compact idiom peer |
-| csharp | div | WD | P-fin | arm64 | thru | 45.27 | System.Decimal | 18.59 | **0.41×** | Rcssw2 | compact idiom peer |
-| csharp | div | ET | P-fin | arm64 | thru | 5.35 | System.Decimal | 4.58 | **0.86×** | Rcssw2 | compact idiom peer |
-| csharp | div | PT | P-fin | arm64 | thru | 5.42 | System.Decimal | 10.33 | **1.91×** | Rcssw2 | compact idiom peer |
+| csharp | add | MIX | P-fin | arm64 | thru | 4.00 | System.Decimal | 3.01 | **0.75×** | Rcs11 | compact idiom peer |
+| csharp | add | MIX | P-fin | arm64 | thru | 4.00 | Decimal128 (.NET 11) | 15.67 | **3.92×** | Rcs11 |  |
+| csharp | sub | MIX | P-fin | arm64 | thru | 3.00 | System.Decimal | 2.97 | **0.99×** | Rcs11 | compact idiom peer |
+| csharp | sub | MIX | P-fin | arm64 | thru | 3.00 | Decimal128 (.NET 11) | 15.64 | **5.21×** | Rcs11 |  |
+| csharp | mul | CP | P-fin | arm64 | thru | 1.70 | - | - | - | Rcs11 |  |
+| csharp | mul | CP | P-fin | arm64 | thru | 1.70 | Decimal128 (.NET 11) | 11.05 | **6.50×** | Rcs11 |  |
+| csharp | mul | WP | P-fin | arm64 | thru | 30.98 | - | - | - | Rcs11 |  |
+| csharp | mul | WP | P-fin | arm64 | thru | 30.98 | Decimal128 (.NET 11) | 48.00 | **1.55×** | Rcs11 |  |
+| csharp | div | CD | P-fin | arm64 | thru | 32.27 | System.Decimal | 11.27 | **0.35×** | Rcs11 | compact idiom peer |
+| csharp | div | CD | P-fin | arm64 | thru | 32.27 | Decimal128 (.NET 11) | 153.50 | **4.76×** | Rcs11 |  |
+| csharp | div | WD | P-fin | arm64 | thru | 53.85 | System.Decimal | 28.10 | **0.52×** | Rcs11 | compact idiom peer |
+| csharp | div | WD | P-fin | arm64 | thru | 53.85 | Decimal128 (.NET 11) | 181.64 | **3.37×** | Rcs11 |  |
+| csharp | div | ET | P-fin | arm64 | thru | 14.13 | System.Decimal | 5.34 | **0.38×** | Rcs11 | compact idiom peer |
+| csharp | div | ET | P-fin | arm64 | thru | 14.13 | Decimal128 (.NET 11) | 236.66 | **16.75×** | Rcs11 |  |
+| csharp | div | PT | P-fin | arm64 | thru | 5.29 | System.Decimal | 12.54 | **2.37×** | Rcs11 | compact idiom peer |
+| csharp | div | PT | P-fin | arm64 | thru | 5.29 | Decimal128 (.NET 11) | 242.35 | **45.81×** | Rcs11 |  |
 | go | add | MIX | P-fin | arm64 | thru | 8.51 | - | - | - | Rgosw2 |  |
 | go | sub | MIX | P-fin | arm64 | thru | 4.17 | - | - | - | Rgosw2 |  |
 | go | mul | CP | P-fin | arm64 | thru | 2.14 | - | - | - | Rgosw2 |  |
