@@ -6,9 +6,10 @@ description: "Performance benchmarks comparing Decimal128 against the IBM libdec
 heading: "Benchmarks"
 ---
 
-How Decimal128 performs across the supported languages, measured against the
-IBM (decQuad), Intel (libbid), and Python (libmpdec) reference libraries and each
-language's idiomatic decimal type. The results are split into three views:
+Miguel has benchmarked his solution across the supported languages, measured
+against the IBM (decQuad), Intel (libbid), and Python (libmpdec) reference
+libraries and each language's idiomatic decimal type. The detailed results
+are split into three views:
 
 - **[FinMix Benchmark Results](benchmark/finmix.html)** — a realistic financial
   operation mix (P-fin) versus peer implementations.
