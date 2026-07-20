@@ -6,7 +6,7 @@ description: "Decimal128 builds open-source tools and shares them publicly on Gi
 heading: "Decimal128"
 ---
 
-## The Problem
+## The Problem & The Solution
 
 Binary floating point (Float/Double) has been the primary
 floating-point number format on general-purpose computers since the
@@ -31,8 +31,6 @@ IEEE 754 compliant. Python has excellent Decimal support that
 predates IEEE 754 decimal floating point, but Python is relatively
 slow and Python is not frequently used in commercial financial
 applications.
-
-## The Solution
 
 Miguel developed an IEEE 754-2019 compliant decimal128 high-performance
 software architecture, implemented in nine programming languages —
