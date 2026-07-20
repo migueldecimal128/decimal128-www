@@ -1,0 +1,7 @@
+# Session safety-backups and one-time gate fixtures (redundant with git history).
+_gate/
+# BenchmarkDotNet / build artifacts if ever emitted here
+BenchmarkDotNet.Artifacts/
+_cbench_*.json
+__pycache__/
+*.pyc

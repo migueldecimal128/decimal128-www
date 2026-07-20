@@ -1,0 +1,12 @@
+{
+  "d128":               {"display": "d128",               "conformant": true,  "idiom_peer": false, "mantissa_digits": 34,          "lang_pinned": null,               "encoding": "BID"},
+  "libbid":             {"display": "libbid",             "conformant": true,  "idiom_peer": false, "mantissa_digits": 34,          "lang_pinned": "c",                "encoding": "BID"},
+  "libdecquad":         {"display": "decQuad",            "conformant": true,  "idiom_peer": false, "mantissa_digits": 34,          "lang_pinned": "c",                "encoding": "DPD"},
+  "libmpdecimal":       {"display": "mpdecimal",          "conformant": true,  "idiom_peer": false, "mantissa_digits": "arbitrary", "lang_pinned": "c"},
+  "rust_decimal":       {"display": "rust_decimal",       "conformant": false, "idiom_peer": true,  "mantissa_digits": 28,          "lang_pinned": "rust"},
+  "System.Decimal":     {"display": "System.Decimal",     "conformant": false, "idiom_peer": true,  "mantissa_digits": 28,          "lang_pinned": "csharp"},
+  "System.Numerics.Decimal128": {"display": "Decimal128 (.NET 11)", "conformant": true, "idiom_peer": false, "mantissa_digits": 34, "lang_pinned": "csharp", "encoding": "BID"},
+  "Foundation.Decimal": {"display": "Foundation.Decimal", "conformant": false, "idiom_peer": true,  "mantissa_digits": 38,          "lang_pinned": "swift"},
+  "BigDecimal":         {"display": "BigDecimal",         "conformant": false, "idiom_peer": true,  "mantissa_digits": "arbitrary", "lang_pinned": ["java", "kotlin"]},
+  "decimal.Decimal":    {"display": "decimal.Decimal",    "conformant": false, "idiom_peer": true,  "mantissa_digits": "arbitrary", "lang_pinned": "python"}
+}

@@ -1,0 +1,30 @@
+{"lang": "c", "impl": "libbid", "op": "mul", "cat": "CP", "profile": "P-gen", "arch": "arm64", "mode": "thru", "note": "**no scaling** — the cheap multiply"}
+{"lang": "c", "impl": "libbid", "op": "mul", "cat": "WP", "profile": "P-gen", "arch": "arm64", "mode": "thru", "note": "128-bit recipMulPow10"}
+{"lang": "c", "impl": "libbid", "op": "mul", "cat": "XP", "profile": "P-gen", "arch": "arm64", "mode": "thru", "note": "256-bit recipMulPow10; **1.19× ≈ the recipmul-256 work-order's 1.18–1.54× band**"}
+{"lang": "csharp", "impl": "libbid", "op": "mul", "cat": "WP", "profile": "P-gen", "arch": "arm64", "mode": "thru", "note": "28-digit peers overflow ⇒ d128-only vs System.Decimal"}
+{"lang": "csharp", "impl": "libbid", "op": "mul", "cat": "XP", "profile": "P-gen", "arch": "arm64", "mode": "thru", "note": "the one port libbid edges on the widest product"}
+{"lang": "c", "impl": "libdecquad", "op": "mul", "cat": "CP", "profile": "P-gen", "arch": "arm64", "mode": "thru", "note": "vs DPD"}
+{"lang": "c", "impl": "libdecquad", "op": "mul", "cat": "WP", "profile": "P-gen", "arch": "arm64", "mode": "thru", "note": "vs DPD"}
+{"lang": "c", "impl": "libdecquad", "op": "mul", "cat": "XP", "profile": "P-gen", "arch": "arm64", "mode": "thru", "note": "**decQuad edges d128 on the widest product** (software DPD's flat cost; libbid still slower)"}
+{"lang": "c", "impl": "libmpdecimal", "op": "mul", "cat": "CP", "profile": "P-gen", "arch": "arm64", "mode": "thru", "note": "no-scale multiply vs libmpdec"}
+{"lang": "c", "impl": "libmpdecimal", "op": "mul", "cat": "WP", "profile": "P-gen", "arch": "arm64", "mode": "thru", "note": "128-bit recipMulPow10"}
+{"lang": "c", "impl": "libmpdecimal", "op": "mul", "cat": "XP", "profile": "P-gen", "arch": "arm64", "mode": "thru", "note": "**d128 wins the widest product vs libmpdec** (unlike decQuad)"}
+{"lang": "rust", "impl": "rust_decimal", "op": "mul", "cat": "CP", "profile": "P-fin", "arch": "arm64", "mode": "thru*", "note": "compact idiom peer; small operands, head-to-head"}
+{"lang": "c", "impl": "libbid", "op": "div", "cat": "CD", "profile": "P-gen", "arch": "arm64", "mode": "thru", "note": "128÷64 quotient-first (§2.4.10); **libbid wins** — the compact-divide weakness persists"}
+{"lang": "c", "impl": "libbid", "op": "div", "cat": "WD", "profile": "P-gen", "arch": "arm64", "mode": "thru", "note": "256÷64; **≈ parity / slight loss**"}
+{"lang": "c", "impl": "libbid", "op": "div", "cat": "XD", "profile": "P-gen", "arch": "arm64", "mode": "thru", "note": "256÷128 Möller–Granlund"}
+{"lang": "c", "impl": "libbid", "op": "div", "cat": "ET", "profile": "P-gen", "arch": "arm64", "mode": "thru", "note": "**quotient-first exact early-out** — beats libbid's exact fast path"}
+{"lang": "c", "impl": "libbid", "op": "div", "cat": "PT", "profile": "P-gen", "arch": "arm64", "mode": "thru", "note": "`divPow10Divisor` (§2.4.9); **d128's fastest divide** (coeff-1 form)"}
+{"lang": "swift", "impl": "libbid", "op": "div", "cat": "PT", "profile": "P-gen", "arch": "arm64", "mode": "thru", "note": "coeff-10ᵏ strip form"}
+{"lang": "c", "impl": "libdecquad", "op": "div", "cat": "CD", "profile": "P-gen", "arch": "arm64", "mode": "thru", "note": "vs DPD"}
+{"lang": "c", "impl": "libdecquad", "op": "div", "cat": "WD", "profile": "P-gen", "arch": "arm64", "mode": "thru", "note": "vs DPD"}
+{"lang": "c", "impl": "libdecquad", "op": "div", "cat": "XD", "profile": "P-gen", "arch": "arm64", "mode": "thru", "note": "vs DPD — decNumber divide is slow"}
+{"lang": "c", "impl": "libdecquad", "op": "div", "cat": "ET", "profile": "P-gen", "arch": "arm64", "mode": "thru", "note": "vs DPD"}
+{"lang": "c", "impl": "libdecquad", "op": "div", "cat": "PT", "profile": "P-gen", "arch": "arm64", "mode": "thru", "note": "vs DPD"}
+{"lang": "c", "impl": "libmpdecimal", "op": "div", "cat": "CD", "profile": "P-gen", "arch": "arm64", "mode": "thru", "note": "**narrowest divide gap** (libmpdec's compact divide is its cheapest, like d128's weakness)"}
+{"lang": "c", "impl": "libmpdecimal", "op": "div", "cat": "WD", "profile": "P-gen", "arch": "arm64", "mode": "thru", "note": "256÷64"}
+{"lang": "c", "impl": "libmpdecimal", "op": "div", "cat": "XD", "profile": "P-gen", "arch": "arm64", "mode": "thru", "note": "Cowlishaw signature (CD 59 < WD 87 < XD 144)"}
+{"lang": "c", "impl": "libmpdecimal", "op": "div", "cat": "ET", "profile": "P-gen", "arch": "arm64", "mode": "thru", "note": "libmpdec has no exact early-out"}
+{"lang": "c", "impl": "libmpdecimal", "op": "div", "cat": "PT", "profile": "P-gen", "arch": "arm64", "mode": "thru", "note": "**d128's biggest divide win vs libmpdec**"}
+{"lang": "rust", "impl": "rust_decimal", "op": "div", "cat": "CD", "profile": "P-fin", "arch": "arm64", "mode": "thru*", "note": "compact idiom peer; **rust_decimal wins** — d128 div always scales ≥35 digits (§3.3)"}
+{"lang": "rust", "impl": "rust_decimal", "op": "div", "cat": "PT", "profile": "P-fin", "arch": "arm64", "mode": "thru*", "note": "compact idiom peer; ≈ tie"}
