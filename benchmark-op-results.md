@@ -110,11 +110,11 @@ BigDecimal pending.
 | swift | add | MQ | P-gen | arm64 | thru | 15.93 | Foundation.Decimal | 392.09 | **24.61×** | Rswsw2 | compact idiom peer |
 | swift | add | OQ | P-gen | arm64 | thru | 17.68 | Foundation.Decimal | 522.39 | **29.55×** | Rswsw2 | compact idiom peer |
 | swift | add | FQ | P-gen | arm64 | thru | 12.84 | Foundation.Decimal | 271.65 | **21.16×** | Rswsw2 | compact idiom peer |
-| csharp | add | SQ | P-gen | arm64 | thru | 3.01 | System.Decimal | 2.38 | **0.79×** | Rcssw2 | compact idiom peer |
-| csharp | add | NQ | P-gen | arm64 | thru | 5.31 | System.Decimal | 3.61 | **0.68×** | Rcssw2 | compact idiom peer |
-| csharp | add | MQ | P-gen | arm64 | thru | 14.13 | System.Decimal | 3.41 | **0.24×** | Rcssw2 | compact idiom peer |
-| csharp | add | OQ | P-gen | arm64 | thru | 19.84 | - | - | - | Rcssw2 |  |
-| csharp | add | FQ | P-gen | arm64 | thru | 11.23 | - | - | - | Rcssw2 |  |
+| csharp | add | SQ | P-gen | arm64 | thru | 5.97 | System.Decimal | 2.50 | **0.42×** | Rcs11 | compact idiom peer |
+| csharp | add | NQ | P-gen | arm64 | thru | 5.18 | System.Decimal | 4.26 | **0.82×** | Rcs11 | compact idiom peer |
+| csharp | add | MQ | P-gen | arm64 | thru | 20.46 | System.Decimal | 4.09 | **0.20×** | Rcs11 | compact idiom peer |
+| csharp | add | OQ | P-gen | arm64 | thru | 37.46 | - | - | - | Rcs11 |  |
+| csharp | add | FQ | P-gen | arm64 | thru | 30.83 | - | - | - | Rcs11 |  |
 | go | add | SQ | P-gen | arm64 | thru | 5.07 | - | - | - | Rgosw2 |  |
 | go | add | NQ | P-gen | arm64 | thru | 10.38 | - | - | - | Rgosw2 |  |
 | go | add | MQ | P-gen | arm64 | thru | 21.83 | - | - | - | Rgosw2 |  |
@@ -145,6 +145,11 @@ BigDecimal pending.
 | c | add | MQ | P-gen | arm64 | thru | 10.80 | mpdecimal | 26.02 | **2.41×** | Rc2 |  |
 | c | add | OQ | P-gen | arm64 | thru | 12.07 | mpdecimal | 47.59 | **3.94×** | Rc2 |  |
 | c | add | FQ | P-gen | arm64 | thru | 7.07 | mpdecimal | 40.65 | **5.75×** | Rc2 |  |
+| csharp | add | SQ | P-gen | arm64 | thru | 5.97 | Decimal128 (.NET 11) | 19.99 | **3.35×** | Rcs11 |  |
+| csharp | add | NQ | P-gen | arm64 | thru | 5.18 | Decimal128 (.NET 11) | 19.92 | **3.85×** | Rcs11 |  |
+| csharp | add | MQ | P-gen | arm64 | thru | 20.46 | Decimal128 (.NET 11) | 20.34 | **0.99×** | Rcs11 |  |
+| csharp | add | OQ | P-gen | arm64 | thru | 37.46 | Decimal128 (.NET 11) | 144.23 | **3.85×** | Rcs11 |  |
+| csharp | add | FQ | P-gen | arm64 | thru | 30.83 | Decimal128 (.NET 11) | 1270.68 | **41.22×** | Rcs11 |  |
 
 <!-- END GENERATED add-rel -->
 
@@ -251,11 +256,11 @@ BigDecimal pending.
 | swift | sub | MQ | P-gen | arm64 | thru | 15.39 | Foundation.Decimal | 396.68 | **25.78×** | Rswsw2 | compact idiom peer |
 | swift | sub | OQ | P-gen | arm64 | thru | 17.42 | Foundation.Decimal | 522.49 | **29.99×** | Rswsw2 | compact idiom peer |
 | swift | sub | FQ | P-gen | arm64 | thru | 12.97 | Foundation.Decimal | 274.32 | **21.15×** | Rswsw2 | compact idiom peer |
-| csharp | sub | SQ | P-gen | arm64 | thru | 2.06 | System.Decimal | 2.26 | **1.10×** | Rcssw2 | compact idiom peer |
-| csharp | sub | NQ | P-gen | arm64 | thru | 8.61 | System.Decimal | 3.61 | **0.42×** | Rcssw2 | compact idiom peer |
-| csharp | sub | MQ | P-gen | arm64 | thru | 14.98 | System.Decimal | 3.54 | **0.24×** | Rcssw2 | compact idiom peer |
-| csharp | sub | OQ | P-gen | arm64 | thru | 21.18 | - | - | - | Rcssw2 |  |
-| csharp | sub | FQ | P-gen | arm64 | thru | 11.78 | - | - | - | Rcssw2 |  |
+| csharp | sub | SQ | P-gen | arm64 | thru | 9.10 | System.Decimal | 2.51 | **0.28×** | Rcs11 | compact idiom peer |
+| csharp | sub | NQ | P-gen | arm64 | thru | 6.11 | System.Decimal | 4.41 | **0.72×** | Rcs11 | compact idiom peer |
+| csharp | sub | MQ | P-gen | arm64 | thru | 20.57 | System.Decimal | 4.11 | **0.20×** | Rcs11 | compact idiom peer |
+| csharp | sub | OQ | P-gen | arm64 | thru | 36.37 | - | - | - | Rcs11 |  |
+| csharp | sub | FQ | P-gen | arm64 | thru | 29.10 | - | - | - | Rcs11 |  |
 | go | sub | SQ | P-gen | arm64 | thru | 2.69 | - | - | - | Rgosw2 |  |
 | go | sub | NQ | P-gen | arm64 | thru | 10.09 | - | - | - | Rgosw2 |  |
 | go | sub | MQ | P-gen | arm64 | thru | 22.03 | - | - | - | Rgosw2 |  |
@@ -286,6 +291,11 @@ BigDecimal pending.
 | c | sub | MQ | P-gen | arm64 | thru | 11.35 | mpdecimal | 20.98 | **1.85×** | Rc2 |  |
 | c | sub | OQ | P-gen | arm64 | thru | 12.68 | mpdecimal | 46.42 | **3.66×** | Rc2 |  |
 | c | sub | FQ | P-gen | arm64 | thru | 7.14 | mpdecimal | 41.10 | **5.76×** | Rc2 |  |
+| csharp | sub | SQ | P-gen | arm64 | thru | 9.10 | Decimal128 (.NET 11) | 20.12 | **2.21×** | Rcs11 |  |
+| csharp | sub | NQ | P-gen | arm64 | thru | 6.11 | Decimal128 (.NET 11) | 19.21 | **3.14×** | Rcs11 |  |
+| csharp | sub | MQ | P-gen | arm64 | thru | 20.57 | Decimal128 (.NET 11) | 19.28 | **0.94×** | Rcs11 |  |
+| csharp | sub | OQ | P-gen | arm64 | thru | 36.37 | Decimal128 (.NET 11) | 145.69 | **4.01×** | Rcs11 |  |
+| csharp | sub | FQ | P-gen | arm64 | thru | 29.10 | Decimal128 (.NET 11) | 1268.96 | **43.61×** | Rcs11 |  |
 
 <!-- END GENERATED sub-rel -->
 
@@ -389,9 +399,9 @@ peer `rust_decimal` on the CP band. java/kotlin + BigDecimal pending.
 | swift | mul | CP | P-gen | arm64 | thru | 4.06 | Foundation.Decimal | 277.54 | **68.36×** | Rswsw2 | compact idiom peer |
 | swift | mul | WP | P-gen | arm64 | thru | 20.99 | Foundation.Decimal | 294.38 | **14.02×** | Rswsw2 | compact idiom peer |
 | swift | mul | XP | P-gen | arm64 | thru | 27.65 | Foundation.Decimal | 798.35 | **28.87×** | Rswsw2 | compact idiom peer |
-| csharp | mul | CP | P-gen | arm64 | thru | 2.19 | - | - | - | Rcssw2 |  |
-| csharp | mul | WP | P-gen | arm64 | thru | 18.31 | - | - | - | Rcssw2 |  |
-| csharp | mul | XP | P-gen | arm64 | thru | 31.58 | - | - | - | Rcssw2 |  |
+| csharp | mul | CP | P-gen | arm64 | thru | 2.90 | - | - | - | Rcs11 |  |
+| csharp | mul | WP | P-gen | arm64 | thru | 35.77 | - | - | - | Rcs11 |  |
+| csharp | mul | XP | P-gen | arm64 | thru | 53.45 | - | - | - | Rcs11 |  |
 | go | mul | CP | P-gen | arm64 | thru | 2.50 | - | - | - | Rgosw2 |  |
 | go | mul | WP | P-gen | arm64 | thru | 27.04 | - | - | - | Rgosw2 |  |
 | go | mul | XP | P-gen | arm64 | thru | 37.51 | - | - | - | Rgosw2 |  |
@@ -410,6 +420,9 @@ peer `rust_decimal` on the CP band. java/kotlin + BigDecimal pending.
 | c | mul | CP | P-gen | arm64 | thru | 1.39 | mpdecimal | 22.03 | **15.85×** | Rc2 | no-scale multiply vs libmpdec |
 | c | mul | WP | P-gen | arm64 | thru | 20.69 | mpdecimal | 53.26 | **2.57×** | Rc2 | 128-bit recipMulPow10 |
 | c | mul | XP | P-gen | arm64 | thru | 29.20 | mpdecimal | 72.75 | **2.49×** | Rc2 | **d128 wins the widest product vs libmpdec** (unlike decQuad) |
+| csharp | mul | CP | P-gen | arm64 | thru | 2.90 | Decimal128 (.NET 11) | 11.00 | **3.79×** | Rcs11 |  |
+| csharp | mul | WP | P-gen | arm64 | thru | 35.77 | Decimal128 (.NET 11) | 49.43 | **1.38×** | Rcs11 |  |
+| csharp | mul | XP | P-gen | arm64 | thru | 53.45 | Decimal128 (.NET 11) | 1234.09 | **23.09×** | Rcs11 |  |
 
 <!-- END GENERATED mul-rel -->
 
@@ -500,11 +513,11 @@ BigDecimal pending.
 | swift | div | XD | P-gen | arm64 | thru | 44.18 | Foundation.Decimal | 681.51 | **15.43×** | Rswsw2 | compact idiom peer |
 | swift | div | ET | P-gen | arm64 | thru | 8.53 | Foundation.Decimal | 3204.05 | **375.62×** | Rswsw2 | compact idiom peer |
 | swift | div | PT | P-gen | arm64 | thru | 7.63 | Foundation.Decimal | 3093.81 | **405.48×** | Rswsw2 | compact idiom peer |
-| csharp | div | CD | P-gen | arm64 | thru | 38.21 | - | - | - | Rcssw2 |  |
-| csharp | div | WD | P-gen | arm64 | thru | 47.42 | - | - | - | Rcssw2 |  |
-| csharp | div | XD | P-gen | arm64 | thru | 60.26 | - | - | - | Rcssw2 |  |
-| csharp | div | ET | P-gen | arm64 | thru | 22.55 | - | - | - | Rcssw2 |  |
-| csharp | div | PT | P-gen | arm64 | thru | 5.44 | - | - | - | Rcssw2 |  |
+| csharp | div | CD | P-gen | arm64 | thru | 34.21 | - | - | - | Rcs11 |  |
+| csharp | div | WD | P-gen | arm64 | thru | 52.53 | - | - | - | Rcs11 |  |
+| csharp | div | XD | P-gen | arm64 | thru | 52.28 | - | - | - | Rcs11 |  |
+| csharp | div | ET | P-gen | arm64 | thru | 12.18 | - | - | - | Rcs11 |  |
+| csharp | div | PT | P-gen | arm64 | thru | 5.26 | - | - | - | Rcs11 |  |
 | go | div | CD | P-gen | arm64 | thru | 46.91 | - | - | - | Rgosw2 |  |
 | go | div | WD | P-gen | arm64 | thru | 59.31 | - | - | - | Rgosw2 |  |
 | go | div | XD | P-gen | arm64 | thru | 60.13 | - | - | - | Rgosw2 |  |
@@ -535,6 +548,11 @@ BigDecimal pending.
 | c | div | XD | P-gen | arm64 | thru | 33.72 | mpdecimal | 147.57 | **4.38×** | Rc2 | Cowlishaw signature (CD 59 < WD 87 < XD 144) |
 | c | div | ET | P-gen | arm64 | thru | 8.40 | mpdecimal | 58.94 | **7.02×** | Rc2 | libmpdec has no exact early-out |
 | c | div | PT | P-gen | arm64 | thru | 3.15 | mpdecimal | 51.15 | **16.24×** | Rc2 | **d128's biggest divide win vs libmpdec** |
+| csharp | div | CD | P-gen | arm64 | thru | 34.21 | Decimal128 (.NET 11) | 117.01 | **3.42×** | Rcs11 |  |
+| csharp | div | WD | P-gen | arm64 | thru | 52.53 | Decimal128 (.NET 11) | 156.86 | **2.99×** | Rcs11 |  |
+| csharp | div | XD | P-gen | arm64 | thru | 52.28 | Decimal128 (.NET 11) | 578.79 | **11.07×** | Rcs11 |  |
+| csharp | div | ET | P-gen | arm64 | thru | 12.18 | Decimal128 (.NET 11) | 154.25 | **12.66×** | Rcs11 |  |
+| csharp | div | PT | P-gen | arm64 | thru | 5.26 | Decimal128 (.NET 11) | 150.27 | **28.57×** | Rcs11 |  |
 
 <!-- END GENERATED div-rel -->
 
@@ -628,8 +646,8 @@ show `-`. d128's fits-128 FF path is the standout (libbid ≈1.4×, decQuad ≈1
 | zig | fma | FF | FMA | arm64 | thru | 44.61 | libbid | 59.70 | **1.34×** | Rzgsw2 |  |
 | swift | fma | FN | FMA | arm64 | thru | 85.36 | libbid | 82.34 | **0.96×** | Rswsw2 |  |
 | swift | fma | FF | FMA | arm64 | thru | 44.53 | libbid | 59.70 | **1.34×** | Rswsw2 |  |
-| csharp | fma | FN | FMA | arm64 | thru | 94.91 | - | - | - | Rcssw2 |  |
-| csharp | fma | FF | FMA | arm64 | thru | 58.04 | - | - | - | Rcssw2 |  |
+| csharp | fma | FN | FMA | arm64 | thru | 96.99 | - | - | - | Rcs11 |  |
+| csharp | fma | FF | FMA | arm64 | thru | 71.08 | - | - | - | Rcs11 |  |
 | go | fma | FN | FMA | arm64 | thru | 157.70 | - | - | - | Rgosw2 |  |
 | go | fma | FF | FMA | arm64 | thru | 76.56 | - | - | - | Rgosw2 |  |
 | java | fma | FN | FMA | arm64 | thru‡ | 104.26 | libbid | 82.34 | **0.79×** | Rjasw2 |  |
