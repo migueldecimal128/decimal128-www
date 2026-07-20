@@ -47,14 +47,14 @@ The headline: one realistic 64-bit financial operation mix — a `MIX` add/sub s
 
 | port | op | cat | profile | arch | mode | ns | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| csharp | add | MIX | P-fin | x86_64 | thru | 17.39 | System.Decimal | 13.29 | **0.76×** | xRcssw2 | compact idiom peer |
-| csharp | sub | MIX | P-fin | x86_64 | thru | 14.70 | System.Decimal | 13.21 | **0.90×** | xRcssw2 | compact idiom peer |
-| csharp | mul | CP | P-fin | x86_64 | thru | 5.81 | - | - | - | xRcssw2 |  |
-| csharp | mul | WP | P-fin | x86_64 | thru | 49.41 | - | - | - | xRcssw2 |  |
-| csharp | div | CD | P-fin | x86_64 | thru | 81.67 | System.Decimal | 54.10 | **0.66×** | xRcssw2 | compact idiom peer |
-| csharp | div | WD | P-fin | x86_64 | thru | 116.53 | System.Decimal | 116.27 | **1.00×** | xRcssw2 | compact idiom peer |
-| csharp | div | ET | P-fin | x86_64 | thru | 26.29 | System.Decimal | 16.81 | **0.64×** | xRcssw2 | compact idiom peer |
-| csharp | div | PT | P-fin | x86_64 | thru | 15.61 | System.Decimal | 60.09 | **3.85×** | xRcssw2 | compact idiom peer |
+| csharp | add | MIX | P-fin | x86_64 | thru | 17.25 | System.Decimal | 13.57 | **0.79×** | xRcs11 | compact idiom peer |
+| csharp | sub | MIX | P-fin | x86_64 | thru | 15.03 | System.Decimal | 13.00 | **0.86×** | xRcs11 | compact idiom peer |
+| csharp | mul | CP | P-fin | x86_64 | thru | 5.61 | - | - | - | xRcs11 |  |
+| csharp | mul | WP | P-fin | x86_64 | thru | 62.00 | - | - | - | xRcs11 |  |
+| csharp | div | CD | P-fin | x86_64 | thru | 113.08 | System.Decimal | 59.82 | **0.53×** | xRcs11 | compact idiom peer |
+| csharp | div | WD | P-fin | x86_64 | thru | 135.01 | System.Decimal | 116.11 | **0.86×** | xRcs11 | compact idiom peer |
+| csharp | div | ET | P-fin | x86_64 | thru | 30.32 | System.Decimal | 17.09 | **0.56×** | xRcs11 | compact idiom peer |
+| csharp | div | PT | P-fin | x86_64 | thru | 12.62 | System.Decimal | 66.66 | **5.28×** | xRcs11 | compact idiom peer |
 
 <!-- END GENERATED pfin-rel-csharp-x86 -->
 
@@ -87,11 +87,11 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| csharp | add | SQ | P-gen | x86_64 | thru | 13.59 | System.Decimal | 11.55 | **0.85×** | xRcssw2 | compact idiom peer |
-| csharp | add | NQ | P-gen | x86_64 | thru | 18.16 | System.Decimal | 15.87 | **0.87×** | xRcssw2 | compact idiom peer |
-| csharp | add | MQ | P-gen | x86_64 | thru | 50.25 | System.Decimal | 15.12 | **0.30×** | xRcssw2 | compact idiom peer |
-| csharp | add | OQ | P-gen | x86_64 | thru | 71.58 | - | - | - | xRcssw2 |  |
-| csharp | add | FQ | P-gen | x86_64 | thru | 42.58 | - | - | - | xRcssw2 |  |
+| csharp | add | SQ | P-gen | x86_64 | thru | 18.92 | System.Decimal | 13.91 | **0.74×** | xRcs11 | compact idiom peer |
+| csharp | add | NQ | P-gen | x86_64 | thru | 18.33 | System.Decimal | 18.59 | **1.01×** | xRcs11 | compact idiom peer |
+| csharp | add | MQ | P-gen | x86_64 | thru | 57.26 | System.Decimal | 20.10 | **0.35×** | xRcs11 | compact idiom peer |
+| csharp | add | OQ | P-gen | x86_64 | thru | 85.87 | - | - | - | xRcs11 |  |
+| csharp | add | FQ | P-gen | x86_64 | thru | 65.57 | - | - | - | xRcs11 |  |
 
 <!-- END GENERATED add-rel-csharp-x86 -->
 
@@ -124,11 +124,11 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| csharp | sub | SQ | P-gen | x86_64 | thru | 10.77 | System.Decimal | 11.52 | **1.07×** | xRcssw2 | compact idiom peer |
-| csharp | sub | NQ | P-gen | x86_64 | thru | 22.60 | System.Decimal | 15.69 | **0.69×** | xRcssw2 | compact idiom peer |
-| csharp | sub | MQ | P-gen | x86_64 | thru | 49.51 | System.Decimal | 14.59 | **0.29×** | xRcssw2 | compact idiom peer |
-| csharp | sub | OQ | P-gen | x86_64 | thru | 70.90 | - | - | - | xRcssw2 |  |
-| csharp | sub | FQ | P-gen | x86_64 | thru | 41.26 | - | - | - | xRcssw2 |  |
+| csharp | sub | SQ | P-gen | x86_64 | thru | 22.52 | System.Decimal | 12.93 | **0.57×** | xRcs11 | compact idiom peer |
+| csharp | sub | NQ | P-gen | x86_64 | thru | 17.83 | System.Decimal | 18.20 | **1.02×** | xRcs11 | compact idiom peer |
+| csharp | sub | MQ | P-gen | x86_64 | thru | 57.55 | System.Decimal | 17.61 | **0.31×** | xRcs11 | compact idiom peer |
+| csharp | sub | OQ | P-gen | x86_64 | thru | 87.29 | - | - | - | xRcs11 |  |
+| csharp | sub | FQ | P-gen | x86_64 | thru | 65.89 | - | - | - | xRcs11 |  |
 
 <!-- END GENERATED sub-rel-csharp-x86 -->
 
@@ -157,9 +157,9 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| csharp | mul | CP | P-gen | x86_64 | thru | 9.59 | - | - | - | xRcssw2 |  |
-| csharp | mul | WP | P-gen | x86_64 | thru | 50.34 | - | - | - | xRcssw2 |  |
-| csharp | mul | XP | P-gen | x86_64 | thru | 77.47 | - | - | - | xRcssw2 |  |
+| csharp | mul | CP | P-gen | x86_64 | thru | 8.42 | - | - | - | xRcs11 |  |
+| csharp | mul | WP | P-gen | x86_64 | thru | 67.54 | - | - | - | xRcs11 |  |
+| csharp | mul | XP | P-gen | x86_64 | thru | 95.83 | - | - | - | xRcs11 |  |
 
 <!-- END GENERATED mul-rel-csharp-x86 -->
 
@@ -192,11 +192,11 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| csharp | div | CD | P-gen | x86_64 | thru | 96.82 | - | - | - | xRcssw2 |  |
-| csharp | div | WD | P-gen | x86_64 | thru | 113.00 | - | - | - | xRcssw2 |  |
-| csharp | div | XD | P-gen | x86_64 | thru | 121.06 | - | - | - | xRcssw2 |  |
-| csharp | div | ET | P-gen | x86_64 | thru | 44.04 | - | - | - | xRcssw2 |  |
-| csharp | div | PT | P-gen | x86_64 | thru | 12.21 | - | - | - | xRcssw2 |  |
+| csharp | div | CD | P-gen | x86_64 | thru | 122.15 | - | - | - | xRcs11 |  |
+| csharp | div | WD | P-gen | x86_64 | thru | 136.75 | - | - | - | xRcs11 |  |
+| csharp | div | XD | P-gen | x86_64 | thru | 131.43 | - | - | - | xRcs11 |  |
+| csharp | div | ET | P-gen | x86_64 | thru | 56.04 | - | - | - | xRcs11 |  |
+| csharp | div | PT | P-gen | x86_64 | thru | 12.94 | - | - | - | xRcs11 |  |
 
 <!-- END GENERATED div-rel-csharp-x86 -->
 
@@ -221,8 +221,8 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| csharp | fma | FN | FMA | x86_64 | thru | 195.58 | - | - | - | xRcssw2 |  |
-| csharp | fma | FF | FMA | x86_64 | thru | 138.44 | - | - | - | xRcssw2 |  |
+| csharp | fma | FN | FMA | x86_64 | thru | 201.21 | - | - | - | xRcs11 |  |
+| csharp | fma | FF | FMA | x86_64 | thru | 167.63 | - | - | - | xRcs11 |  |
 
 <!-- END GENERATED fma-rel-csharp-x86 -->
 
