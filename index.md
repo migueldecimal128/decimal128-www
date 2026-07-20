@@ -61,6 +61,17 @@ Android — reaching mobile fintech, payments, and point-of-sale
 applications, which previously have only had limited, slow, non-standardized
 decimal options.
 
+## The Problem in Practice
+
+The same 0.1 + 0.2 calculation, run live in three different languages —
+every one of them lands on 0.30000000000000004 instead of 0.3.
+
+<div class="screenshot-gallery" markdown="0">
+  <img src="images/java-example.png" alt="Java Playground running double sum = 0.1 + 0.2, printing sum: 0.30000000000000004">
+  <img src="images/kotlin-example.png" alt="Kotlin Playground running val sum = 0.1 + 0.2, printing sum: 0.30000000000000004">
+  <img src="images/rust-swift-python-example.png" alt="Terminal running the same 0.1 + 0.2 calculation in Rust, Swift, and Python, each printing sum: 0.30000000000000004">
+</div>
+
 ## Who is Miguel?
 
 Miguel is a retired entrepreneur, engineer, and expert in database
