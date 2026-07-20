@@ -23,25 +23,25 @@ The headline: one realistic 64-bit financial operation mix — a `MIX` add/sub s
 | port | op | cat | profile | arch | mode | ns | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | c | add | MIX | P-fin | arm64 | thru | 2.81 | libbid | 10.35 | **3.68×** | Rc2 |  |
-| c | add | MIX | P-fin | arm64 | thru | 2.81 | decQuad | 22.51 | **8.01×** | Rc2 |  |
-| c | add | MIX | P-fin | arm64 | thru | 2.81 | mpdecimal | 13.46 | **4.79×** | Rc2 |  |
 | c | sub | MIX | P-fin | arm64 | thru | 2.04 | libbid | 10.65 | **5.22×** | Rc2 |  |
-| c | sub | MIX | P-fin | arm64 | thru | 2.04 | decQuad | 23.29 | **11.42×** | Rc2 |  |
-| c | sub | MIX | P-fin | arm64 | thru | 2.04 | mpdecimal | 14.99 | **7.35×** | Rc2 |  |
 | c | mul | CP | P-fin | arm64 | thru | 1.21 | libbid | 23.69 | **19.58×** | Rc2 |  |
 | c | mul | WP | P-fin | arm64 | thru | 20.60 | libbid | 34.45 | **1.67×** | Rc2 |  |
-| c | mul | CP | P-fin | arm64 | thru | 1.21 | decQuad | 21.41 | **17.69×** | Rc2 |  |
-| c | mul | WP | P-fin | arm64 | thru | 20.60 | decQuad | 25.54 | **1.24×** | Rc2 |  |
-| c | mul | CP | P-fin | arm64 | thru | 1.21 | mpdecimal | 9.91 | **8.19×** | Rc2 |  |
-| c | mul | WP | P-fin | arm64 | thru | 20.60 | mpdecimal | 29.78 | **1.45×** | Rc2 |  |
 | c | div | CD | P-fin | arm64 | thru | 43.22 | libbid | 35.06 | **0.81×** | Rc2 |  |
 | c | div | WD | P-fin | arm64 | thru | 39.24 | libbid | 39.18 | **1.00×** | Rc2 |  |
 | c | div | ET | P-fin | arm64 | thru | 6.49 | libbid | 6.11 | **0.94×** | Rc2 |  |
 | c | div | PT | P-fin | arm64 | thru | 3.16 | libbid | 6.10 | **1.93×** | Rc2 |  |
+| c | add | MIX | P-fin | arm64 | thru | 2.81 | decQuad | 22.51 | **8.01×** | Rc2 |  |
+| c | sub | MIX | P-fin | arm64 | thru | 2.04 | decQuad | 23.29 | **11.42×** | Rc2 |  |
+| c | mul | CP | P-fin | arm64 | thru | 1.21 | decQuad | 21.41 | **17.69×** | Rc2 |  |
+| c | mul | WP | P-fin | arm64 | thru | 20.60 | decQuad | 25.54 | **1.24×** | Rc2 |  |
 | c | div | CD | P-fin | arm64 | thru | 43.22 | decQuad | 71.42 | **1.65×** | Rc2 |  |
 | c | div | WD | P-fin | arm64 | thru | 39.24 | decQuad | 117.29 | **2.99×** | Rc2 |  |
 | c | div | ET | P-fin | arm64 | thru | 6.49 | decQuad | 41.51 | **6.40×** | Rc2 |  |
 | c | div | PT | P-fin | arm64 | thru | 3.16 | decQuad | 39.27 | **12.43×** | Rc2 |  |
+| c | add | MIX | P-fin | arm64 | thru | 2.81 | mpdecimal | 13.46 | **4.79×** | Rc2 |  |
+| c | sub | MIX | P-fin | arm64 | thru | 2.04 | mpdecimal | 14.99 | **7.35×** | Rc2 |  |
+| c | mul | CP | P-fin | arm64 | thru | 1.21 | mpdecimal | 9.91 | **8.19×** | Rc2 |  |
+| c | mul | WP | P-fin | arm64 | thru | 20.60 | mpdecimal | 29.78 | **1.45×** | Rc2 |  |
 | c | div | CD | P-fin | arm64 | thru | 43.22 | mpdecimal | 60.03 | **1.39×** | Rc2 |  |
 | c | div | WD | P-fin | arm64 | thru | 39.24 | mpdecimal | 87.72 | **2.24×** | Rc2 |  |
 | c | div | ET | P-fin | arm64 | thru | 6.49 | mpdecimal | 56.09 | **8.64×** | Rc2 |  |
@@ -56,25 +56,25 @@ The headline: one realistic 64-bit financial operation mix — a `MIX` add/sub s
 | port | op | cat | profile | arch | mode | ns | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | c | add | MIX | P-fin | x86_64 | thru | 10.01 | libbid | 31.03 | **3.10×** | xRc2 |  |
-| c | add | MIX | P-fin | x86_64 | thru | 10.01 | decQuad | 59.43 | **5.94×** | xRc2 |  |
-| c | add | MIX | P-fin | x86_64 | thru | 10.01 | mpdecimal | 38.13 | **3.81×** | xRc2 |  |
 | c | sub | MIX | P-fin | x86_64 | thru | 8.42 | libbid | 35.45 | **4.21×** | xRc2 |  |
-| c | sub | MIX | P-fin | x86_64 | thru | 8.42 | decQuad | 60.69 | **7.21×** | xRc2 |  |
-| c | sub | MIX | P-fin | x86_64 | thru | 8.42 | mpdecimal | 38.04 | **4.52×** | xRc2 |  |
 | c | mul | CP | P-fin | x86_64 | thru | 2.51 | libbid | 47.15 | **18.78×** | xRc2 |  |
 | c | mul | WP | P-fin | x86_64 | thru | 46.77 | libbid | 60.29 | **1.29×** | xRc2 |  |
-| c | mul | CP | P-fin | x86_64 | thru | 2.51 | decQuad | 55.98 | **22.30×** | xRc2 |  |
-| c | mul | WP | P-fin | x86_64 | thru | 46.77 | decQuad | 69.22 | **1.48×** | xRc2 |  |
-| c | mul | CP | P-fin | x86_64 | thru | 2.51 | mpdecimal | 32.81 | **13.07×** | xRc2 |  |
-| c | mul | WP | P-fin | x86_64 | thru | 46.77 | mpdecimal | 44.24 | **0.95×** | xRc2 |  |
 | c | div | CD | P-fin | x86_64 | thru | 87.44 | libbid | 77.69 | **0.89×** | xRc2 |  |
 | c | div | WD | P-fin | x86_64 | thru | 102.32 | libbid | 82.71 | **0.81×** | xRc2 |  |
 | c | div | ET | P-fin | x86_64 | thru | 18.22 | libbid | 20.15 | **1.11×** | xRc2 |  |
 | c | div | PT | P-fin | x86_64 | thru | 10.21 | libbid | 19.71 | **1.93×** | xRc2 |  |
+| c | add | MIX | P-fin | x86_64 | thru | 10.01 | decQuad | 59.43 | **5.94×** | xRc2 |  |
+| c | sub | MIX | P-fin | x86_64 | thru | 8.42 | decQuad | 60.69 | **7.21×** | xRc2 |  |
+| c | mul | CP | P-fin | x86_64 | thru | 2.51 | decQuad | 55.98 | **22.30×** | xRc2 |  |
+| c | mul | WP | P-fin | x86_64 | thru | 46.77 | decQuad | 69.22 | **1.48×** | xRc2 |  |
 | c | div | CD | P-fin | x86_64 | thru | 87.44 | decQuad | 137.65 | **1.57×** | xRc2 |  |
 | c | div | WD | P-fin | x86_64 | thru | 102.32 | decQuad | 240.81 | **2.35×** | xRc2 |  |
 | c | div | ET | P-fin | x86_64 | thru | 18.22 | decQuad | 75.78 | **4.16×** | xRc2 |  |
 | c | div | PT | P-fin | x86_64 | thru | 10.21 | decQuad | 67.99 | **6.66×** | xRc2 |  |
+| c | add | MIX | P-fin | x86_64 | thru | 10.01 | mpdecimal | 38.13 | **3.81×** | xRc2 |  |
+| c | sub | MIX | P-fin | x86_64 | thru | 8.42 | mpdecimal | 38.04 | **4.52×** | xRc2 |  |
+| c | mul | CP | P-fin | x86_64 | thru | 2.51 | mpdecimal | 32.81 | **13.07×** | xRc2 |  |
+| c | mul | WP | P-fin | x86_64 | thru | 46.77 | mpdecimal | 44.24 | **0.95×** | xRc2 |  |
 | c | div | CD | P-fin | x86_64 | thru | 87.44 | mpdecimal | 158.24 | **1.81×** | xRc2 |  |
 | c | div | WD | P-fin | x86_64 | thru | 102.32 | mpdecimal | 280.40 | **2.74×** | xRc2 |  |
 | c | div | ET | P-fin | x86_64 | thru | 18.22 | mpdecimal | 142.13 | **7.80×** | xRc2 |  |

@@ -24,12 +24,12 @@ The headline: one realistic 64-bit financial operation mix — a `MIX` add/sub s
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | rust | add | MIX | P-fin | arm64 | thru | 3.12 | rust_decimal | 3.76 | **1.21×** | Rrsw2 | compact idiom peer |
 | rust | sub | MIX | P-fin | arm64 | thru | 2.47 | rust_decimal | 3.71 | **1.50×** | Rrsw2 | compact idiom peer |
-| rust | mul | CP | P-fin | arm64 | thru | 1.12 | libbid | 23.69 | **21.15×** | Rrsw2 |  |
-| rust | mul | WP | P-fin | arm64 | thru | 15.10 | libbid | 34.45 | **2.28×** | Rrsw2 |  |
 | rust | div | CD | P-fin | arm64 | thru | 27.23 | rust_decimal | 14.40 | **0.53×** | Rrsw2 | compact idiom peer |
 | rust | div | WD | P-fin | arm64 | thru | 34.43 | rust_decimal | 19.98 | **0.58×** | Rrsw2 | compact idiom peer |
 | rust | div | ET | P-fin | arm64 | thru | 6.20 | rust_decimal | 3.85 | **0.62×** | Rrsw2 | compact idiom peer |
 | rust | div | PT | P-fin | arm64 | thru | 3.98 | rust_decimal | 15.14 | **3.80×** | Rrsw2 | compact idiom peer |
+| rust | mul | CP | P-fin | arm64 | thru | 1.12 | libbid | 23.69 | **21.15×** | Rrsw2 |  |
+| rust | mul | WP | P-fin | arm64 | thru | 15.10 | libbid | 34.45 | **2.28×** | Rrsw2 |  |
 
 <!-- END GENERATED pfin-rel-rust -->
 
@@ -41,12 +41,12 @@ The headline: one realistic 64-bit financial operation mix — a `MIX` add/sub s
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | rust | add | MIX | P-fin | x86_64 | thru | 9.63 | rust_decimal | 14.96 | **1.55×** | xRrsw2 | compact idiom peer |
 | rust | sub | MIX | P-fin | x86_64 | thru | 8.01 | rust_decimal | 14.97 | **1.87×** | xRrsw2 | compact idiom peer |
-| rust | mul | CP | P-fin | x86_64 | thru | 3.15 | libbid | 47.15 | **14.97×** | xRrsw2 |  |
-| rust | mul | WP | P-fin | x86_64 | thru | 29.80 | libbid | 60.29 | **2.02×** | xRrsw2 |  |
 | rust | div | CD | P-fin | x86_64 | thru | 71.07 | rust_decimal | 55.38 | **0.78×** | xRrsw2 | compact idiom peer |
 | rust | div | WD | P-fin | x86_64 | thru | 89.09 | rust_decimal | 75.51 | **0.85×** | xRrsw2 | compact idiom peer |
 | rust | div | ET | P-fin | x86_64 | thru | 22.70 | rust_decimal | 13.95 | **0.61×** | xRrsw2 | compact idiom peer |
 | rust | div | PT | P-fin | x86_64 | thru | 9.77 | rust_decimal | 51.76 | **5.30×** | xRrsw2 | compact idiom peer |
+| rust | mul | CP | P-fin | x86_64 | thru | 3.15 | libbid | 47.15 | **14.97×** | xRrsw2 |  |
+| rust | mul | WP | P-fin | x86_64 | thru | 29.80 | libbid | 60.29 | **2.02×** | xRrsw2 |  |
 
 <!-- END GENERATED pfin-rel-rust-x86 -->
 
