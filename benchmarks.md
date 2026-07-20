@@ -19,3 +19,90 @@ language's idiomatic decimal type. The results are split into three views:
 
 Methodology and the operation-category taxonomy are in the
 [Benchmark Matrix](whitepapers/benchmark-matrix.html).
+
+## Results by Language
+
+<div class="kb-results">
+
+<details class="kb-entry">
+  <summary>C</summary>
+  <div class="kb-entry-body" markdown="1">
+
+Table coming soon.
+
+  </div>
+</details>
+
+<details class="kb-entry">
+  <summary>C#</summary>
+  <div class="kb-entry-body" markdown="1">
+
+Table coming soon.
+
+  </div>
+</details>
+
+<details class="kb-entry">
+  <summary>Java</summary>
+  <div class="kb-entry-body" markdown="1">
+
+Table coming soon.
+
+  </div>
+</details>
+
+<details class="kb-entry">
+  <summary>Kotlin KMP</summary>
+  <div class="kb-entry-body" markdown="1">
+
+Table coming soon.
+
+  </div>
+</details>
+
+<details class="kb-entry">
+  <summary>Swift</summary>
+  <div class="kb-entry-body" markdown="1">
+
+Table coming soon.
+
+  </div>
+</details>
+
+<details class="kb-entry">
+  <summary>Rust</summary>
+  <div class="kb-entry-body" markdown="1">
+
+Table coming soon.
+
+  </div>
+</details>
+
+<details class="kb-entry">
+  <summary>Go</summary>
+  <div class="kb-entry-body" markdown="1">
+
+Table coming soon.
+
+  </div>
+</details>
+
+<details class="kb-entry">
+  <summary>Python</summary>
+  <div class="kb-entry-body" markdown="1">
+
+Table coming soon.
+
+  </div>
+</details>
+
+<details class="kb-entry">
+  <summary>Zig</summary>
+  <div class="kb-entry-body" markdown="1">
+
+Table coming soon.
+
+  </div>
+</details>
+
+</div>
