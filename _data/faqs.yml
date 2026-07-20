@@ -358,13 +358,14 @@
   category: "Project & Roadmap"
   question: "How is it licensed?"
   answer: >-
-    TODO — state the license for the ports (permissive) and note that the
-    application-benchmark repo is GPLv3 because it contains the UW-Madison
-    DFP suite. Confirm exact license names before publishing.
+    MIT License on all decimal128 implementations.
+    Note that the `decimal128-app-benchmark repo is GPLv3 because it contains the
+    UW-Madison DFP Decimal Floating point application suite ... which was/is GPL. 
 
 - id: roadmap-2
   category: "Project & Roadmap"
   question: "What is planned next?"
   answer: >-
-    TODO — summarize current priorities, or point readers at the tracked
-    Punchlist.md.
+    Find associates who can help ensure that language-specific wrappers follow
+    the idioms/conventions established by that language. 
+    Promote `decimal128` for the world!
