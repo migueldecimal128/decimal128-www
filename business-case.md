@@ -21,7 +21,7 @@ Over time, Miguel's version can save thousands of dollars monthly by eliminating
 | **Hardware vs software** | hardware | software | software | software | software |
 | **Compliance (IEEE 754-2019)** | ✅ | ✅ | ❌ | ❌ | ✅ |
 | **Speed** | fastest | fast | medium | slow | fast |
-| **Cost** | \$\$\$\$ | free | free | free | TBD |
+| **Cost** | \$\$\$\$ | free | free | free | Free (open source) |
 | **Operating System** | System Z mainframe | Linux, Mac OS | Linux, Mac OS, Windows, System Z mainframe | Linux, Mac OS, Windows | Linux, Mac OS, Windows, System Z mainframe, iOS, Android, JavaScript, WASM |
 | **Languages** | COBOL, Java, TBD | C/C++ | Java, Kotlin JVM | Python | C, C#, Java, Kotlin KMP, Swift, Rust, Go, Python, Zig |
 
