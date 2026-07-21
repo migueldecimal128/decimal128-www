@@ -14,14 +14,11 @@ This is the **Java** view of decimal128 **as-measured**, band by band, with expl
 
 ## Summary — Ratio Range by Operation
 
-A quick-glance rollup before the detailed tables below: the min–max `ratio = alt / ours` (&gt; 1× ⇒ d128 faster) for each operation on x86_64 (Intel i9-9880H), across both reference/idiom peers measured for Java (`BigDecimal`, libbid), split by profile.
+The ratio for Java's idiom peer on x86_64 (Intel i9-9880H): `ratio = BigDecimal / ours` (&gt; 1× ⇒ d128 faster), broken out by operation.
 
-| Operation | P-fin range | P-gen range |
-|---|---|---|
-| Add | 3× | 2.3× – 6× |
-| Subtract | 4× | 2.3× – 5× |
-| Multiply | 3× | 2.7× – 4× |
-| Divide | 1.8× – 60× | 2.1× – 44× |
+| | Add | Subtract | Multiply | Divide |
+|---|---|---|---|---|
+| ratio = BigDecimal / Miguel | 3× | 4× | 3× | 1.8× – 60× |
 
 ## FinMix — realistic financial mix (P-fin)
 

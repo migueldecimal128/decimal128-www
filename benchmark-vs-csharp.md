@@ -14,14 +14,12 @@ This is the **C#** view of decimal128 **as-measured**, band by band, with explic
 
 ## Summary — Ratio Range by Operation
 
-A quick-glance rollup before the detailed tables below: the min–max `ratio = alt / ours` (&gt; 1× ⇒ d128 faster) for each operation on x86_64 (Intel i9-9880H), across both reference/idiom peers measured for C# (`System.Decimal`, `Decimal128` (.NET 11)), split by profile.
+Each row below is the ratio for that reference/idiom peer on x86_64 (Intel i9-9880H): `ratio = System.Decimal / ours` or `ratio = Decimal128 (.NET 11) / ours` (&gt; 1× ⇒ d128 faster), broken out by operation. `System.Decimal` has no wide-product multiply band, so that cell is blank.
 
-| Operation | P-fin range | P-gen range |
-|---|---|---|
-| Add | 0.8× – 2.5× | 0.4× – 51× |
-| Subtract | 0.9× – 2.9× | 0.3× – 50× |
-| Multiply | 2.2× – 8× | 2.1× – 34× |
-| Divide | 0.5× – 54× | 3× – 44× |
+| | Add | Subtract | Multiply | Divide |
+|---|---|---|---|---|
+| ratio = System.Decimal / Miguel | 0.8× | 0.9× | — | 0.5× – 5× |
+| ratio = Decimal128 (.NET 11) / Miguel | 2.5× | 2.9× | 2.2× – 8× | 4× – 54× |
 
 ## FinMix — realistic financial mix (P-fin)
 

@@ -14,14 +14,12 @@ This is the **Rust** view of decimal128 **as-measured**, band by band, with expl
 
 ## Summary — Ratio Range by Operation
 
-A quick-glance rollup before the detailed tables below: the min–max `ratio = alt / ours` (&gt; 1× ⇒ d128 faster) for each operation on x86_64 (Intel i9-9880H), across both reference/idiom peers measured for Rust (`rust_decimal`, libbid), split by profile.
+Each row below is the ratio for that reference/idiom peer on x86_64 (Intel i9-9880H): `ratio = rust_decimal / ours` or `ratio = libbid / ours` (&gt; 1× ⇒ d128 faster), broken out by operation. `rust_decimal` has no wide-product multiply band (that falls back to libbid), and libbid isn't used for add/subtract/divide, so those cells are blank.
 
-| Operation | P-fin range | P-gen range |
-|---|---|---|
-| Add | 1.6× | 0.8× – 1.9× |
-| Subtract | 1.9× | 0.7× – 1.9× |
-| Multiply | 2.0× – 15× | 2.2× – 9× |
-| Divide | 0.6× – 5× | 1.0× – 3× |
+| | Add | Subtract | Multiply | Divide |
+|---|---|---|---|---|
+| ratio = rust_decimal / Miguel | 1.6× | 1.9× | — | 0.6× – 5× |
+| ratio = libbid / Miguel | — | — | 2.0× – 15× | — |
 
 ## FinMix — realistic financial mix (P-fin)
 

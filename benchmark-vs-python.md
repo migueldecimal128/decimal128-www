@@ -14,14 +14,11 @@ This is the **Python** view of decimal128 **as-measured**, band by band, with ex
 
 ## Summary — Ratio Range by Operation
 
-A quick-glance rollup before the detailed tables below: the min–max `ratio = alt / ours` (&gt; 1× ⇒ d128 faster) for each operation on x86_64 (Intel i9-9880H) for Python's idiom peer (`decimal.Decimal`), split by profile.
+The ratio for Python's idiom peer on x86_64 (Intel i9-9880H): `ratio = decimal.Decimal / ours` (&gt; 1× ⇒ d128 faster), broken out by operation.
 
-| Operation | P-fin range | P-gen range |
-|---|---|---|
-| Add | 2.6× | 2.2× – 3× |
-| Subtract | 2.7× | 2.2× – 2.9× |
-| Multiply | 1.7× – 3× | 1.9× – 2.8× |
-| Divide | 1.8× – 4× | 1.8× – 4× |
+| | Add | Subtract | Multiply | Divide |
+|---|---|---|---|---|
+| ratio = decimal.Decimal / Miguel | 2.6× | 2.7× | 1.7× – 3× | 1.8× – 4× |
 
 ## FinMix — realistic financial mix (P-fin)
 

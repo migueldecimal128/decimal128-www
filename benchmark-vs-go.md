@@ -14,14 +14,7 @@ This is the **Go** view of decimal128 **as-measured**, band by band, with explic
 
 ## Summary — Ratio Range by Operation
 
-Go has no in-language decimal peer and takes no `libbid` fallback, so every row on this page is d128-only — there is no alternative to compute a ratio against. The rollup below is included for consistency with the other language pages, but every cell is blank.
-
-| Operation | P-fin range | P-gen range |
-|---|---|---|
-| Add | — | — |
-| Subtract | — | — |
-| Multiply | — | — |
-| Divide | — | — |
+Go has no in-language decimal peer and takes no `libbid` fallback, so every row on this page is d128-only — there is no alternative to compute a ratio against.
 
 ## FinMix — realistic financial mix (P-fin)
 

@@ -14,14 +14,13 @@ This is the **C** view of decimal128 **as-measured**, band by band, with explici
 
 ## Summary — Ratio Range by Operation
 
-A quick-glance rollup before the detailed tables below: the min–max `ratio = alt / ours` (&gt; 1× ⇒ d128 faster) for each operation on x86_64 (Intel i9-9880H), across all three reference libraries (libbid, decQuad, mpdecimal), split by profile.
+Each row below is the ratio for that reference library on x86_64 (Intel i9-9880H): `ratio = libbid / ours`, `ratio = decQuad / ours`, or `ratio = mpdecimal / ours` (&gt; 1× ⇒ d128 faster), broken out by operation.
 
-| Operation | P-fin range | P-gen range |
-|---|---|---|
-| Add | 3× – 6× | 0.9× – 6× |
-| Subtract | 4× – 7× | 1.0× – 11× |
-| Multiply | 1.0× – 22× | 1.4× – 14× |
-| Divide | 0.8× – 9× | 0.8× – 11× |
+| | Add | Subtract | Multiply | Divide |
+|---|---|---|---|---|
+| ratio = libbid / Miguel | 3× | 4× | 1.3× – 19× | 0.8× – 1.9× |
+| ratio = decQuad / Miguel | 6× | 7× | 1.5× – 22× | 1.6× – 7× |
+| ratio = mpdecimal / Miguel | 4× | 5× | 1.0× – 13× | 1.8× – 9× |
 
 ## FinMix — realistic financial mix (P-fin)
 

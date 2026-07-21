@@ -14,14 +14,11 @@ This is the **Zig** view of decimal128 **as-measured**, band by band, with expli
 
 ## Summary — Ratio Range by Operation
 
-A quick-glance rollup before the detailed tables below: the min–max `ratio = alt / ours` (&gt; 1× ⇒ d128 faster) for each operation on x86_64 (Intel i9-9880H) for Zig's reference library (libbid — Zig has no in-language decimal peer), split by profile.
+The ratio for Zig's reference library on x86_64 (Intel i9-9880H): `ratio = libbid / ours` (&gt; 1× ⇒ d128 faster), broken out by operation. Zig has no in-language decimal peer.
 
-| Operation | P-fin range | P-gen range |
-|---|---|---|
-| Add | 2.5× | 1.2× – 2.8× |
-| Subtract | 3× | 1.4× – 5× |
-| Multiply | 2.1× – 7× | 2.3× – 6× |
-| Divide | 0.9× – 1.6× | 0.9× – 2.5× |
+| | Add | Subtract | Multiply | Divide |
+|---|---|---|---|---|
+| ratio = libbid / Miguel | 2.5× | 3× | 2.1× – 7× | 0.9× – 1.6× |
 
 ## FinMix — realistic financial mix (P-fin)
 
