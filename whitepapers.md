@@ -10,6 +10,7 @@ heading: "Whitepapers"
 - [Three Scripts, One Truth (Conformance Evidence)](whitepapers/conformance-evidence.html)
 - [Benchmark Matrix](whitepapers/benchmark-matrix.html)
 
-## Further Reading
+## All repositories
 
-[Decimal128 floating-point format — Wikipedia ↗](https://en.wikipedia.org/wiki/Decimal128_floating-point_format)
+Browse the full organization at
+[github.com/migueldecimal128 ↗](https://github.com/migueldecimal128).

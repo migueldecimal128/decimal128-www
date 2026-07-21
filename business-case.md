@@ -32,3 +32,7 @@ Real world examples where decimal128 is required:
 - All computers using binary floating point will produce: 0.1 + 0.2 → 0.30000000000000004
 - $1.015 gets truncated to $1.01 when it should be $1.02
 - Microsoft Excel supports 15 digits per cell and automatically rounds when entering 16 digits. Google Sheets and Apple Numbers converts 16+ digits into text to try to mitigate known issues. 
+
+## Further Reading
+
+[Decimal128 floating-point format — Wikipedia ↗](https://en.wikipedia.org/wiki/Decimal128_floating-point_format)
