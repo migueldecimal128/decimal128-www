@@ -24,11 +24,23 @@ Two cross-cutting views complement the per-language pages:
 Methodology and the operation-category taxonomy are in the
 [Benchmark Matrix](whitepapers/benchmark-matrix.html).
 
+<div class="lang-pills">
+  <a href="#lang-c" class="lang-pill">C</a>
+  <a href="#lang-csharp" class="lang-pill">C#</a>
+  <a href="#lang-java" class="lang-pill">Java</a>
+  <a href="#lang-kotlin" class="lang-pill">Kotlin KMP</a>
+  <a href="#lang-swift" class="lang-pill">Swift</a>
+  <a href="#lang-rust" class="lang-pill">Rust</a>
+  <a href="#lang-go" class="lang-pill">Go</a>
+  <a href="#lang-python" class="lang-pill">Python</a>
+  <a href="#lang-zig" class="lang-pill">Zig</a>
+</div>
+
 ## Per-language results
 
 <div class="kb-results">
 
-<details class="kb-entry">
+<details class="kb-entry" id="lang-c">
   <summary>C</summary>
   <div class="kb-entry-body" markdown="1">
 
@@ -46,7 +58,7 @@ Methodology and the operation-category taxonomy are in the
   </div>
 </details>
 
-<details class="kb-entry">
+<details class="kb-entry" id="lang-csharp">
   <summary>C#</summary>
   <div class="kb-entry-body" markdown="1">
 
@@ -64,7 +76,7 @@ Methodology and the operation-category taxonomy are in the
   </div>
 </details>
 
-<details class="kb-entry">
+<details class="kb-entry" id="lang-java">
   <summary>Java</summary>
   <div class="kb-entry-body" markdown="1">
 
@@ -82,7 +94,7 @@ Methodology and the operation-category taxonomy are in the
   </div>
 </details>
 
-<details class="kb-entry">
+<details class="kb-entry" id="lang-kotlin">
   <summary>Kotlin KMP</summary>
   <div class="kb-entry-body" markdown="1">
 
@@ -100,7 +112,7 @@ Methodology and the operation-category taxonomy are in the
   </div>
 </details>
 
-<details class="kb-entry">
+<details class="kb-entry" id="lang-swift">
   <summary>Swift</summary>
   <div class="kb-entry-body" markdown="1">
 
@@ -118,7 +130,7 @@ Methodology and the operation-category taxonomy are in the
   </div>
 </details>
 
-<details class="kb-entry">
+<details class="kb-entry" id="lang-rust">
   <summary>Rust</summary>
   <div class="kb-entry-body" markdown="1">
 
@@ -136,7 +148,7 @@ Methodology and the operation-category taxonomy are in the
   </div>
 </details>
 
-<details class="kb-entry">
+<details class="kb-entry" id="lang-go">
   <summary>Go</summary>
   <div class="kb-entry-body" markdown="1">
 
@@ -154,7 +166,7 @@ Methodology and the operation-category taxonomy are in the
   </div>
 </details>
 
-<details class="kb-entry">
+<details class="kb-entry" id="lang-python">
   <summary>Python</summary>
   <div class="kb-entry-body" markdown="1">
 
@@ -172,7 +184,7 @@ Methodology and the operation-category taxonomy are in the
   </div>
 </details>
 
-<details class="kb-entry">
+<details class="kb-entry" id="lang-zig">
   <summary>Zig</summary>
   <div class="kb-entry-body" markdown="1">
 
@@ -191,3 +203,17 @@ Methodology and the operation-category taxonomy are in the
 </details>
 
 </div>
+
+<script>
+document.querySelectorAll('.lang-pill').forEach(function (link) {
+  link.addEventListener('click', function (e) {
+    var target = document.querySelector(link.getAttribute('href'));
+    if (target && target.tagName === 'DETAILS') {
+      e.preventDefault();
+      target.open = true;
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      history.pushState(null, '', link.getAttribute('href'));
+    }
+  });
+});
+</script>

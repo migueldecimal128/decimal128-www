@@ -210,6 +210,30 @@ main code {
   font-family: inherit;
 }
 
+.lang-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 1rem 0 2rem;
+}
+
+.lang-pill {
+  display: inline-block;
+  background: var(--color-accent);
+  color: var(--color-primary);
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.15s ease;
+}
+
+.lang-pill:hover,
+.lang-pill:focus {
+  opacity: 0.75;
+}
+
 .section {
   margin-bottom: 2.5rem;
 }
