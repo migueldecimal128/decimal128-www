@@ -16,13 +16,12 @@ This is the **Rust** view of decimal128 **as-measured**, band by band, with expl
 
 A quick-glance rollup before the detailed tables below: the min–max `ratio = alt / ours` (&gt; 1× ⇒ d128 faster) for each operation on x86_64 (Intel i9-9880H), across both reference/idiom peers measured for Rust (`rust_decimal`, libbid), split by profile.
 
-| Operation | P-fin range | P-gen range | FMA range |
-|---|---|---|---|
-| Add | 1.55× | 0.81× – 1.88× | — |
-| Subtract | 1.87× | 0.74× – 1.87× | — |
-| Multiply | 2.02× – 14.97× | 2.15× – 9.04× | — |
-| Divide | 0.61× – 5.30× | 0.97× – 3.14× | — |
-| FMA | — | — | 1.83× – 2.57× |
+| Operation | P-fin range | P-gen range |
+|---|---|---|
+| Add | 1.55× | 0.81× – 1.88× |
+| Subtract | 1.87× | 0.74× – 1.87× |
+| Multiply | 2.02× – 14.97× | 2.15× – 9.04× |
+| Divide | 0.61× – 5.30× | 0.97× – 3.14× |
 
 ## FinMix — realistic financial mix (P-fin)
 

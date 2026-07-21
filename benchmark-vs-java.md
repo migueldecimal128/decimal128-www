@@ -16,13 +16,12 @@ This is the **Java** view of decimal128 **as-measured**, band by band, with expl
 
 A quick-glance rollup before the detailed tables below: the min–max `ratio = alt / ours` (&gt; 1× ⇒ d128 faster) for each operation on x86_64 (Intel i9-9880H), across both reference/idiom peers measured for Java (`BigDecimal`, libbid), split by profile.
 
-| Operation | P-fin range | P-gen range | FMA range |
-|---|---|---|---|
-| Add | 3.36× | 2.29× – 5.96× | — |
-| Subtract | 4.09× | 2.33× – 4.92× | — |
-| Multiply | 3.06× – 3.37× | 2.74× – 3.59× | — |
-| Divide | 1.77× – 60.05× | 2.14× – 43.88× | — |
-| FMA | — | — | 0.63× – 0.73× |
+| Operation | P-fin range | P-gen range |
+|---|---|---|
+| Add | 3.36× | 2.29× – 5.96× |
+| Subtract | 4.09× | 2.33× – 4.92× |
+| Multiply | 3.06× – 3.37× | 2.74× – 3.59× |
+| Divide | 1.77× – 60.05× | 2.14× – 43.88× |
 
 ## FinMix — realistic financial mix (P-fin)
 

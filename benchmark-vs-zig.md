@@ -16,13 +16,12 @@ This is the **Zig** view of decimal128 **as-measured**, band by band, with expli
 
 A quick-glance rollup before the detailed tables below: the min–max `ratio = alt / ours` (&gt; 1× ⇒ d128 faster) for each operation on x86_64 (Intel i9-9880H) for Zig's reference library (libbid — Zig has no in-language decimal peer), split by profile.
 
-| Operation | P-fin range | P-gen range | FMA range |
-|---|---|---|---|
-| Add | 2.52× | 1.23× – 2.80× | — |
-| Subtract | 3.43× | 1.38× – 4.55× | — |
-| Multiply | 2.06× – 6.70× | 2.26× – 6.14× | — |
-| Divide | 0.88× – 1.59× | 0.85× – 2.52× | — |
-| FMA | — | — | 1.51× – 1.66× |
+| Operation | P-fin range | P-gen range |
+|---|---|---|
+| Add | 2.52× | 1.23× – 2.80× |
+| Subtract | 3.43× | 1.38× – 4.55× |
+| Multiply | 2.06× – 6.70× | 2.26× – 6.14× |
+| Divide | 0.88× – 1.59× | 0.85× – 2.52× |
 
 ## FinMix — realistic financial mix (P-fin)
 

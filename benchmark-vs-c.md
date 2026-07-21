@@ -16,13 +16,12 @@ This is the **C** view of decimal128 **as-measured**, band by band, with explici
 
 A quick-glance rollup before the detailed tables below: the min–max `ratio = alt / ours` (&gt; 1× ⇒ d128 faster) for each operation on x86_64 (Intel i9-9880H), across all three reference libraries (libbid, decQuad, mpdecimal), split by profile.
 
-| Operation | P-fin range | P-gen range | FMA range |
-|---|---|---|---|
-| Add | 3.10× – 5.94× | 0.89× – 5.89× | — |
-| Subtract | 4.21× – 7.21× | 1.04× – 10.59× | — |
-| Multiply | 0.95× – 22.30× | 1.41× – 13.50× | — |
-| Divide | 0.81× – 8.62× | 0.81× – 10.49× | — |
-| FMA | — | — | 0.98× – 3.64× |
+| Operation | P-fin range | P-gen range |
+|---|---|---|
+| Add | 3.10× – 5.94× | 0.89× – 5.89× |
+| Subtract | 4.21× – 7.21× | 1.04× – 10.59× |
+| Multiply | 0.95× – 22.30× | 1.41× – 13.50× |
+| Divide | 0.81× – 8.62× | 0.81× – 10.49× |
 
 ## FinMix — realistic financial mix (P-fin)
 

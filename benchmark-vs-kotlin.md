@@ -16,13 +16,12 @@ This is the **Kotlin** view of decimal128 **as-measured**, band by band, with ex
 
 A quick-glance rollup before the detailed tables below: the min–max `ratio = alt / ours` (&gt; 1× ⇒ d128 faster) for each operation on x86_64 (Intel i9-9880H), across both reference/idiom peers measured for Kotlin (`BigDecimal`, libbid), split by profile.
 
-| Operation | P-fin range | P-gen range | FMA range |
-|---|---|---|---|
-| Add | 2.65× | 2.01× – 4.59× | — |
-| Subtract | 3.76× | 2.28× – 4.69× | — |
-| Multiply | 3.25× – 3.64× | 2.90× – 3.34× | — |
-| Divide | 1.80× – 55.48× | 2.20× – 40.54× | — |
-| FMA | — | — | 0.55× – 0.62× |
+| Operation | P-fin range | P-gen range |
+|---|---|---|
+| Add | 2.65× | 2.01× – 4.59× |
+| Subtract | 3.76× | 2.28× – 4.69× |
+| Multiply | 3.25× – 3.64× | 2.90× – 3.34× |
+| Divide | 1.80× – 55.48× | 2.20× – 40.54× |
 
 ## FinMix — realistic financial mix (P-fin)
 

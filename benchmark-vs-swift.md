@@ -16,13 +16,12 @@ This is the **Swift** view of decimal128 **as-measured**, band by band, with exp
 
 A quick-glance rollup before the detailed tables below: the min–max `ratio = alt / ours` (&gt; 1× ⇒ d128 faster) for each operation on x86_64 (Intel i9-9880H), across both reference/idiom peers measured for Swift (`Foundation.Decimal`, libbid), split by profile.
 
-| Operation | P-fin range | P-gen range | FMA range |
-|---|---|---|---|
-| Add | 69.34× | 21.58× – 83.08× | — |
-| Subtract | 77.88× | 21.46× – 100.42× | — |
-| Multiply | 21.24× – 176.86× | 21.98× – 102.80× | — |
-| Divide | 16.56× – 643.91× | 16.21× – 551.06× | — |
-| FMA | — | — | 1.07× – 1.45× |
+| Operation | P-fin range | P-gen range |
+|---|---|---|
+| Add | 69.34× | 21.58× – 83.08× |
+| Subtract | 77.88× | 21.46× – 100.42× |
+| Multiply | 21.24× – 176.86× | 21.98× – 102.80× |
+| Divide | 16.56× – 643.91× | 16.21× – 551.06× |
 
 ## FinMix — realistic financial mix (P-fin)
 
