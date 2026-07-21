@@ -38,10 +38,10 @@ Methodology and the operation-category taxonomy are in the
 
 | Operation | P-fin range | P-gen range |
 |---|---|---|
-| Add | 3.1× – 5.9× | 0.9× – 5.9× |
-| Subtract | 4.2× – 7.2× | 1.0× – 10.6× |
-| Multiply | 1.0× – 22.3× | 1.4× – 13.5× |
-| Divide | 0.8× – 8.6× | 0.8× – 10.5× |
+| Add | 3× – 6× | 0.9× – 6× |
+| Subtract | 4× – 7× | 1.0× – 11× |
+| Multiply | 1.0× – 22× | 1.4× – 14× |
+| Divide | 0.8× – 9× | 0.8× – 11× |
 
   </div>
 </details>
@@ -56,10 +56,10 @@ Methodology and the operation-category taxonomy are in the
 
 | Operation | P-fin range | P-gen range |
 |---|---|---|
-| Add | 0.8× – 2.5× | 0.4× – 50.9× |
-| Subtract | 0.9× – 2.9× | 0.3× – 50.3× |
-| Multiply | 2.2× – 7.6× | 2.1× – 33.6× |
-| Divide | 0.5× – 54.1× | 3.4× – 43.6× |
+| Add | 0.8× – 2.5× | 0.4× – 51× |
+| Subtract | 0.9× – 2.9× | 0.3× – 50× |
+| Multiply | 2.2× – 8× | 2.1× – 34× |
+| Divide | 0.5× – 54× | 3× – 44× |
 
   </div>
 </details>
@@ -74,10 +74,10 @@ Methodology and the operation-category taxonomy are in the
 
 | Operation | P-fin range | P-gen range |
 |---|---|---|
-| Add | 3.4× | 2.3× – 6.0× |
-| Subtract | 4.1× | 2.3× – 4.9× |
-| Multiply | 3.1× – 3.4× | 2.7× – 3.6× |
-| Divide | 1.8× – 60.1× | 2.1× – 43.9× |
+| Add | 3× | 2.3× – 6× |
+| Subtract | 4× | 2.3× – 5× |
+| Multiply | 3× | 2.7× – 4× |
+| Divide | 1.8× – 60× | 2.1× – 44× |
 
   </div>
 </details>
@@ -92,10 +92,10 @@ Methodology and the operation-category taxonomy are in the
 
 | Operation | P-fin range | P-gen range |
 |---|---|---|
-| Add | 2.7× | 2.0× – 4.6× |
-| Subtract | 3.8× | 2.3× – 4.7× |
-| Multiply | 3.3× – 3.6× | 2.9× – 3.3× |
-| Divide | 1.8× – 55.5× | 2.2× – 40.5× |
+| Add | 2.7× | 2.0× – 5× |
+| Subtract | 4× | 2.3× – 5× |
+| Multiply | 3× – 4× | 2.9× – 3× |
+| Divide | 1.8× – 56× | 2.2× – 41× |
 
   </div>
 </details>
@@ -110,10 +110,10 @@ Methodology and the operation-category taxonomy are in the
 
 | Operation | P-fin range | P-gen range |
 |---|---|---|
-| Add | 69.3× | 21.6× – 83.1× |
-| Subtract | 77.9× | 21.5× – 100.4× |
-| Multiply | 21.2× – 176.9× | 22.0× – 102.8× |
-| Divide | 16.6× – 643.9× | 16.2× – 551.1× |
+| Add | 69× | 22× – 83× |
+| Subtract | 78× | 22× – 100× |
+| Multiply | 21× – 177× | 22× – 103× |
+| Divide | 17× – 644× | 16× – 551× |
 
   </div>
 </details>
@@ -130,8 +130,8 @@ Methodology and the operation-category taxonomy are in the
 |---|---|---|
 | Add | 1.6× | 0.8× – 1.9× |
 | Subtract | 1.9× | 0.7× – 1.9× |
-| Multiply | 2.0× – 15.0× | 2.2× – 9.0× |
-| Divide | 0.6× – 5.3× | 1.0× – 3.1× |
+| Multiply | 2.0× – 15× | 2.2× – 9× |
+| Divide | 0.6× – 5× | 1.0× – 3× |
 
   </div>
 </details>
@@ -164,10 +164,10 @@ Methodology and the operation-category taxonomy are in the
 
 | Operation | P-fin range | P-gen range |
 |---|---|---|
-| Add | 2.6× | 2.2× – 3.0× |
+| Add | 2.6× | 2.2× – 3× |
 | Subtract | 2.7× | 2.2× – 2.9× |
-| Multiply | 1.7× – 3.1× | 1.9× – 2.8× |
-| Divide | 1.8× – 4.1× | 1.8× – 4.2× |
+| Multiply | 1.7× – 3× | 1.9× – 2.8× |
+| Divide | 1.8× – 4× | 1.8× – 4× |
 
   </div>
 </details>
@@ -183,8 +183,8 @@ Methodology and the operation-category taxonomy are in the
 | Operation | P-fin range | P-gen range |
 |---|---|---|
 | Add | 2.5× | 1.2× – 2.8× |
-| Subtract | 3.4× | 1.4× – 4.6× |
-| Multiply | 2.1× – 6.7× | 2.3× – 6.1× |
+| Subtract | 3× | 1.4× – 5× |
+| Multiply | 2.1× – 7× | 2.3× – 6× |
 | Divide | 0.9× – 1.6× | 0.9× – 2.5× |
 
   </div>

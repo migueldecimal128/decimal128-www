@@ -20,8 +20,8 @@ A quick-glance rollup before the detailed tables below: the min–max `ratio = a
 |---|---|---|
 | Add | 1.6× | 0.8× – 1.9× |
 | Subtract | 1.9× | 0.7× – 1.9× |
-| Multiply | 2.0× – 15.0× | 2.2× – 9.0× |
-| Divide | 0.6× – 5.3× | 1.0× – 3.1× |
+| Multiply | 2.0× – 15× | 2.2× – 9× |
+| Divide | 0.6× – 5× | 1.0× – 3× |
 
 ## FinMix — realistic financial mix (P-fin)
 

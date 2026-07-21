@@ -18,10 +18,10 @@ A quick-glance rollup before the detailed tables below: the min–max `ratio = a
 
 | Operation | P-fin range | P-gen range |
 |---|---|---|
-| Add | 2.6× | 2.2× – 3.0× |
+| Add | 2.6× | 2.2× – 3× |
 | Subtract | 2.7× | 2.2× – 2.9× |
-| Multiply | 1.7× – 3.1× | 1.9× – 2.8× |
-| Divide | 1.8× – 4.1× | 1.8× – 4.2× |
+| Multiply | 1.7× – 3× | 1.9× – 2.8× |
+| Divide | 1.8× – 4× | 1.8× – 4× |
 
 ## FinMix — realistic financial mix (P-fin)
 
