@@ -34,6 +34,16 @@ Methodology and the operation-category taxonomy are in the
 
 [**C Benchmark Results →**](benchmark/vs-c.html) — FinMix headline, then add / subtract / multiply / divide / FMA band tables (arm64 + x86_64), with ratios.
 
+**Summary — Ratio Range by Operation.** Min–max `ratio = alt / ours` (&gt; 1× ⇒ d128 faster), pooled across both architectures (arm64 + x86_64) and all three reference libraries (libbid, decQuad, mpdecimal), split by profile.
+
+| Operation | P-fin range | P-gen range | FMA range |
+|---|---|---|---|
+| Add | 3.10× – 8.01× | 0.79× – 9.65× | — |
+| Subtract | 4.21× – 11.42× | 0.83× – 18.72× | — |
+| Multiply | 0.95× – 22.30× | 0.95× – 17.44× | — |
+| Divide | 0.81× – 14.52× | 0.81× – 16.24× | — |
+| FMA | — | — | 0.77× – 3.64× |
+
   </div>
 </details>
 
