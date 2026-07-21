@@ -14,7 +14,7 @@ This is the **Rust** view of decimal128 **as-measured**, band by band, with expl
 
 ## Summary — Ratio Range by Operation
 
-Each row below is the ratio for that reference/idiom peer on x86_64 (Intel i9-9880H): `ratio = rust_decimal / ours` or `ratio = libbid / ours` (&gt; 1× ⇒ d128 faster), broken out by operation. `rust_decimal` has no wide-product multiply band (that falls back to libbid), and libbid isn't used for add/subtract/divide, so those cells are blank.
+Each row below is the ratio for that reference/idiom peer on x86_64 (Intel i9-9880H): `ratio = rust_decimal / Miguel` or `ratio = libbid / Miguel` (&gt; 1× ⇒ d128 faster), broken out by operation. `rust_decimal` has no wide-product multiply band (that falls back to libbid), and libbid isn't used for add/subtract/divide, so those cells are blank.
 
 | | Add | Subtract | Multiply | Divide |
 |---|---|---|---|---|
@@ -23,7 +23,7 @@ Each row below is the ratio for that reference/idiom peer on x86_64 (Intel i9-98
 
 ## FinMix — realistic financial mix (P-fin)
 
-The headline: one realistic 64-bit financial operation mix — a `MIX` add/sub stream, mul `CP`/`WP`, div `CD`/`WD`/`ET`/`PT` — `ratio = alt / ours` (&gt; 1 ⇒ d128 faster). This is the profile closest to real financial code.
+The headline: one realistic 64-bit financial operation mix — a `MIX` add/sub stream, mul `CP`/`WP`, div `CD`/`WD`/`ET`/`PT` — `ratio = alt / Miguel` (&gt; 1 ⇒ d128 faster). This is the profile closest to real financial code.
 
 **arm64 (M3 Pro).**
 

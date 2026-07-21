@@ -14,7 +14,7 @@ This is the **Java** view of decimal128 **as-measured**, band by band, with expl
 
 ## Summary — Ratio Range by Operation
 
-The ratio for Java's idiom peer on x86_64 (Intel i9-9880H): `ratio = BigDecimal / ours` (&gt; 1× ⇒ d128 faster), broken out by operation.
+The ratio for Java's idiom peer on x86_64 (Intel i9-9880H): `ratio = BigDecimal / Miguel` (&gt; 1× ⇒ d128 faster), broken out by operation.
 
 | | Add | Subtract | Multiply | Divide |
 |---|---|---|---|---|
@@ -22,7 +22,7 @@ The ratio for Java's idiom peer on x86_64 (Intel i9-9880H): `ratio = BigDecimal 
 
 ## FinMix — realistic financial mix (P-fin)
 
-The headline: one realistic 64-bit financial operation mix — a `MIX` add/sub stream, mul `CP`/`WP`, div `CD`/`WD`/`ET`/`PT` — `ratio = alt / ours` (&gt; 1 ⇒ d128 faster). This is the profile closest to real financial code.
+The headline: one realistic 64-bit financial operation mix — a `MIX` add/sub stream, mul `CP`/`WP`, div `CD`/`WD`/`ET`/`PT` — `ratio = alt / Miguel` (&gt; 1 ⇒ d128 faster). This is the profile closest to real financial code.
 
 **arm64 (M3 Pro).**
 

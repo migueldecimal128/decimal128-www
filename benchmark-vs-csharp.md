@@ -14,7 +14,7 @@ This is the **C#** view of decimal128 **as-measured**, band by band, with explic
 
 ## Summary — Ratio Range by Operation
 
-Each row below is the ratio for that reference/idiom peer on x86_64 (Intel i9-9880H): `ratio = System.Decimal / ours` or `ratio = Decimal128 (.NET 11) / ours` (&gt; 1× ⇒ d128 faster), broken out by operation. `System.Decimal` has no wide-product multiply band, so that cell is blank.
+Each row below is the ratio for that reference/idiom peer on x86_64 (Intel i9-9880H): `ratio = System.Decimal / Miguel` or `ratio = Decimal128 (.NET 11) / Miguel` (&gt; 1× ⇒ d128 faster), broken out by operation. `System.Decimal` has no wide-product multiply band, so that cell is blank.
 
 | | Add | Subtract | Multiply | Divide |
 |---|---|---|---|---|
@@ -23,7 +23,7 @@ Each row below is the ratio for that reference/idiom peer on x86_64 (Intel i9-98
 
 ## FinMix — realistic financial mix (P-fin)
 
-The headline: one realistic 64-bit financial operation mix — a `MIX` add/sub stream, mul `CP`/`WP`, div `CD`/`WD`/`ET`/`PT` — `ratio = alt / ours` (&gt; 1 ⇒ d128 faster). This is the profile closest to real financial code.
+The headline: one realistic 64-bit financial operation mix — a `MIX` add/sub stream, mul `CP`/`WP`, div `CD`/`WD`/`ET`/`PT` — `ratio = alt / Miguel` (&gt; 1 ⇒ d128 faster). This is the profile closest to real financial code.
 
 **arm64 (M3 Pro).**
 

@@ -14,7 +14,7 @@ This is the **C** view of decimal128 **as-measured**, band by band, with explici
 
 ## Summary — Ratio Range by Operation
 
-Each row below is the ratio for that reference library on x86_64 (Intel i9-9880H): `ratio = libbid / ours`, `ratio = decQuad / ours`, or `ratio = mpdecimal / ours` (&gt; 1× ⇒ d128 faster), broken out by operation.
+Each row below is the ratio for that reference library on x86_64 (Intel i9-9880H): `ratio = libbid / Miguel`, `ratio = decQuad / Miguel`, or `ratio = mpdecimal / Miguel` (&gt; 1× ⇒ d128 faster), broken out by operation.
 
 | | Add | Subtract | Multiply | Divide |
 |---|---|---|---|---|
@@ -24,7 +24,7 @@ Each row below is the ratio for that reference library on x86_64 (Intel i9-9880H
 
 ## FinMix — realistic financial mix (P-fin)
 
-The headline: one realistic 64-bit financial operation mix — a `MIX` add/sub stream, mul `CP`/`WP`, div `CD`/`WD`/`ET`/`PT` — `ratio = alt / ours` (&gt; 1 ⇒ d128 faster). This is the profile closest to real financial code.
+The headline: one realistic 64-bit financial operation mix — a `MIX` add/sub stream, mul `CP`/`WP`, div `CD`/`WD`/`ET`/`PT` — `ratio = alt / Miguel` (&gt; 1 ⇒ d128 faster). This is the profile closest to real financial code.
 
 **arm64 (M3 Pro).**
 

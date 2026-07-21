@@ -46,7 +46,7 @@ Methodology and the operation-category taxonomy are in the
 
 [**C Benchmark Results →**](benchmark/vs-c.html) — FinMix headline, then add / subtract / multiply / divide / FMA band tables (arm64 + x86_64), with ratios.
 
-**Ratio by Operation.** Each row is the ratio for that reference library on x86_64 (Intel i9-9880H): `ratio = libbid / ours`, `ratio = decQuad / ours`, or `ratio = mpdecimal / ours` (&gt; 1× ⇒ d128 faster).
+**Ratio by Operation.** Each row is the ratio for that reference library on x86_64 (Intel i9-9880H): `ratio = libbid / Miguel`, `ratio = decQuad / Miguel`, or `ratio = mpdecimal / Miguel` (&gt; 1× ⇒ d128 faster).
 
 | | Add | Subtract | Multiply | Divide |
 |---|---|---|---|---|
@@ -63,7 +63,7 @@ Methodology and the operation-category taxonomy are in the
 
 [**C# Benchmark Results →**](benchmark/vs-csharp.html) — FinMix headline, then add / subtract / multiply / divide / FMA band tables (arm64 + x86_64), with ratios.
 
-**Ratio by Operation.** Each row is the ratio for that reference/idiom peer on x86_64 (Intel i9-9880H): `ratio = System.Decimal / ours` or `ratio = Decimal128 (.NET 11) / ours` (&gt; 1× ⇒ d128 faster). `System.Decimal` has no wide-product multiply band, so that cell is blank.
+**Ratio by Operation.** Each row is the ratio for that reference/idiom peer on x86_64 (Intel i9-9880H): `ratio = System.Decimal / Miguel` or `ratio = Decimal128 (.NET 11) / Miguel` (&gt; 1× ⇒ d128 faster). `System.Decimal` has no wide-product multiply band, so that cell is blank.
 
 | | Add | Subtract | Multiply | Divide |
 |---|---|---|---|---|
@@ -79,7 +79,7 @@ Methodology and the operation-category taxonomy are in the
 
 [**Java Benchmark Results →**](benchmark/vs-java.html) — FinMix headline, then add / subtract / multiply / divide / FMA band tables (arm64 + x86_64), with ratios.
 
-**Ratio by Operation.** The ratio for Java's idiom peer on x86_64 (Intel i9-9880H): `ratio = BigDecimal / ours` (&gt; 1× ⇒ d128 faster).
+**Ratio by Operation.** The ratio for Java's idiom peer on x86_64 (Intel i9-9880H): `ratio = BigDecimal / Miguel` (&gt; 1× ⇒ d128 faster).
 
 | | Add | Subtract | Multiply | Divide |
 |---|---|---|---|---|
@@ -94,7 +94,7 @@ Methodology and the operation-category taxonomy are in the
 
 [**Kotlin Benchmark Results →**](benchmark/vs-kotlin.html) — FinMix headline, then add / subtract / multiply / divide / FMA band tables (arm64 + x86_64), with ratios.
 
-**Ratio by Operation.** The ratio for Kotlin's idiom peer on x86_64 (Intel i9-9880H): `ratio = BigDecimal / ours` (&gt; 1× ⇒ d128 faster).
+**Ratio by Operation.** The ratio for Kotlin's idiom peer on x86_64 (Intel i9-9880H): `ratio = BigDecimal / Miguel` (&gt; 1× ⇒ d128 faster).
 
 | | Add | Subtract | Multiply | Divide |
 |---|---|---|---|---|
@@ -109,7 +109,7 @@ Methodology and the operation-category taxonomy are in the
 
 [**Swift Benchmark Results →**](benchmark/vs-swift.html) — FinMix headline, then add / subtract / multiply / divide / FMA band tables (arm64 + x86_64), with ratios.
 
-**Ratio by Operation.** The ratio for Swift's idiom peer on x86_64 (Intel i9-9880H): `ratio = Foundation.Decimal / ours` (&gt; 1× ⇒ d128 faster).
+**Ratio by Operation.** The ratio for Swift's idiom peer on x86_64 (Intel i9-9880H): `ratio = Foundation.Decimal / Miguel` (&gt; 1× ⇒ d128 faster).
 
 | | Add | Subtract | Multiply | Divide |
 |---|---|---|---|---|
@@ -124,7 +124,7 @@ Methodology and the operation-category taxonomy are in the
 
 [**Rust Benchmark Results →**](benchmark/vs-rust.html) — FinMix headline, then add / subtract / multiply / divide / FMA band tables (arm64 + x86_64), with ratios.
 
-**Ratio by Operation.** Each row is the ratio for that reference/idiom peer on x86_64 (Intel i9-9880H): `ratio = rust_decimal / ours` or `ratio = libbid / ours` (&gt; 1× ⇒ d128 faster). `rust_decimal` has no wide-product multiply band (that falls back to libbid), and libbid isn't used for add/subtract/divide, so those cells are blank.
+**Ratio by Operation.** Each row is the ratio for that reference/idiom peer on x86_64 (Intel i9-9880H): `ratio = rust_decimal / Miguel` or `ratio = libbid / Miguel` (&gt; 1× ⇒ d128 faster). `rust_decimal` has no wide-product multiply band (that falls back to libbid), and libbid isn't used for add/subtract/divide, so those cells are blank.
 
 | | Add | Subtract | Multiply | Divide |
 |---|---|---|---|---|
@@ -151,7 +151,7 @@ Methodology and the operation-category taxonomy are in the
 
 [**Python Benchmark Results →**](benchmark/vs-python.html) — FinMix headline, then add / subtract / multiply / divide / FMA band tables (arm64 + x86_64), with ratios.
 
-**Ratio by Operation.** The ratio for Python's idiom peer on x86_64 (Intel i9-9880H): `ratio = decimal.Decimal / ours` (&gt; 1× ⇒ d128 faster).
+**Ratio by Operation.** The ratio for Python's idiom peer on x86_64 (Intel i9-9880H): `ratio = decimal.Decimal / Miguel` (&gt; 1× ⇒ d128 faster).
 
 | | Add | Subtract | Multiply | Divide |
 |---|---|---|---|---|
@@ -166,7 +166,7 @@ Methodology and the operation-category taxonomy are in the
 
 [**Zig Benchmark Results →**](benchmark/vs-zig.html) — FinMix headline, then add / subtract / multiply / divide / FMA band tables (arm64 + x86_64), with ratios.
 
-**Ratio by Operation.** The ratio for Zig's reference library on x86_64 (Intel i9-9880H): `ratio = libbid / ours` (&gt; 1× ⇒ d128 faster). Zig has no in-language decimal peer.
+**Ratio by Operation.** The ratio for Zig's reference library on x86_64 (Intel i9-9880H): `ratio = libbid / Miguel` (&gt; 1× ⇒ d128 faster). Zig has no in-language decimal peer.
 
 | | Add | Subtract | Multiply | Divide |
 |---|---|---|---|---|
