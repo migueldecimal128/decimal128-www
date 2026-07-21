@@ -12,6 +12,18 @@ heading: "Zig Benchmark Results"
 
 This is the **Zig** view of decimal128 **as-measured**, band by band, with explicit ratios. It opens with the realistic financial-mix (**P-fin**) headline, then the per-operation band characterization (**P-gen**) and FMA. In Zig, d128 is measured against the **libbid** universal reference (Zig has no in-language decimal peer). It is **data only** — the categories, magnitude profiles, units, and methodology are defined in the [Benchmark Key](key.html) (and, authoritatively, `BenchmarkMatrix.md`). The cross-port d128 band-shape matrices (all ports, no alternatives) live in [Port-Comparison Benchmark Results](port-compare.html); the full index of per-language pages is on the [Benchmarks](/benchmarks.html) hub.
 
+## Summary — Ratio Range by Operation
+
+A quick-glance rollup before the detailed tables below: the min–max `ratio = alt / ours` (&gt; 1× ⇒ d128 faster) for each operation, pooled across both architectures (arm64 + x86_64) for Zig's reference library (libbid — Zig has no in-language decimal peer), split by profile.
+
+| Operation | P-fin range | P-gen range | FMA range |
+|---|---|---|---|
+| Add | 2.52× – 3.30× | 0.70× – 3.07× | — |
+| Subtract | 3.43× – 4.29× | 0.70× – 5.88× | — |
+| Multiply | 1.85× – 16.45× | 1.75× – 15.34× | — |
+| Divide | 0.80× – 1.59× | 0.85× – 2.70× | — |
+| FMA | — | — | 1.23× – 1.66× |
+
 ## FinMix — realistic financial mix (P-fin)
 
 The headline: one realistic 64-bit financial operation mix — a `MIX` add/sub stream, mul `CP`/`WP`, div `CD`/`WD`/`ET`/`PT` — `ratio = alt / ours` (&gt; 1 ⇒ d128 faster). This is the profile closest to real financial code.

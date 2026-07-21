@@ -12,6 +12,18 @@ heading: "Kotlin Benchmark Results"
 
 This is the **Kotlin** view of decimal128 **as-measured**, band by band, with explicit ratios. It opens with the realistic financial-mix (**P-fin**) headline, then the per-operation band characterization (**P-gen**) and FMA. In Kotlin, d128 is measured against its in-language idiom peer **`BigDecimal`**, with the **libbid** universal reference on the full-width bands. It is **data only** — the categories, magnitude profiles, units, and methodology are defined in the [Benchmark Key](key.html) (and, authoritatively, `BenchmarkMatrix.md`). The cross-port d128 band-shape matrices (all ports, no alternatives) live in [Port-Comparison Benchmark Results](port-compare.html); the full index of per-language pages is on the [Benchmarks](/benchmarks.html) hub.
 
+## Summary — Ratio Range by Operation
+
+A quick-glance rollup before the detailed tables below: the min–max `ratio = alt / ours` (&gt; 1× ⇒ d128 faster) for each operation, pooled across both architectures (arm64 + x86_64) and both reference/idiom peers measured for Kotlin (`BigDecimal`, libbid), split by profile.
+
+| Operation | P-fin range | P-gen range | FMA range |
+|---|---|---|---|
+| Add | 2.65× – 2.80× | 1.42× – 4.59× | — |
+| Subtract | 3.76× – 3.79× | 1.58× – 4.75× | — |
+| Multiply | 2.12× – 3.64× | 1.79× – 3.34× | — |
+| Divide | 1.80× – 55.48× | 2.20× – 40.54× | — |
+| FMA | — | — | 0.55× – 0.74× |
+
 ## FinMix — realistic financial mix (P-fin)
 
 The headline: one realistic 64-bit financial operation mix — a `MIX` add/sub stream, mul `CP`/`WP`, div `CD`/`WD`/`ET`/`PT` — `ratio = alt / ours` (&gt; 1 ⇒ d128 faster). This is the profile closest to real financial code.

@@ -12,6 +12,18 @@ heading: "Rust Benchmark Results"
 
 This is the **Rust** view of decimal128 **as-measured**, band by band, with explicit ratios. It opens with the realistic financial-mix (**P-fin**) headline, then the per-operation band characterization (**P-gen**) and FMA. In Rust, d128 is measured against its in-language idiom peer **`rust_decimal`** on the compact bands it can represent, falling back to the **libbid** universal reference where it cannot (wide products, XD). It is **data only** — the categories, magnitude profiles, units, and methodology are defined in the [Benchmark Key](key.html) (and, authoritatively, `BenchmarkMatrix.md`). The cross-port d128 band-shape matrices (all ports, no alternatives) live in [Port-Comparison Benchmark Results](port-compare.html); the full index of per-language pages is on the [Benchmarks](/benchmarks.html) hub.
 
+## Summary — Ratio Range by Operation
+
+A quick-glance rollup before the detailed tables below: the min–max `ratio = alt / ours` (&gt; 1× ⇒ d128 faster) for each operation, pooled across both architectures (arm64 + x86_64) and both reference/idiom peers measured for Rust (`rust_decimal`, libbid), split by profile.
+
+| Operation | P-fin range | P-gen range | FMA range |
+|---|---|---|---|
+| Add | 1.21× – 1.55× | 0.41× – 1.88× | — |
+| Subtract | 1.50× – 1.87× | 0.39× – 2.01× | — |
+| Multiply | 2.02× – 21.15× | 1.77× – 15.54× | — |
+| Divide | 0.53× – 5.30× | 0.97× – 3.14× | — |
+| FMA | — | — | 1.78× – 3.58× |
+
 ## FinMix — realistic financial mix (P-fin)
 
 The headline: one realistic 64-bit financial operation mix — a `MIX` add/sub stream, mul `CP`/`WP`, div `CD`/`WD`/`ET`/`PT` — `ratio = alt / ours` (&gt; 1 ⇒ d128 faster). This is the profile closest to real financial code.

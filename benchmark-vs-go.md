@@ -12,6 +12,18 @@ heading: "Go Benchmark Results"
 
 This is the **Go** view of decimal128 **as-measured**, band by band, with explicit ratios. It opens with the realistic financial-mix (**P-fin**) headline, then the per-operation band characterization (**P-gen**) and FMA. In Go, d128 is measured against no alternative — Go has neither an in-language decimal peer nor a `libbid` fallback, so its rows are d128-only (`-` in the alt/ratio columns). It is **data only** — the categories, magnitude profiles, units, and methodology are defined in the [Benchmark Key](key.html) (and, authoritatively, `BenchmarkMatrix.md`). The cross-port d128 band-shape matrices (all ports, no alternatives) live in [Port-Comparison Benchmark Results](port-compare.html); the full index of per-language pages is on the [Benchmarks](/benchmarks.html) hub.
 
+## Summary — Ratio Range by Operation
+
+Go has no in-language decimal peer and takes no `libbid` fallback, so every row on this page is d128-only — there is no alternative to compute a ratio against. The rollup below is included for consistency with the other language pages, but every cell is blank.
+
+| Operation | P-fin range | P-gen range | FMA range |
+|---|---|---|---|
+| Add | — | — | — |
+| Subtract | — | — | — |
+| Multiply | — | — | — |
+| Divide | — | — | — |
+| FMA | — | — | — |
+
 ## FinMix — realistic financial mix (P-fin)
 
 The headline: one realistic 64-bit financial operation mix — a `MIX` add/sub stream, mul `CP`/`WP`, div `CD`/`WD`/`ET`/`PT` — `ratio = alt / ours` (&gt; 1 ⇒ d128 faster). This is the profile closest to real financial code.

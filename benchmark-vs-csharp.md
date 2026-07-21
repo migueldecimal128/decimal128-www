@@ -12,6 +12,18 @@ heading: "C# Benchmark Results"
 
 This is the **C#** view of decimal128 **as-measured**, band by band, with explicit ratios. It opens with the realistic financial-mix (**P-fin**) headline, then the per-operation band characterization (**P-gen**) and FMA. In C#, d128 is measured against its in-language idiom peer **`System.Decimal`** on the compact bands it can represent, and the conformant **.NET 11 `System.Numerics.Decimal128`** (arm64 only for now). C# takes no `libbid` fallback, so bands neither .NET type can represent show `-`. It is **data only** — the categories, magnitude profiles, units, and methodology are defined in the [Benchmark Key](key.html) (and, authoritatively, `BenchmarkMatrix.md`). The cross-port d128 band-shape matrices (all ports, no alternatives) live in [Port-Comparison Benchmark Results](port-compare.html); the full index of per-language pages is on the [Benchmarks](/benchmarks.html) hub.
 
+## Summary — Ratio Range by Operation
+
+A quick-glance rollup before the detailed tables below: the min–max `ratio = alt / ours` (&gt; 1× ⇒ d128 faster) for each operation, pooled across both architectures (arm64 + x86_64) and both reference/idiom peers measured for C# (`System.Decimal`, `Decimal128` (.NET 11)), split by profile. FMA has no reference comparison in C# yet, so that row is blank.
+
+| Operation | P-fin range | P-gen range | FMA range |
+|---|---|---|---|
+| Add | 0.75× – 3.92× | 0.22× – 50.85× | — |
+| Subtract | 0.86× – 5.21× | 0.23× – 50.25× | — |
+| Multiply | 1.55× – 7.58× | 1.59× – 33.63× | — |
+| Divide | 0.35× – 54.12× | 2.83× – 43.63× | — |
+| FMA | — | — | — |
+
 ## FinMix — realistic financial mix (P-fin)
 
 The headline: one realistic 64-bit financial operation mix — a `MIX` add/sub stream, mul `CP`/`WP`, div `CD`/`WD`/`ET`/`PT` — `ratio = alt / ours` (&gt; 1 ⇒ d128 faster). This is the profile closest to real financial code.
