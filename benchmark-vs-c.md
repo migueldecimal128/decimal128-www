@@ -12,6 +12,18 @@ heading: "C Benchmark Results"
 
 This is the **C** view of decimal128 **as-measured**, band by band, with explicit ratios. It opens with the realistic financial-mix (**P-fin**) headline, then the per-operation band characterization (**P-gen**) and FMA. In C, d128 is measured against the Intel **libbid** universal reference plus IBM **decQuad** (DPD) and **libmpdecimal**. It is **data only** — the categories, magnitude profiles, units, and methodology are defined in the [Benchmark Key](key.html) (and, authoritatively, `BenchmarkMatrix.md`). The cross-port d128 band-shape matrices (all ports, no alternatives) live in [Port-Comparison Benchmark Results](port-compare.html); the full index of per-language pages is on the [Benchmarks](/benchmarks.html) hub.
 
+## Summary — Ratio Range by Operation
+
+A quick-glance rollup before the detailed tables below: the min–max `ratio = alt / ours` (&gt; 1× ⇒ d128 faster) for each operation, pooled across both architectures (arm64 + x86_64) and all three reference libraries (libbid, decQuad, mpdecimal), split by profile.
+
+| Operation | P-fin range | P-gen range | FMA range |
+|---|---|---|---|
+| Add | 3.10× – 8.01× | 0.79× – 9.65× | — |
+| Subtract | 4.21× – 11.42× | 0.83× – 18.72× | — |
+| Multiply | 0.95× – 22.30× | 0.95× – 17.44× | — |
+| Divide | 0.81× – 14.52× | 0.81× – 16.24× | — |
+| FMA | — | — | 0.77× – 3.64× |
+
 ## FinMix — realistic financial mix (P-fin)
 
 The headline: one realistic 64-bit financial operation mix — a `MIX` add/sub stream, mul `CP`/`WP`, div `CD`/`WD`/`ET`/`PT` — `ratio = alt / ours` (&gt; 1 ⇒ d128 faster). This is the profile closest to real financial code.
