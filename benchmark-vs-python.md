@@ -14,15 +14,15 @@ This is the **Python** view of decimal128 **as-measured**, band by band, with ex
 
 ## Summary — Ratio Range by Operation
 
-A quick-glance rollup before the detailed tables below: the min–max `ratio = alt / ours` (&gt; 1× ⇒ d128 faster) for each operation, pooled across both architectures (arm64 + x86_64) for Python's idiom peer (`decimal.Decimal`), split by profile.
+A quick-glance rollup before the detailed tables below: the min–max `ratio = alt / ours` (&gt; 1× ⇒ d128 faster) for each operation on x86_64 (Intel i9-9880H) for Python's idiom peer (`decimal.Decimal`), split by profile.
 
 | Operation | P-fin range | P-gen range | FMA range |
 |---|---|---|---|
-| Add | 2.58× – 2.65× | 2.16× – 3.21× | — |
-| Subtract | 2.71× | 2.18× – 3.26× | — |
-| Multiply | 1.74× – 3.77× | 1.85× – 3.32× | — |
-| Divide | 1.52× – 4.56× | 1.54× – 4.95× | — |
-| FMA | — | — | 1.27× – 2.02× |
+| Add | 2.58× | 2.20× – 3.00× | — |
+| Subtract | 2.71× | 2.23× – 2.94× | — |
+| Multiply | 1.74× – 3.07× | 1.85× – 2.78× | — |
+| Divide | 1.82× – 4.11× | 1.84× – 4.21× | — |
+| FMA | — | — | 1.28× – 1.82× |
 
 ## FinMix — realistic financial mix (P-fin)
 
