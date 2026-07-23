@@ -32,30 +32,30 @@ The headline: one realistic 64-bit financial operation mix — a `MIX` add/sub s
 
 | port | op | cat | profile | arch | mode | ns | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| c | add | MIX | P-fin | arm64 | thru | 2.81 | libbid | 10.35 | **3.68×** | Rc2 |  |
-| c | sub | MIX | P-fin | arm64 | thru | 2.04 | libbid | 10.65 | **5.22×** | Rc2 |  |
-| c | mul | CP | P-fin | arm64 | thru | 1.21 | libbid | 23.69 | **19.58×** | Rc2 |  |
-| c | mul | WP | P-fin | arm64 | thru | 20.60 | libbid | 34.45 | **1.67×** | Rc2 |  |
-| c | div | CD | P-fin | arm64 | thru | 43.22 | libbid | 35.06 | **0.81×** | Rc2 |  |
-| c | div | WD | P-fin | arm64 | thru | 39.24 | libbid | 39.18 | **1.00×** | Rc2 |  |
-| c | div | ET | P-fin | arm64 | thru | 6.49 | libbid | 6.11 | **0.94×** | Rc2 |  |
-| c | div | PT | P-fin | arm64 | thru | 3.16 | libbid | 6.10 | **1.93×** | Rc2 |  |
-| c | add | MIX | P-fin | arm64 | thru | 2.81 | decQuad | 22.51 | **8.01×** | Rc2 |  |
-| c | sub | MIX | P-fin | arm64 | thru | 2.04 | decQuad | 23.29 | **11.42×** | Rc2 |  |
-| c | mul | CP | P-fin | arm64 | thru | 1.21 | decQuad | 21.41 | **17.69×** | Rc2 |  |
-| c | mul | WP | P-fin | arm64 | thru | 20.60 | decQuad | 25.54 | **1.24×** | Rc2 |  |
-| c | div | CD | P-fin | arm64 | thru | 43.22 | decQuad | 71.42 | **1.65×** | Rc2 |  |
-| c | div | WD | P-fin | arm64 | thru | 39.24 | decQuad | 117.29 | **2.99×** | Rc2 |  |
-| c | div | ET | P-fin | arm64 | thru | 6.49 | decQuad | 41.51 | **6.40×** | Rc2 |  |
-| c | div | PT | P-fin | arm64 | thru | 3.16 | decQuad | 39.27 | **12.43×** | Rc2 |  |
-| c | add | MIX | P-fin | arm64 | thru | 2.81 | mpdecimal | 13.46 | **4.79×** | Rc2 |  |
-| c | sub | MIX | P-fin | arm64 | thru | 2.04 | mpdecimal | 14.99 | **7.35×** | Rc2 |  |
-| c | mul | CP | P-fin | arm64 | thru | 1.21 | mpdecimal | 9.91 | **8.19×** | Rc2 |  |
-| c | mul | WP | P-fin | arm64 | thru | 20.60 | mpdecimal | 29.78 | **1.45×** | Rc2 |  |
-| c | div | CD | P-fin | arm64 | thru | 43.22 | mpdecimal | 60.03 | **1.39×** | Rc2 |  |
-| c | div | WD | P-fin | arm64 | thru | 39.24 | mpdecimal | 87.72 | **2.24×** | Rc2 |  |
-| c | div | ET | P-fin | arm64 | thru | 6.49 | mpdecimal | 56.09 | **8.64×** | Rc2 |  |
-| c | div | PT | P-fin | arm64 | thru | 3.16 | mpdecimal | 45.89 | **14.52×** | Rc2 |  |
+| c | add | MIX | P-fin | arm64 | thru | 2.75 | libbid | 9.14 | **3.32×** | Rc2 |  |
+| c | sub | MIX | P-fin | arm64 | thru | 2.04 | libbid | 13.48 | **6.61×** | Rc2 |  |
+| c | mul | CP | P-fin | arm64 | thru | 1.29 | libbid | 23.29 | **18.05×** | Rc2 |  |
+| c | mul | WP | P-fin | arm64 | thru | 20.07 | libbid | 32.06 | **1.60×** | Rc2 |  |
+| c | div | CD | P-fin | arm64 | thru | 43.27 | libbid | 34.91 | **0.81×** | Rc2 |  |
+| c | div | WD | P-fin | arm64 | thru | 39.37 | libbid | 39.06 | **0.99×** | Rc2 |  |
+| c | div | ET | P-fin | arm64 | thru | 6.48 | libbid | 5.99 | **0.92×** | Rc2 |  |
+| c | div | PT | P-fin | arm64 | thru | 3.16 | libbid | 5.99 | **1.90×** | Rc2 |  |
+| c | add | MIX | P-fin | arm64 | thru | 2.75 | decQuad | 21.68 | **7.88×** | Rc2 |  |
+| c | sub | MIX | P-fin | arm64 | thru | 2.04 | decQuad | 22.31 | **10.94×** | Rc2 |  |
+| c | mul | CP | P-fin | arm64 | thru | 1.29 | decQuad | 22.67 | **17.57×** | Rc2 |  |
+| c | mul | WP | P-fin | arm64 | thru | 20.07 | decQuad | 26.01 | **1.30×** | Rc2 |  |
+| c | div | CD | P-fin | arm64 | thru | 43.27 | decQuad | 71.41 | **1.65×** | Rc2 |  |
+| c | div | WD | P-fin | arm64 | thru | 39.37 | decQuad | 117.33 | **2.98×** | Rc2 |  |
+| c | div | ET | P-fin | arm64 | thru | 6.48 | decQuad | 39.75 | **6.13×** | Rc2 |  |
+| c | div | PT | P-fin | arm64 | thru | 3.16 | decQuad | 38.13 | **12.07×** | Rc2 |  |
+| c | add | MIX | P-fin | arm64 | thru | 2.75 | mpdecimal | 14.07 | **5.12×** | Rc2 |  |
+| c | sub | MIX | P-fin | arm64 | thru | 2.04 | mpdecimal | 14.41 | **7.06×** | Rc2 |  |
+| c | mul | CP | P-fin | arm64 | thru | 1.29 | mpdecimal | 14.37 | **11.14×** | Rc2 |  |
+| c | mul | WP | P-fin | arm64 | thru | 20.07 | mpdecimal | 28.86 | **1.44×** | Rc2 |  |
+| c | div | CD | P-fin | arm64 | thru | 43.27 | mpdecimal | 58.07 | **1.34×** | Rc2 |  |
+| c | div | WD | P-fin | arm64 | thru | 39.37 | mpdecimal | 84.84 | **2.15×** | Rc2 |  |
+| c | div | ET | P-fin | arm64 | thru | 6.48 | mpdecimal | 54.04 | **8.34×** | Rc2 |  |
+| c | div | PT | P-fin | arm64 | thru | 3.16 | mpdecimal | 44.26 | **14.01×** | Rc2 |  |
 
 <!-- END GENERATED pfin-rel-c -->
 
@@ -102,21 +102,21 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| c | add | SQ | P-gen | arm64 | thru | 2.16 | libbid | 7.79 | **3.61×** | Rc2 |  |
-| c | add | NQ | P-gen | arm64 | thru | 3.96 | libbid | 8.46 | **2.14×** | Rc2 |  |
-| c | add | MQ | P-gen | arm64 | thru | 10.80 | libbid | 8.57 | **0.79×** | Rc2 |  |
-| c | add | OQ | P-gen | arm64 | thru | 12.07 | libbid | 13.87 | **1.15×** | Rc2 |  |
-| c | add | FQ | P-gen | arm64 | thru | 7.07 | libbid | 9.37 | **1.33×** | Rc2 |  |
-| c | add | SQ | P-gen | arm64 | thru | 2.16 | decQuad | 20.84 | **9.65×** | Rc2 |  |
-| c | add | NQ | P-gen | arm64 | thru | 3.96 | decQuad | 30.10 | **7.60×** | Rc2 |  |
-| c | add | MQ | P-gen | arm64 | thru | 10.80 | decQuad | 28.68 | **2.66×** | Rc2 |  |
-| c | add | OQ | P-gen | arm64 | thru | 12.07 | decQuad | 35.77 | **2.96×** | Rc2 |  |
-| c | add | FQ | P-gen | arm64 | thru | 7.07 | decQuad | 26.44 | **3.74×** | Rc2 |  |
-| c | add | SQ | P-gen | arm64 | thru | 2.16 | mpdecimal | 12.41 | **5.75×** | Rc2 |  |
-| c | add | NQ | P-gen | arm64 | thru | 3.96 | mpdecimal | 26.98 | **6.81×** | Rc2 |  |
-| c | add | MQ | P-gen | arm64 | thru | 10.80 | mpdecimal | 26.02 | **2.41×** | Rc2 |  |
-| c | add | OQ | P-gen | arm64 | thru | 12.07 | mpdecimal | 47.59 | **3.94×** | Rc2 |  |
-| c | add | FQ | P-gen | arm64 | thru | 7.07 | mpdecimal | 40.65 | **5.75×** | Rc2 |  |
+| c | add | SQ | P-gen | arm64 | thru | 2.18 | libbid | 8.31 | **3.81×** | Rc2 |  |
+| c | add | NQ | P-gen | arm64 | thru | 3.97 | libbid | 8.28 | **2.09×** | Rc2 |  |
+| c | add | MQ | P-gen | arm64 | thru | 6.43 | libbid | 9.42 | **1.47×** | Rc2 |  |
+| c | add | OQ | P-gen | arm64 | thru | 11.78 | libbid | 13.39 | **1.14×** | Rc2 |  |
+| c | add | FQ | P-gen | arm64 | thru | 7.30 | libbid | 10.65 | **1.46×** | Rc2 |  |
+| c | add | SQ | P-gen | arm64 | thru | 2.18 | decQuad | 20.06 | **9.20×** | Rc2 |  |
+| c | add | NQ | P-gen | arm64 | thru | 3.97 | decQuad | 29.40 | **7.41×** | Rc2 |  |
+| c | add | MQ | P-gen | arm64 | thru | 6.43 | decQuad | 28.09 | **4.37×** | Rc2 |  |
+| c | add | OQ | P-gen | arm64 | thru | 11.78 | decQuad | 33.57 | **2.85×** | Rc2 |  |
+| c | add | FQ | P-gen | arm64 | thru | 7.30 | decQuad | 26.79 | **3.67×** | Rc2 |  |
+| c | add | SQ | P-gen | arm64 | thru | 2.18 | mpdecimal | 12.29 | **5.64×** | Rc2 |  |
+| c | add | NQ | P-gen | arm64 | thru | 3.97 | mpdecimal | 26.26 | **6.61×** | Rc2 |  |
+| c | add | MQ | P-gen | arm64 | thru | 6.43 | mpdecimal | 22.09 | **3.44×** | Rc2 |  |
+| c | add | OQ | P-gen | arm64 | thru | 11.78 | mpdecimal | 44.46 | **3.77×** | Rc2 |  |
+| c | add | FQ | P-gen | arm64 | thru | 7.30 | mpdecimal | 39.27 | **5.38×** | Rc2 |  |
 
 <!-- END GENERATED add-rel-c -->
 
@@ -154,21 +154,21 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| c | sub | SQ | P-gen | arm64 | thru | 1.24 | libbid | 9.17 | **7.40×** | Rc2 |  |
-| c | sub | NQ | P-gen | arm64 | thru | 4.79 | libbid | 9.60 | **2.00×** | Rc2 |  |
-| c | sub | MQ | P-gen | arm64 | thru | 11.35 | libbid | 9.40 | **0.83×** | Rc2 |  |
-| c | sub | OQ | P-gen | arm64 | thru | 12.68 | libbid | 14.83 | **1.17×** | Rc2 |  |
-| c | sub | FQ | P-gen | arm64 | thru | 7.14 | libbid | 9.37 | **1.31×** | Rc2 |  |
-| c | sub | SQ | P-gen | arm64 | thru | 1.24 | decQuad | 23.21 | **18.72×** | Rc2 |  |
-| c | sub | NQ | P-gen | arm64 | thru | 4.79 | decQuad | 32.42 | **6.77×** | Rc2 |  |
-| c | sub | MQ | P-gen | arm64 | thru | 11.35 | decQuad | 30.13 | **2.65×** | Rc2 |  |
-| c | sub | OQ | P-gen | arm64 | thru | 12.68 | decQuad | 36.32 | **2.86×** | Rc2 |  |
-| c | sub | FQ | P-gen | arm64 | thru | 7.14 | decQuad | 27.69 | **3.88×** | Rc2 |  |
-| c | sub | SQ | P-gen | arm64 | thru | 1.24 | mpdecimal | 12.18 | **9.82×** | Rc2 |  |
-| c | sub | NQ | P-gen | arm64 | thru | 4.79 | mpdecimal | 22.26 | **4.65×** | Rc2 |  |
-| c | sub | MQ | P-gen | arm64 | thru | 11.35 | mpdecimal | 20.98 | **1.85×** | Rc2 |  |
-| c | sub | OQ | P-gen | arm64 | thru | 12.68 | mpdecimal | 46.42 | **3.66×** | Rc2 |  |
-| c | sub | FQ | P-gen | arm64 | thru | 7.14 | mpdecimal | 41.10 | **5.76×** | Rc2 |  |
+| c | sub | SQ | P-gen | arm64 | thru | 1.25 | libbid | 9.05 | **7.24×** | Rc2 |  |
+| c | sub | NQ | P-gen | arm64 | thru | 4.71 | libbid | 11.78 | **2.50×** | Rc2 |  |
+| c | sub | MQ | P-gen | arm64 | thru | 6.79 | libbid | 9.01 | **1.33×** | Rc2 |  |
+| c | sub | OQ | P-gen | arm64 | thru | 12.01 | libbid | 14.26 | **1.19×** | Rc2 |  |
+| c | sub | FQ | P-gen | arm64 | thru | 7.49 | libbid | 10.47 | **1.40×** | Rc2 |  |
+| c | sub | SQ | P-gen | arm64 | thru | 1.25 | decQuad | 22.32 | **17.86×** | Rc2 |  |
+| c | sub | NQ | P-gen | arm64 | thru | 4.71 | decQuad | 31.22 | **6.63×** | Rc2 |  |
+| c | sub | MQ | P-gen | arm64 | thru | 6.79 | decQuad | 30.69 | **4.52×** | Rc2 |  |
+| c | sub | OQ | P-gen | arm64 | thru | 12.01 | decQuad | 35.98 | **3.00×** | Rc2 |  |
+| c | sub | FQ | P-gen | arm64 | thru | 7.49 | decQuad | 29.01 | **3.87×** | Rc2 |  |
+| c | sub | SQ | P-gen | arm64 | thru | 1.25 | mpdecimal | 12.64 | **10.11×** | Rc2 |  |
+| c | sub | NQ | P-gen | arm64 | thru | 4.71 | mpdecimal | 26.08 | **5.54×** | Rc2 |  |
+| c | sub | MQ | P-gen | arm64 | thru | 6.79 | mpdecimal | 24.11 | **3.55×** | Rc2 |  |
+| c | sub | OQ | P-gen | arm64 | thru | 12.01 | mpdecimal | 45.81 | **3.81×** | Rc2 |  |
+| c | sub | FQ | P-gen | arm64 | thru | 7.49 | mpdecimal | 39.20 | **5.23×** | Rc2 |  |
 
 <!-- END GENERATED sub-rel-c -->
 
@@ -206,15 +206,15 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| c | mul | CP | P-gen | arm64 | thru | 1.39 | libbid | 24.24 | **17.44×** | Rc2 | **no scaling** — the cheap multiply |
-| c | mul | WP | P-gen | arm64 | thru | 20.69 | libbid | 33.43 | **1.62×** | Rc2 | 128-bit recipMulPow10 |
-| c | mul | XP | P-gen | arm64 | thru | 29.20 | libbid | 44.63 | **1.53×** | Rc2 | 256-bit recipMulPow10; **1.19× ≈ the recipmul-256 work-order's 1.18–1.54× band** |
-| c | mul | CP | P-gen | arm64 | thru | 1.39 | decQuad | 21.74 | **15.64×** | Rc2 | vs DPD |
-| c | mul | WP | P-gen | arm64 | thru | 20.69 | decQuad | 26.16 | **1.26×** | Rc2 | vs DPD |
-| c | mul | XP | P-gen | arm64 | thru | 29.20 | decQuad | 27.77 | **0.95×** | Rc2 | **decQuad edges d128 on the widest product** (software DPD's flat cost; libbid still slower) |
-| c | mul | CP | P-gen | arm64 | thru | 1.39 | mpdecimal | 22.03 | **15.85×** | Rc2 | no-scale multiply vs libmpdec |
-| c | mul | WP | P-gen | arm64 | thru | 20.69 | mpdecimal | 53.26 | **2.57×** | Rc2 | 128-bit recipMulPow10 |
-| c | mul | XP | P-gen | arm64 | thru | 29.20 | mpdecimal | 72.75 | **2.49×** | Rc2 | **d128 wins the widest product vs libmpdec** (unlike decQuad) |
+| c | mul | CP | P-gen | arm64 | thru | 1.40 | libbid | 22.86 | **16.33×** | Rc2 | **no scaling** — the cheap multiply |
+| c | mul | WP | P-gen | arm64 | thru | 20.04 | libbid | 33.01 | **1.65×** | Rc2 | 128-bit recipMulPow10 |
+| c | mul | XP | P-gen | arm64 | thru | 26.75 | libbid | 42.65 | **1.59×** | Rc2 | 256-bit recipMulPow10; **1.19× ≈ the recipmul-256 work-order's 1.18–1.54× band** |
+| c | mul | CP | P-gen | arm64 | thru | 1.40 | decQuad | 22.18 | **15.84×** | Rc2 | vs DPD |
+| c | mul | WP | P-gen | arm64 | thru | 20.04 | decQuad | 27.52 | **1.37×** | Rc2 | vs DPD |
+| c | mul | XP | P-gen | arm64 | thru | 26.75 | decQuad | 30.50 | **1.14×** | Rc2 | **decQuad edges d128 on the widest product** (software DPD's flat cost; libbid still slower) |
+| c | mul | CP | P-gen | arm64 | thru | 1.40 | mpdecimal | 21.28 | **15.20×** | Rc2 | no-scale multiply vs libmpdec |
+| c | mul | WP | P-gen | arm64 | thru | 20.04 | mpdecimal | 51.84 | **2.59×** | Rc2 | 128-bit recipMulPow10 |
+| c | mul | XP | P-gen | arm64 | thru | 26.75 | mpdecimal | 69.02 | **2.58×** | Rc2 | **d128 wins the widest product vs libmpdec** (unlike decQuad) |
 
 <!-- END GENERATED mul-rel-c -->
 
@@ -246,21 +246,21 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| c | div | CD | P-gen | arm64 | thru | 42.13 | libbid | 36.61 | **0.87×** | Rc2 | 128÷64 quotient-first (§2.4.10); **libbid wins** — the compact-divide weakness persists |
-| c | div | WD | P-gen | arm64 | thru | 38.54 | libbid | 37.71 | **0.98×** | Rc2 | 256÷64; **≈ parity / slight loss** |
-| c | div | XD | P-gen | arm64 | thru | 33.72 | libbid | 40.43 | **1.20×** | Rc2 | 256÷128 Möller–Granlund |
-| c | div | ET | P-gen | arm64 | thru | 8.40 | libbid | 11.57 | **1.38×** | Rc2 | **quotient-first exact early-out** — beats libbid's exact fast path |
-| c | div | PT | P-gen | arm64 | thru | 3.15 | libbid | 11.42 | **3.63×** | Rc2 | `divPow10Divisor` (§2.4.9); **d128's fastest divide** (coeff-1 form) |
-| c | div | CD | P-gen | arm64 | thru | 42.13 | decQuad | 71.03 | **1.69×** | Rc2 | vs DPD |
-| c | div | WD | P-gen | arm64 | thru | 38.54 | decQuad | 123.03 | **3.19×** | Rc2 | vs DPD |
-| c | div | XD | P-gen | arm64 | thru | 33.72 | decQuad | 179.14 | **5.31×** | Rc2 | vs DPD — decNumber divide is slow |
-| c | div | ET | P-gen | arm64 | thru | 8.40 | decQuad | 47.96 | **5.71×** | Rc2 | vs DPD |
-| c | div | PT | P-gen | arm64 | thru | 3.15 | decQuad | 44.54 | **14.14×** | Rc2 | vs DPD |
-| c | div | CD | P-gen | arm64 | thru | 42.13 | mpdecimal | 60.61 | **1.44×** | Rc2 | **narrowest divide gap** (libmpdec's compact divide is its cheapest, like d128's weakness) |
-| c | div | WD | P-gen | arm64 | thru | 38.54 | mpdecimal | 92.47 | **2.40×** | Rc2 | 256÷64 |
-| c | div | XD | P-gen | arm64 | thru | 33.72 | mpdecimal | 147.57 | **4.38×** | Rc2 | Cowlishaw signature (CD 59 < WD 87 < XD 144) |
-| c | div | ET | P-gen | arm64 | thru | 8.40 | mpdecimal | 58.94 | **7.02×** | Rc2 | libmpdec has no exact early-out |
-| c | div | PT | P-gen | arm64 | thru | 3.15 | mpdecimal | 51.15 | **16.24×** | Rc2 | **d128's biggest divide win vs libmpdec** |
+| c | div | CD | P-gen | arm64 | thru | 41.39 | libbid | 36.61 | **0.88×** | Rc2 | 128÷64 quotient-first (§2.4.10); **libbid wins** — the compact-divide weakness persists |
+| c | div | WD | P-gen | arm64 | thru | 38.23 | libbid | 37.48 | **0.98×** | Rc2 | 256÷64; **≈ parity / slight loss** |
+| c | div | XD | P-gen | arm64 | thru | 36.90 | libbid | 39.15 | **1.06×** | Rc2 | 256÷128 Möller–Granlund |
+| c | div | ET | P-gen | arm64 | thru | 8.17 | libbid | 10.86 | **1.33×** | Rc2 | **quotient-first exact early-out** — beats libbid's exact fast path |
+| c | div | PT | P-gen | arm64 | thru | 3.16 | libbid | 10.64 | **3.37×** | Rc2 | `divPow10Divisor` (§2.4.9); **d128's fastest divide** (coeff-1 form) |
+| c | div | CD | P-gen | arm64 | thru | 41.39 | decQuad | 71.11 | **1.72×** | Rc2 | vs DPD |
+| c | div | WD | P-gen | arm64 | thru | 38.23 | decQuad | 116.08 | **3.04×** | Rc2 | vs DPD |
+| c | div | XD | P-gen | arm64 | thru | 36.90 | decQuad | 173.77 | **4.71×** | Rc2 | vs DPD — decNumber divide is slow |
+| c | div | ET | P-gen | arm64 | thru | 8.17 | decQuad | 45.54 | **5.57×** | Rc2 | vs DPD |
+| c | div | PT | P-gen | arm64 | thru | 3.16 | decQuad | 43.17 | **13.66×** | Rc2 | vs DPD |
+| c | div | CD | P-gen | arm64 | thru | 41.39 | mpdecimal | 58.75 | **1.42×** | Rc2 | **narrowest divide gap** (libmpdec's compact divide is its cheapest, like d128's weakness) |
+| c | div | WD | P-gen | arm64 | thru | 38.23 | mpdecimal | 87.45 | **2.29×** | Rc2 | 256÷64 |
+| c | div | XD | P-gen | arm64 | thru | 36.90 | mpdecimal | 137.38 | **3.72×** | Rc2 | Cowlishaw signature (CD 59 < WD 87 < XD 144) |
+| c | div | ET | P-gen | arm64 | thru | 8.17 | mpdecimal | 57.44 | **7.03×** | Rc2 | libmpdec has no exact early-out |
+| c | div | PT | P-gen | arm64 | thru | 3.16 | mpdecimal | 49.40 | **15.63×** | Rc2 | **d128's biggest divide win vs libmpdec** |
 
 <!-- END GENERATED div-rel-c -->
 
@@ -298,12 +298,12 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| c | fma | FN | FMA | arm64 | thru | 79.12 | libbid | 82.34 | **1.04×** | Rc2 |  |
-| c | fma | FF | FMA | arm64 | thru | 42.22 | libbid | 59.70 | **1.41×** | Rc2 |  |
-| c | fma | FN | FMA | arm64 | thru | 79.12 | decQuad | 61.27 | **0.77×** | Rc2 |  |
-| c | fma | FF | FMA | arm64 | thru | 42.22 | decQuad | 71.75 | **1.70×** | Rc2 |  |
-| c | fma | FN | FMA | arm64 | thru | 79.12 | mpdecimal | 89.61 | **1.13×** | Rc2 |  |
-| c | fma | FF | FMA | arm64 | thru | 42.22 | mpdecimal | 145.83 | **3.45×** | Rc2 |  |
+| c | fma | FN | FMA | arm64 | thru | 79.12 | libbid | 81.22 | **1.03×** | Rc2 |  |
+| c | fma | FF | FMA | arm64 | thru | 41.95 | libbid | 57.36 | **1.37×** | Rc2 |  |
+| c | fma | FN | FMA | arm64 | thru | 79.12 | decQuad | 62.68 | **0.79×** | Rc2 |  |
+| c | fma | FF | FMA | arm64 | thru | 41.95 | decQuad | 69.96 | **1.67×** | Rc2 |  |
+| c | fma | FN | FMA | arm64 | thru | 79.12 | mpdecimal | 88.83 | **1.12×** | Rc2 |  |
+| c | fma | FF | FMA | arm64 | thru | 41.95 | mpdecimal | 144.71 | **3.45×** | Rc2 |  |
 
 <!-- END GENERATED fma-rel-c -->
 
