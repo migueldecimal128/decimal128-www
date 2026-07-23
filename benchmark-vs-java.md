@@ -30,14 +30,14 @@ The headline: one realistic 64-bit financial operation mix — a `MIX` add/sub s
 
 | port | op | cat | profile | arch | mode | ns | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| java | add | MIX | P-fin | arm64 | thru‡ | 6.35 | BigDecimal | 20.37 | **3.21×** | Rjasw2 | compact idiom peer |
-| java | sub | MIX | P-fin | arm64 | thru‡ | 5.62 | BigDecimal | 24.03 | **4.28×** | Rjasw2 | compact idiom peer |
-| java | mul | CP | P-fin | arm64 | thru‡ | 5.29 | BigDecimal | 12.97 | **2.45×** | Rjasw2 | compact idiom peer |
-| java | mul | WP | P-fin | arm64 | thru‡ | 28.00 | BigDecimal | 72.87 | **2.60×** | Rjasw2 | compact idiom peer |
-| java | div | CD | P-fin | arm64 | thru‡ | 36.96 | BigDecimal | 157.62 | **4.26×** | Rjasw2 | compact idiom peer |
-| java | div | WD | P-fin | arm64 | thru‡ | 49.51 | BigDecimal | 89.46 | **1.81×** | Rjasw2 | compact idiom peer |
-| java | div | ET | P-fin | arm64 | thru‡ | 12.86 | BigDecimal | 498.81 | **38.79×** | Rjasw2 | compact idiom peer |
-| java | div | PT | P-fin | arm64 | thru‡ | 9.88 | BigDecimal | 479.82 | **48.56×** | Rjasw2 | compact idiom peer |
+| java | add | MIX | P-fin | arm64 | thru‡ | 6.17 | BigDecimal | 19.54 | **3.17×** | Rjasw2 | compact idiom peer |
+| java | sub | MIX | P-fin | arm64 | thru‡ | 5.61 | BigDecimal | 22.23 | **3.96×** | Rjasw2 | compact idiom peer |
+| java | mul | CP | P-fin | arm64 | thru‡ | 4.83 | BigDecimal | 12.61 | **2.61×** | Rjasw2 | compact idiom peer |
+| java | mul | WP | P-fin | arm64 | thru‡ | 27.65 | BigDecimal | 74.06 | **2.68×** | Rjasw2 | compact idiom peer |
+| java | div | CD | P-fin | arm64 | thru‡ | 35.74 | BigDecimal | 154.42 | **4.32×** | Rjasw2 | compact idiom peer |
+| java | div | WD | P-fin | arm64 | thru‡ | 43.97 | BigDecimal | 90.11 | **2.05×** | Rjasw2 | compact idiom peer |
+| java | div | ET | P-fin | arm64 | thru‡ | 12.91 | BigDecimal | 501.54 | **38.85×** | Rjasw2 | compact idiom peer |
+| java | div | PT | P-fin | arm64 | thru‡ | 9.50 | BigDecimal | 482.39 | **50.78×** | Rjasw2 | compact idiom peer |
 
 <!-- END GENERATED pfin-rel-java -->
 
@@ -47,14 +47,14 @@ The headline: one realistic 64-bit financial operation mix — a `MIX` add/sub s
 
 | port | op | cat | profile | arch | mode | ns | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| java | add | MIX | P-fin | x86_64 | thru‡ | 16.43 | BigDecimal | 55.19 | **3.36×** | xRjasw2 | compact idiom peer |
-| java | sub | MIX | P-fin | x86_64 | thru‡ | 16.23 | BigDecimal | 66.31 | **4.09×** | xRjasw2 | compact idiom peer |
-| java | mul | CP | P-fin | x86_64 | thru‡ | 12.37 | BigDecimal | 41.73 | **3.37×** | xRjasw2 | compact idiom peer |
-| java | mul | WP | P-fin | x86_64 | thru‡ | 49.39 | BigDecimal | 150.91 | **3.06×** | xRjasw2 | compact idiom peer |
-| java | div | CD | P-fin | x86_64 | thru‡ | 97.03 | BigDecimal | 408.57 | **4.21×** | xRjasw2 | compact idiom peer |
-| java | div | WD | P-fin | x86_64 | thru‡ | 122.89 | BigDecimal | 218.12 | **1.77×** | xRjasw2 | compact idiom peer |
-| java | div | ET | P-fin | x86_64 | thru‡ | 44.76 | BigDecimal | 1472.00 | **32.89×** | xRjasw2 | compact idiom peer |
-| java | div | PT | P-fin | x86_64 | thru‡ | 23.41 | BigDecimal | 1405.87 | **60.05×** | xRjasw2 | compact idiom peer |
+| java | add | MIX | P-fin | x86_64 | thru‡ | 16.11 | BigDecimal | 58.92 | **3.66×** | xRjasw2 | compact idiom peer |
+| java | sub | MIX | P-fin | x86_64 | thru‡ | 16.77 | BigDecimal | 67.45 | **4.02×** | xRjasw2 | compact idiom peer |
+| java | mul | CP | P-fin | x86_64 | thru‡ | 13.17 | BigDecimal | 41.25 | **3.13×** | xRjasw2 | compact idiom peer |
+| java | mul | WP | P-fin | x86_64 | thru‡ | 51.99 | BigDecimal | 164.70 | **3.17×** | xRjasw2 | compact idiom peer |
+| java | div | CD | P-fin | x86_64 | thru‡ | 99.59 | BigDecimal | 417.97 | **4.20×** | xRjasw2 | compact idiom peer |
+| java | div | WD | P-fin | x86_64 | thru‡ | 128.71 | BigDecimal | 224.53 | **1.74×** | xRjasw2 | compact idiom peer |
+| java | div | ET | P-fin | x86_64 | thru‡ | 47.28 | BigDecimal | 1469.52 | **31.08×** | xRjasw2 | compact idiom peer |
+| java | div | PT | P-fin | x86_64 | thru‡ | 24.29 | BigDecimal | 1393.50 | **57.37×** | xRjasw2 | compact idiom peer |
 
 <!-- END GENERATED pfin-rel-java-x86 -->
 
@@ -68,11 +68,11 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| java | add | SQ | P-gen | arm64 | thru‡ | 5.45 | BigDecimal | 18.86 | **3.46×** | Rjasw2 | compact idiom peer |
-| java | add | NQ | P-gen | arm64 | thru‡ | 7.30 | BigDecimal | 29.87 | **4.09×** | Rjasw2 | compact idiom peer |
-| java | add | MQ | P-gen | arm64 | thru‡ | 18.58 | BigDecimal | 30.10 | **1.62×** | Rjasw2 | compact idiom peer |
-| java | add | OQ | P-gen | arm64 | thru‡ | 29.30 | BigDecimal | 72.88 | **2.49×** | Rjasw2 | compact idiom peer |
-| java | add | FQ | P-gen | arm64 | thru‡ | 21.54 | BigDecimal | 86.96 | **4.04×** | Rjasw2 | compact idiom peer |
+| java | add | SQ | P-gen | arm64 | thru‡ | 5.47 | BigDecimal | 19.00 | **3.47×** | Rjasw2 | compact idiom peer |
+| java | add | NQ | P-gen | arm64 | thru‡ | 7.45 | BigDecimal | 30.63 | **4.11×** | Rjasw2 | compact idiom peer |
+| java | add | MQ | P-gen | arm64 | thru‡ | 18.28 | BigDecimal | 31.03 | **1.70×** | Rjasw2 | compact idiom peer |
+| java | add | OQ | P-gen | arm64 | thru‡ | 28.44 | BigDecimal | 71.59 | **2.52×** | Rjasw2 | compact idiom peer |
+| java | add | FQ | P-gen | arm64 | thru‡ | 22.31 | BigDecimal | 86.85 | **3.89×** | Rjasw2 | compact idiom peer |
 
 <!-- END GENERATED add-rel-java -->
 
@@ -82,11 +82,11 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| java | add | SQ | P-gen | x86_64 | thru‡ | 13.52 | BigDecimal | 53.06 | **3.92×** | xRjasw2 | compact idiom peer |
-| java | add | NQ | P-gen | x86_64 | thru‡ | 18.92 | BigDecimal | 82.51 | **4.36×** | xRjasw2 | compact idiom peer |
-| java | add | MQ | P-gen | x86_64 | thru‡ | 37.06 | BigDecimal | 85.05 | **2.29×** | xRjasw2 | compact idiom peer |
-| java | add | OQ | P-gen | x86_64 | thru‡ | 59.75 | BigDecimal | 173.14 | **2.90×** | xRjasw2 | compact idiom peer |
-| java | add | FQ | P-gen | x86_64 | thru‡ | 40.06 | BigDecimal | 238.95 | **5.96×** | xRjasw2 | compact idiom peer |
+| java | add | SQ | P-gen | x86_64 | thru‡ | 13.69 | BigDecimal | 54.47 | **3.98×** | xRjasw2 | compact idiom peer |
+| java | add | NQ | P-gen | x86_64 | thru‡ | 20.24 | BigDecimal | 85.69 | **4.23×** | xRjasw2 | compact idiom peer |
+| java | add | MQ | P-gen | x86_64 | thru‡ | 34.23 | BigDecimal | 88.92 | **2.60×** | xRjasw2 | compact idiom peer |
+| java | add | OQ | P-gen | x86_64 | thru‡ | 66.83 | BigDecimal | 181.89 | **2.72×** | xRjasw2 | compact idiom peer |
+| java | add | FQ | P-gen | x86_64 | thru‡ | 59.37 | BigDecimal | 341.30 | **5.75×** | xRjasw2 | compact idiom peer |
 
 <!-- END GENERATED add-rel-java-x86 -->
 
@@ -100,11 +100,11 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| java | sub | SQ | P-gen | arm64 | thru‡ | 4.37 | BigDecimal | 22.39 | **5.12×** | Rjasw2 | compact idiom peer |
-| java | sub | NQ | P-gen | arm64 | thru‡ | 7.68 | BigDecimal | 33.18 | **4.32×** | Rjasw2 | compact idiom peer |
-| java | sub | MQ | P-gen | arm64 | thru‡ | 18.61 | BigDecimal | 33.07 | **1.78×** | Rjasw2 | compact idiom peer |
-| java | sub | OQ | P-gen | arm64 | thru‡ | 28.68 | BigDecimal | 78.38 | **2.73×** | Rjasw2 | compact idiom peer |
-| java | sub | FQ | P-gen | arm64 | thru‡ | 21.56 | BigDecimal | 97.41 | **4.52×** | Rjasw2 | compact idiom peer |
+| java | sub | SQ | P-gen | arm64 | thru‡ | 4.39 | BigDecimal | 23.20 | **5.28×** | Rjasw2 | compact idiom peer |
+| java | sub | NQ | P-gen | arm64 | thru‡ | 7.22 | BigDecimal | 33.91 | **4.70×** | Rjasw2 | compact idiom peer |
+| java | sub | MQ | P-gen | arm64 | thru‡ | 18.40 | BigDecimal | 35.12 | **1.91×** | Rjasw2 | compact idiom peer |
+| java | sub | OQ | P-gen | arm64 | thru‡ | 29.75 | BigDecimal | 78.14 | **2.63×** | Rjasw2 | compact idiom peer |
+| java | sub | FQ | P-gen | arm64 | thru‡ | 19.59 | BigDecimal | 91.57 | **4.67×** | Rjasw2 | compact idiom peer |
 
 <!-- END GENERATED sub-rel-java -->
 
@@ -114,11 +114,11 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| java | sub | SQ | P-gen | x86_64 | thru‡ | 12.56 | BigDecimal | 61.14 | **4.87×** | xRjasw2 | compact idiom peer |
-| java | sub | NQ | P-gen | x86_64 | thru‡ | 20.46 | BigDecimal | 88.35 | **4.32×** | xRjasw2 | compact idiom peer |
-| java | sub | MQ | P-gen | x86_64 | thru‡ | 42.84 | BigDecimal | 99.92 | **2.33×** | xRjasw2 | compact idiom peer |
-| java | sub | OQ | P-gen | x86_64 | thru‡ | 61.25 | BigDecimal | 180.86 | **2.95×** | xRjasw2 | compact idiom peer |
-| java | sub | FQ | P-gen | x86_64 | thru‡ | 42.44 | BigDecimal | 208.92 | **4.92×** | xRjasw2 | compact idiom peer |
+| java | sub | SQ | P-gen | x86_64 | thru‡ | 13.14 | BigDecimal | 69.47 | **5.29×** | xRjasw2 | compact idiom peer |
+| java | sub | NQ | P-gen | x86_64 | thru‡ | 23.39 | BigDecimal | 93.43 | **3.99×** | xRjasw2 | compact idiom peer |
+| java | sub | MQ | P-gen | x86_64 | thru‡ | 36.06 | BigDecimal | 103.59 | **2.87×** | xRjasw2 | compact idiom peer |
+| java | sub | OQ | P-gen | x86_64 | thru‡ | 80.64 | BigDecimal | 243.86 | **3.02×** | xRjasw2 | compact idiom peer |
+| java | sub | FQ | P-gen | x86_64 | thru‡ | 45.21 | BigDecimal | 217.82 | **4.82×** | xRjasw2 | compact idiom peer |
 
 <!-- END GENERATED sub-rel-java-x86 -->
 
@@ -132,9 +132,9 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| java | mul | CP | P-gen | arm64 | thru‡ | 5.01 | BigDecimal | 11.94 | **2.38×** | Rjasw2 | compact idiom peer |
-| java | mul | WP | P-gen | arm64 | thru‡ | 24.29 | BigDecimal | 55.86 | **2.30×** | Rjasw2 | compact idiom peer |
-| java | mul | XP | P-gen | arm64 | thru‡ | 50.45 | BigDecimal | 158.40 | **3.14×** | Rjasw2 | compact idiom peer |
+| java | mul | CP | P-gen | arm64 | thru‡ | 5.16 | BigDecimal | 11.89 | **2.30×** | Rjasw2 | compact idiom peer |
+| java | mul | WP | P-gen | arm64 | thru‡ | 26.17 | BigDecimal | 55.24 | **2.11×** | Rjasw2 | compact idiom peer |
+| java | mul | XP | P-gen | arm64 | thru‡ | 43.50 | BigDecimal | 155.85 | **3.58×** | Rjasw2 | compact idiom peer |
 
 <!-- END GENERATED mul-rel-java -->
 
@@ -144,9 +144,9 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| java | mul | CP | P-gen | x86_64 | thru‡ | 14.13 | BigDecimal | 38.76 | **2.74×** | xRjasw2 | compact idiom peer |
-| java | mul | WP | P-gen | x86_64 | thru‡ | 52.55 | BigDecimal | 151.33 | **2.88×** | xRjasw2 | compact idiom peer |
-| java | mul | XP | P-gen | x86_64 | thru‡ | 78.46 | BigDecimal | 281.91 | **3.59×** | xRjasw2 | compact idiom peer |
+| java | mul | CP | P-gen | x86_64 | thru‡ | 14.36 | BigDecimal | 42.56 | **2.96×** | xRjasw2 | compact idiom peer |
+| java | mul | WP | P-gen | x86_64 | thru‡ | 49.29 | BigDecimal | 156.42 | **3.17×** | xRjasw2 | compact idiom peer |
+| java | mul | XP | P-gen | x86_64 | thru‡ | 69.74 | BigDecimal | 279.82 | **4.01×** | xRjasw2 | compact idiom peer |
 
 <!-- END GENERATED mul-rel-java-x86 -->
 
@@ -160,11 +160,11 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| java | div | CD | P-gen | arm64 | thru‡ | 31.79 | BigDecimal | 142.39 | **4.48×** | Rjasw2 | compact idiom peer |
-| java | div | WD | P-gen | arm64 | thru‡ | 50.12 | BigDecimal | 95.63 | **1.91×** | Rjasw2 | compact idiom peer |
-| java | div | XD | P-gen | arm64 | thru‡ | 47.34 | BigDecimal | 224.93 | **4.75×** | Rjasw2 | compact idiom peer |
-| java | div | ET | P-gen | arm64 | thru‡ | 12.96 | BigDecimal | 492.33 | **37.99×** | Rjasw2 | compact idiom peer |
-| java | div | PT | P-gen | arm64 | thru‡ | 9.83 | BigDecimal | 454.87 | **46.27×** | Rjasw2 | compact idiom peer |
+| java | div | CD | P-gen | arm64 | thru‡ | 31.23 | BigDecimal | 136.68 | **4.38×** | Rjasw2 | compact idiom peer |
+| java | div | WD | P-gen | arm64 | thru‡ | 47.21 | BigDecimal | 104.15 | **2.21×** | Rjasw2 | compact idiom peer |
+| java | div | XD | P-gen | arm64 | thru‡ | 47.35 | BigDecimal | 217.88 | **4.60×** | Rjasw2 | compact idiom peer |
+| java | div | ET | P-gen | arm64 | thru‡ | 13.01 | BigDecimal | 412.83 | **31.73×** | Rjasw2 | compact idiom peer |
+| java | div | PT | P-gen | arm64 | thru‡ | 9.87 | BigDecimal | 382.06 | **38.71×** | Rjasw2 | compact idiom peer |
 
 <!-- END GENERATED div-rel-java -->
 
@@ -174,11 +174,11 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| java | div | CD | P-gen | x86_64 | thru‡ | 88.03 | BigDecimal | 369.63 | **4.20×** | xRjasw2 | compact idiom peer |
-| java | div | WD | P-gen | x86_64 | thru‡ | 117.29 | BigDecimal | 251.05 | **2.14×** | xRjasw2 | compact idiom peer |
-| java | div | XD | P-gen | x86_64 | thru‡ | 124.42 | BigDecimal | 347.70 | **2.79×** | xRjasw2 | compact idiom peer |
-| java | div | ET | P-gen | x86_64 | thru‡ | 44.96 | BigDecimal | 1151.20 | **25.60×** | xRjasw2 | compact idiom peer |
-| java | div | PT | P-gen | x86_64 | thru‡ | 23.94 | BigDecimal | 1050.40 | **43.88×** | xRjasw2 | compact idiom peer |
+| java | div | CD | P-gen | x86_64 | thru‡ | 92.50 | BigDecimal | 372.26 | **4.02×** | xRjasw2 | compact idiom peer |
+| java | div | WD | P-gen | x86_64 | thru‡ | 119.89 | BigDecimal | 264.02 | **2.20×** | xRjasw2 | compact idiom peer |
+| java | div | XD | P-gen | x86_64 | thru‡ | 129.20 | BigDecimal | 358.32 | **2.77×** | xRjasw2 | compact idiom peer |
+| java | div | ET | P-gen | x86_64 | thru‡ | 49.83 | BigDecimal | 1152.56 | **23.13×** | xRjasw2 | compact idiom peer |
+| java | div | PT | P-gen | x86_64 | thru‡ | 24.48 | BigDecimal | 1055.59 | **43.12×** | xRjasw2 | compact idiom peer |
 
 <!-- END GENERATED div-rel-java-x86 -->
 
@@ -192,8 +192,8 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| java | fma | FN | FMA | arm64 | thru‡ | 105.85 | libbid | 81.22 | **0.77×** | Rjasw2 |  |
-| java | fma | FF | FMA | arm64 | thru‡ | 74.85 | libbid | 57.36 | **0.77×** | Rjasw2 |  |
+| java | fma | FN | FMA | arm64 | thru‡ | 99.27 | libbid | 84.00 | **0.85×** | Rjasw2 |  |
+| java | fma | FF | FMA | arm64 | thru‡ | 68.97 | libbid | 57.07 | **0.83×** | Rjasw2 |  |
 
 <!-- END GENERATED fma-rel-java -->
 
@@ -203,8 +203,8 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| java | fma | FN | FMA | x86_64 | thru‡ | 220.62 | libbid | 161.79 | **0.73×** | xRjasw2 |  |
-| java | fma | FF | FMA | x86_64 | thru‡ | 198.30 | libbid | 124.13 | **0.63×** | xRjasw2 |  |
+| java | fma | FN | FMA | x86_64 | thru‡ | 219.34 | libbid | 160.41 | **0.73×** | xRjasw2 |  |
+| java | fma | FF | FMA | x86_64 | thru‡ | 179.09 | libbid | 123.46 | **0.69×** | xRjasw2 |  |
 
 <!-- END GENERATED fma-rel-java-x86 -->
 
