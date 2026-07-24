@@ -21,10 +21,10 @@ heading: "System.Numerics.Decimal128 — .NET 11 Preview 7"
   don't know anyone on the .NET team.
   I maintain my own conformant implementation (decimal128-csharp) and a 
   cross-checking (Rosetta) suite that
-  consolidates 60k test vectors in three different text formats from IBM and Intel; that
-  is the lens for everything here.
-  This document and the benchmark themselves are written with the assistance of Anthropic
-  Claude AI, but I take ownership/responsibility for the results. 
+  consolidates 60k IEEE 754 decimal128 test vectors in three different text formats from IBM and Intel. Rosetta parses the text formats in their original form, calls the appropriate operation for the implementation under test, and compares bit-wise conformance of the expected result. 
+- This document, Rosetta, and the benchmark harness are written with
+  the assistance of Anthropic Claude AI, 
+  but I take ownership/responsibility for the results. 
 - Reference materials include
   * IEEE 754-2019 specification
   * the Cowlishaw GDAS General Decimal Arithmetic Specification
@@ -46,15 +46,16 @@ heading: "System.Numerics.Decimal128 — .NET 11 Preview 7"
   double-rounded and *will produce incorrect results* very close to boundaries. Not
   compliant with IEEE 754. 
 - Status flags are absent. Strictly speaking, not compliant with IEEE 754. 
-- No `ToString` conversion is *fully* quantum-preserving: it holds for negative exponents
-  (`1.0` vs `1.00` format distinctly) but collapses positive-exponent cohorts (`1×10²` and
-  `100` format identically), so parse→format→parse can lose the exponent. Not compliant with
-  IEEE 754 clause 5.12, which requires at least one quantum-preserving output conversion.
-- `fusedMultiplyAdd` is absent — a required IEEE 754 operation. Not compliant with IEEE 754
-  clause 5.4.1.
-- BID is well-hidden today; the representation is not exposed by the current API. The risk is
-  the DPD conversion they plan to add: if BID is surfaced there as the native value rather
-  than as a peer interchange format, the option of changing the internal representation 
+- `ToString` conversion is currently not quantum-preserving for strictly
+  positive exponents. For positive exponents (1E2) parse => format => parse
+  will lose the exponent/cohort. Not compliant with
+  IEEE 754 clause 5.12, which requires at least one quantum-preserving output conversion. (`ToString` is clearly a work-in-progress ... see below)
+- `fusedMultiplyAdd` is absent — a required IEEE 754 operation. Not compliant
+  with IEEE 754 clause 5.4.1.
+- BID is well-hidden today; the representation is not exposed by the current
+  API. The risk is the DPD conversion they plan to add: if BID is surfaced 
+  there as the native value rather than as a peer interchange format, 
+  the option of changing the internal representation 
   in the future would require a breaking change. Exposure of BID as anything
   other than a peer of DPD is effectively BID lock-in.
 - **Scorecard:** Correct results ✅ / IEEE 754 conformance ❌ — five clause-cited gaps:
@@ -185,7 +186,8 @@ meets the first and fails the second.
 
 - **Into the format (parse) — compliant.** `Parse` preserves the quantum: `Parse("1E+2")` stores
   coefficient 1 / exponent 2; `Parse("100")` stores coefficient 100 / exponent 0 — distinct
-  cohort members with distinct bits.
+  cohort members with distinct bits. Compliance is confirmed by looking at the bits with 
+  `Unsafe.bitcast`. 
 - **Out of the format (format) — non-compliant.** No conversion from `Decimal128` to a string
   preserves the quantum for *all* values. It does for negative exponents (`1.0` and `1.00` format
   distinctly), but **every** path collapses positive-exponent cohorts: across 18 formatting paths
@@ -206,18 +208,33 @@ meets the first and fails the second.
   parses back to the exact value (verified, and confirmed sensitive to a perturbed digit, so it
   is genuinely read, not clamped). No precision or overflow bug hides in the long-string case; it
   is strictly the cohort/quantum that is lost.
-- **Aggravating factors.** `ToString` never uses exponential notation at all, so toward
-  decimal128's exponent limits (±~6144) it emits thousand-character strings where the canonical
-  form emits ~7 (`1E+6000` → `1` followed by 6000 zeros); and `ToString("R")` failing to
-  round-trip the cohort is, on its own, a bug.
-- **The fix is additive.** Provide one quantum-preserving conversion (GDAS `to-scientific-string`)
-  as a new format specifier or method — non-breaking; the familiar default may stay. Until it
-  exists, the type cannot claim clause 5.12 conformance.
+- **Aggravating factors.** `ToString` **never uses exponential notation** — confirmed across the
+  entire exponent range, positive and negative — whereas GDAS `to-scientific-string` (GDAS 1.7,
+  *Conversions*, p. 19) introduces E-notation once the exponent is positive or the *adjusted*
+  exponent (exponent + coefficient-length − 1) falls below −6. So toward decimal128's magnitude
+  limits it emits
+  enormous strings where the canonical form emits ~40. These are not contrived literals; they are
+  what the type's own constants print:
+  - `Decimal128.MaxValue.ToString()` → **6,145 characters** (34 nines followed by 6,111 zeros)
+  - `Decimal128.MinValue.ToString()` → **6,146 characters**
+  - `Decimal128.Epsilon.ToString()` → **6,178 characters** (`0.` + 6,175 zeros + `1`)
+
+  So `Console.WriteLine(Decimal128.MaxValue)` prints a 6,145-character line. Separately,
+  `ToString("R")` — nominally the round-trip format — failing to round-trip the cohort is, on its
+  own, a bug.
+- Presumably `ToString` is still under construction ... I doubt anyone wants to see
+  `ToString` return a result with thousands of digits. 
+- For an accepted set of industry-standard rules, see GDAS 1.7,
+  Conversions, p. 19 `to-scientific-string`
+- Until some cohort-preserving method exists (i.e. '1E+2' => BID => '1E+2')
+  exists, the type cannot claim IEEE 754-2019 clause 5.12 conformance.
 
 ### 5.4 No `fusedMultiplyAdd` (IEEE 754 clause 5.4.1)
 - **A required operation is missing.** `fusedMultiplyAdd` is a *required* general-computational
   operation under IEEE 754-2019 **clause 5.4.1** — not a convenience. Its absence is a conformance
   gap in its own right, parallel to the rounding gap in section 5.1.
+- I acknowledge the presence of a `System.Numerics.Decimal128.MultiplyAddEstimate(Decimal128 left, Decimal128 right, Decimal128 addend)` which offers full disclosure
+about the semantics. 
 - **Remediation is additive → a "Later" (section 9.2).** Adding the op breaks no existing caller;
   it can land in a future release.
 - A correct FMA forms the *exact* product
@@ -257,19 +274,20 @@ results were computed correctly, so the very evidence that could *restore* confi
 rounding finding is the evidence that isn't there. The sharpest corroboration is structural: the
 un-exposed directed rounding (section 5.1) and the absent `fusedMultiplyAdd` (section 5.4) are
 **two required-operation gaps, reached from different angles, that resolve to a single
-architectural cause** — the apparent absence of a general *compute-exact-then-round-once* core.
-That is no longer one isolated slip to explain away.
+architectural cause.** The apparent absence of a general *compute-exact-then-round-once* core. 
+starts to smell like a design flaw rather than an isolated slip. 
 
 ## 6. Permitted & Intentional Divergences
 
-Two divergences the Rosetta harness surfaced that are **not** non-compliance — the standard
-permits the first, and the second is a deliberate .NET convention. Distinguishing real gaps from
-allowed behavior is what keeps this a critique rather than a complaint list.
+Two divergences the Rosetta harness surfaced that are **not** non-compliance with the
+IEEE 754 standard. The standard permits the first, and the second is a deliberate .NET 
+convention. 
 
 - **min/max cohort quantum differs from GDAS** — *IEEE-permitted, not a defect.* When
   `min`/`max` return one of two numerically-equal operands, the quantum (cohort member) chosen
-  differs from GDAS's selection. IEEE 754 permits this latitude, so it's a documented
-  behavioral divergence for interop awareness, nothing more.
+  differs from GDAS's selection (GDAS 1.7 p32). IEEE 754 permits this latitude, so it's a
+  documented behavioral divergence for interop awareness, nothing more. (I suspect that 
+  this may relate to current relative weakness in the `compare` space)
 
 - **Canonical NaN is negative** — *intentional; interop note only.* `Decimal128.NaN` is a
   negative quiet NaN (`0xFC00…`), **verified on preview 7** (SDK `11.0.100-preview.7.26366.102`). This seems to be consistent with .NET's long-standing NaN
@@ -293,8 +311,9 @@ allowed behavior is what keeps this a critique rather than a complaint list.
 - **7.3 The concern is the interchange surface they are about to add.** The team has implied
   it will offer conversion from DPD. That is exactly when the
   representation can begin to leak — and "conversion *from* DPD" hints at the asymmetry to
-  avoid: DPD treated as a foreign import while BID is exposed as the native value.
-- **7.4 The recommendation — symmetric interchange, decided now.** Treat BID and DPD as *peer*
+  avoid: DPD treated as a foreign import while BID is exposed as the native value. 
+  (My hunch is that in 2026 there is more DPD128 than BID128 data in the world)
+  - **7.4 The recommendation — symmetric interchange, decided now.** Treat BID and DPD as *peer*
   interchange formats: an explicit **decode** inbound and **encode** outbound for *both*, with
   neither surfaced as "the raw value." Keep BID internally if you like, but explicitly
   encode/decode through that API boundary, so the internal representation can change later
@@ -309,15 +328,15 @@ allowed behavior is what keeps this a critique rather than a complaint list.
   *then* trailing-zero stripping requires additional (slow) division operations, so
   division-heavy workloads are penalized heavily. (Shared root cause with section 5.1: the exact
   quotient is where both the correctness bug and the perf cost live.)
-- **8.3 Four-way benchmarks** — per-op tables (decimal128-csharp / `Decimal128` /
-  `System.Decimal` / libbid) by input category; lead with division/scaling where the gap is
-  starkest, then add/sub, mul.
+- **8.3 Four-by-four benchmarks** — per-op tables (`Decimal128` / libbid / decimal128-csharp / 
+  `System.Decimal`) by input category, in operator order: add, sub, mul, div.
 
-Generated from the op-benchmark store (arm64; ns/op, lower is better). `decimal128-csharp` is
+Generated from the op-benchmark store (ns/op, lower is better; each op shows two machines —
+M3 Pro arm64, then i9-9880H x86_64). `decimal128-csharp` is
 this reviewer's port; `Decimal128 (.NET 11)` is the type under review; libbid is the C
 reference. `System.Decimal` (28 digits) is blank on any band its range cannot represent.
 
-*Realistic financial mix (P-fin):*
+*Realistic financial mix (P-fin) — M3 Pro (arm64):*
 
 <!-- BEGIN GENERATED net11-pfin-abs -->
 
@@ -334,33 +353,24 @@ reference. `System.Decimal` (28 digits) is blank on any band its range cannot re
 
 <!-- END GENERATED net11-pfin-abs -->
 
-*Multiply (P-gen):*
+*Realistic financial mix (P-fin) — i9-9880H (x86_64):*
 
-<!-- BEGIN GENERATED net11-mul-abs -->
-
-| op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
-|---|---|---:|---:|---:|---:|
-| mul | CP | 10.93 | 23.10 | 2.24 | — |
-| mul | WP | 47.85 | 33.19 | 22.03 | — |
-| mul | XP | 1217.57 | 42.29 | 50.99 | — |
-
-<!-- END GENERATED net11-mul-abs -->
-
-*Divide (P-gen):*
-
-<!-- BEGIN GENERATED net11-div-abs -->
+<!-- BEGIN GENERATED net11-pfin-abs-x86 -->
 
 | op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
 |---|---|---:|---:|---:|---:|
-| div | CD | 118.44 | 36.52 | 29.33 | — |
-| div | WD | 157.80 | 37.53 | 48.07 | — |
-| div | XD | 560.19 | 39.01 | 48.34 | — |
-| div | ET | 152.48 | 10.87 | 19.17 | — |
-| div | PT | 148.50 | 10.76 | 10.98 | — |
+| add | MIX | 47.17 | 32.11 | 17.85 | 15.99 |
+| sub | MIX | 47.96 | 36.74 | 15.06 | 15.71 |
+| mul | CP | 43.43 | 46.14 | 5.34 | — |
+| mul | WP | 137.73 | 60.57 | 55.80 | — |
+| div | CD | 439.54 | 78.27 | 109.87 | 61.56 |
+| div | WD | 488.51 | 82.95 | 124.96 | 111.77 |
+| div | ET | 621.48 | 19.44 | 28.79 | 16.06 |
+| div | PT | 636.05 | 19.26 | 11.77 | 67.56 |
 
-<!-- END GENERATED net11-div-abs -->
+<!-- END GENERATED net11-pfin-abs-x86 -->
 
-*Add (P-gen):*
+*Add (P-gen) — M3 Pro (arm64):*
 
 <!-- BEGIN GENERATED net11-add-abs -->
 
@@ -374,7 +384,21 @@ reference. `System.Decimal` (28 digits) is blank on any band its range cannot re
 
 <!-- END GENERATED net11-add-abs -->
 
-*Subtract (P-gen):*
+*Add (P-gen) — i9-9880H (x86_64):*
+
+<!-- BEGIN GENERATED net11-add-abs-x86 -->
+
+| op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
+|---|---|---:|---:|---:|---:|
+| add | SQ | 64.42 | 30.55 | 16.85 | 11.85 |
+| add | NQ | 67.34 | 32.21 | 16.65 | 16.67 |
+| add | MQ | 67.92 | 31.68 | 42.58 | 17.57 |
+| add | OQ | 353.25 | 47.35 | 84.60 | — |
+| add | FQ | 3162.13 | 30.07 | 65.20 | — |
+
+<!-- END GENERATED net11-add-abs-x86 -->
+
+*Subtract (P-gen) — M3 Pro (arm64):*
 
 <!-- BEGIN GENERATED net11-sub-abs -->
 
@@ -387,6 +411,72 @@ reference. `System.Decimal` (28 digits) is blank on any band its range cannot re
 | sub | FQ | 1244.61 | 10.25 | 32.31 | — |
 
 <!-- END GENERATED net11-sub-abs -->
+
+*Subtract (P-gen) — i9-9880H (x86_64):*
+
+<!-- BEGIN GENERATED net11-sub-abs-x86 -->
+
+| op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
+|---|---|---:|---:|---:|---:|
+| sub | SQ | 64.83 | 35.44 | 19.32 | 12.03 |
+| sub | NQ | 66.44 | 37.04 | 19.00 | 16.70 |
+| sub | MQ | 68.44 | 35.97 | 41.83 | 16.02 |
+| sub | OQ | 356.31 | 51.86 | 85.34 | — |
+| sub | FQ | 3150.05 | 34.95 | 63.64 | — |
+
+<!-- END GENERATED net11-sub-abs-x86 -->
+
+*Multiply (P-gen) — M3 Pro (arm64):*
+
+<!-- BEGIN GENERATED net11-mul-abs -->
+
+| op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
+|---|---|---:|---:|---:|---:|
+| mul | CP | 10.93 | 23.10 | 2.24 | — |
+| mul | WP | 47.85 | 33.19 | 22.03 | — |
+| mul | XP | 1217.57 | 42.29 | 50.99 | — |
+
+<!-- END GENERATED net11-mul-abs -->
+
+*Multiply (P-gen) — i9-9880H (x86_64):*
+
+<!-- BEGIN GENERATED net11-mul-abs-x86 -->
+
+| op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
+|---|---|---:|---:|---:|---:|
+| mul | CP | 41.41 | 46.33 | 7.59 | — |
+| mul | WP | 130.07 | 67.28 | 52.80 | — |
+| mul | XP | 2986.32 | 95.35 | 84.97 | — |
+
+<!-- END GENERATED net11-mul-abs-x86 -->
+
+*Divide (P-gen) — M3 Pro (arm64):*
+
+<!-- BEGIN GENERATED net11-div-abs -->
+
+| op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
+|---|---|---:|---:|---:|---:|
+| div | CD | 118.44 | 36.52 | 29.33 | — |
+| div | WD | 157.80 | 37.53 | 48.07 | — |
+| div | XD | 560.19 | 39.01 | 48.34 | — |
+| div | ET | 152.48 | 10.87 | 19.17 | — |
+| div | PT | 148.50 | 10.76 | 10.98 | — |
+
+<!-- END GENERATED net11-div-abs -->
+
+*Divide (P-gen) — i9-9880H (x86_64):*
+
+<!-- BEGIN GENERATED net11-div-abs-x86 -->
+
+| op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
+|---|---|---:|---:|---:|---:|
+| div | CD | 379.53 | 82.56 | 104.79 | — |
+| div | WD | 442.40 | 87.22 | 116.41 | — |
+| div | XD | 1189.40 | 86.84 | 115.59 | — |
+| div | ET | 540.04 | 30.95 | 52.30 | — |
+| div | PT | 525.23 | 31.12 | 11.85 | — |
+
+<!-- END GENERATED net11-div-abs-x86 -->
 
 - **8.4 Interpretation** — where the gap is algorithmic vs. JIT/runtime; call out
   `System.Decimal`'s 96-bit range difference so it isn't read as like-for-like. And note the
@@ -447,7 +537,7 @@ reference. `System.Decimal` (28 digits) is blank on any band its range cannot re
   necessary-condition note (why a value that fits in 34 digits can never trigger it).
 - **B. Full per-op benchmark tables** — raw ns/op from the op-benchmark store.
 
-*FMA (arm64) — `Decimal128` and `System.Decimal` are blank because neither has a fused
+*FMA — M3 Pro (arm64). `Decimal128` and `System.Decimal` are blank because neither has a fused
 multiply-add; this corroborates section 5.4.*
 
 <!-- BEGIN GENERATED net11-fma-abs -->
@@ -459,80 +549,7 @@ multiply-add; this corroborates section 5.4.*
 
 <!-- END GENERATED net11-fma-abs -->
 
-The same bands on x86_64 (InProcess run `xRcs11`):
-
-*Financial mix (P-fin), x86_64:*
-
-<!-- BEGIN GENERATED net11-pfin-abs-x86 -->
-
-| op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
-|---|---|---:|---:|---:|---:|
-| add | MIX | 47.17 | 32.11 | 17.85 | 15.99 |
-| sub | MIX | 47.96 | 36.74 | 15.06 | 15.71 |
-| mul | CP | 43.43 | 46.14 | 5.34 | — |
-| mul | WP | 137.73 | 60.57 | 55.80 | — |
-| div | CD | 439.54 | 78.27 | 109.87 | 61.56 |
-| div | WD | 488.51 | 82.95 | 124.96 | 111.77 |
-| div | ET | 621.48 | 19.44 | 28.79 | 16.06 |
-| div | PT | 636.05 | 19.26 | 11.77 | 67.56 |
-
-<!-- END GENERATED net11-pfin-abs-x86 -->
-
-*Multiply (P-gen), x86_64:*
-
-<!-- BEGIN GENERATED net11-mul-abs-x86 -->
-
-| op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
-|---|---|---:|---:|---:|---:|
-| mul | CP | 41.41 | 46.33 | 7.59 | — |
-| mul | WP | 130.07 | 67.28 | 52.80 | — |
-| mul | XP | 2986.32 | 95.35 | 84.97 | — |
-
-<!-- END GENERATED net11-mul-abs-x86 -->
-
-*Divide (P-gen), x86_64:*
-
-<!-- BEGIN GENERATED net11-div-abs-x86 -->
-
-| op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
-|---|---|---:|---:|---:|---:|
-| div | CD | 379.53 | 82.56 | 104.79 | — |
-| div | WD | 442.40 | 87.22 | 116.41 | — |
-| div | XD | 1189.40 | 86.84 | 115.59 | — |
-| div | ET | 540.04 | 30.95 | 52.30 | — |
-| div | PT | 525.23 | 31.12 | 11.85 | — |
-
-<!-- END GENERATED net11-div-abs-x86 -->
-
-*Add (P-gen), x86_64:*
-
-<!-- BEGIN GENERATED net11-add-abs-x86 -->
-
-| op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
-|---|---|---:|---:|---:|---:|
-| add | SQ | 64.42 | 30.55 | 16.85 | 11.85 |
-| add | NQ | 67.34 | 32.21 | 16.65 | 16.67 |
-| add | MQ | 67.92 | 31.68 | 42.58 | 17.57 |
-| add | OQ | 353.25 | 47.35 | 84.60 | — |
-| add | FQ | 3162.13 | 30.07 | 65.20 | — |
-
-<!-- END GENERATED net11-add-abs-x86 -->
-
-*Subtract (P-gen), x86_64:*
-
-<!-- BEGIN GENERATED net11-sub-abs-x86 -->
-
-| op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
-|---|---|---:|---:|---:|---:|
-| sub | SQ | 64.83 | 35.44 | 19.32 | 12.03 |
-| sub | NQ | 66.44 | 37.04 | 19.00 | 16.70 |
-| sub | MQ | 68.44 | 35.97 | 41.83 | 16.02 |
-| sub | OQ | 356.31 | 51.86 | 85.34 | — |
-| sub | FQ | 3150.05 | 34.95 | 63.64 | — |
-
-<!-- END GENERATED net11-sub-abs-x86 -->
-
-*FMA, x86_64:*
+*FMA — i9-9880H (x86_64):*
 
 <!-- BEGIN GENERATED net11-fma-abs-x86 -->
 
@@ -542,6 +559,7 @@ The same bands on x86_64 (InProcess run `xRcs11`):
 | fma | FF | — | 123.46 | 146.06 | — |
 
 <!-- END GENERATED net11-fma-abs-x86 -->
+
 - **C. Verification methodology** — vector sources (dectest / fptest / libbid), counts, and
   any skip/divergence list.
 - **D. Environment & reproduction** — SDK versions, toolchain flags, machine/arch.
