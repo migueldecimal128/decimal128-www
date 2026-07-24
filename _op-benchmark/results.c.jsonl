@@ -70,7 +70,7 @@
 {"lang": "c", "impl": "d128", "op": "fma", "cat": "FN", "profile": "FMA", "arch": "x86_64", "mode": "thru", "ns": 154.12, "run": "xRc2"}
 {"lang": "c", "impl": "d128", "op": "fma", "cat": "FF", "profile": "FMA", "arch": "arm64", "mode": "thru", "ns": 39.42, "run": "Rc2"}
 {"lang": "c", "impl": "d128", "op": "fma", "cat": "FF", "profile": "FMA", "arch": "x86_64", "mode": "thru", "ns": 91.07, "run": "xRc2"}
-{"lang": "c", "impl": "libbid", "op": "add", "cat": "MIX", "profile": "P-fin", "arch": "arm64", "mode": "thru", "ns": 11.37, "run": "Rc2"}
+{"lang": "c", "impl": "libbid", "op": "add", "cat": "MIX", "profile": "P-fin", "arch": "arm64", "mode": "thru", "ns": 11.09, "run": "Rc2"}
 {"lang": "c", "impl": "libbid", "op": "add", "cat": "MIX", "profile": "P-fin", "arch": "x86_64", "mode": "thru", "ns": 32.11, "run": "xRc2"}
 {"lang": "c", "impl": "libbid", "op": "add", "cat": "SQ", "profile": "P-gen", "arch": "arm64", "mode": "thru", "ns": 8.63, "run": "Rc2"}
 {"lang": "c", "impl": "libbid", "op": "add", "cat": "SQ", "profile": "P-gen", "arch": "x86_64", "mode": "thru", "ns": 30.55, "run": "xRc2"}
@@ -88,7 +88,7 @@
 {"lang": "c", "impl": "libbid", "op": "add", "cat": "OQ", "profile": "P-max", "arch": "x86_64", "mode": "thru", "ns": 54.31, "run": "xRc2"}
 {"lang": "c", "impl": "libbid", "op": "add", "cat": "FQ", "profile": "P-max", "arch": "arm64", "mode": "thru", "ns": 9.91, "run": "Rc2"}
 {"lang": "c", "impl": "libbid", "op": "add", "cat": "FQ", "profile": "P-max", "arch": "x86_64", "mode": "thru", "ns": 28.3, "run": "xRc2"}
-{"lang": "c", "impl": "libbid", "op": "sub", "cat": "MIX", "profile": "P-fin", "arch": "arm64", "mode": "thru", "ns": 13.38, "run": "Rc2"}
+{"lang": "c", "impl": "libbid", "op": "sub", "cat": "MIX", "profile": "P-fin", "arch": "arm64", "mode": "thru", "ns": 11.65, "run": "Rc2"}
 {"lang": "c", "impl": "libbid", "op": "sub", "cat": "MIX", "profile": "P-fin", "arch": "x86_64", "mode": "thru", "ns": 36.74, "run": "xRc2"}
 {"lang": "c", "impl": "libbid", "op": "sub", "cat": "SQ", "profile": "P-gen", "arch": "arm64", "mode": "thru", "ns": 9.06, "run": "Rc2"}
 {"lang": "c", "impl": "libbid", "op": "sub", "cat": "SQ", "profile": "P-gen", "arch": "x86_64", "mode": "thru", "ns": 35.44, "run": "xRc2"}

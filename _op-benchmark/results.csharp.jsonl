@@ -1,4 +1,4 @@
-{"lang": "csharp", "impl": "System.Decimal", "op": "add", "cat": "MIX", "profile": "P-fin", "arch": "arm64", "mode": "thru", "ns": 2.96, "run": "Rcs11"}
+{"lang": "csharp", "impl": "System.Decimal", "op": "add", "cat": "MIX", "profile": "P-fin", "arch": "arm64", "mode": "thru", "ns": 2.86, "run": "Rcs11"}
 {"lang": "csharp", "impl": "System.Decimal", "op": "add", "cat": "MIX", "profile": "P-fin", "arch": "x86_64", "mode": "thru", "ns": 15.99, "run": "xRcs11"}
 {"lang": "csharp", "impl": "System.Decimal", "op": "add", "cat": "SQ", "profile": "P-gen", "arch": "arm64", "mode": "thru", "ns": 2.49, "run": "Rcs11"}
 {"lang": "csharp", "impl": "System.Decimal", "op": "add", "cat": "SQ", "profile": "P-gen", "arch": "x86_64", "mode": "thru", "ns": 11.85, "run": "xRcs11"}
@@ -22,7 +22,7 @@
 {"lang": "csharp", "impl": "System.Decimal", "op": "div", "cat": "ET", "profile": "P-fin", "arch": "x86_64", "mode": "thru", "ns": 16.06, "run": "xRcs11"}
 {"lang": "csharp", "impl": "System.Decimal", "op": "div", "cat": "PT", "profile": "P-fin", "arch": "arm64", "mode": "thru", "ns": 12.34, "run": "Rcs11"}
 {"lang": "csharp", "impl": "System.Decimal", "op": "div", "cat": "PT", "profile": "P-fin", "arch": "x86_64", "mode": "thru", "ns": 67.56, "run": "xRcs11"}
-{"lang": "csharp", "impl": "System.Numerics.Decimal128", "op": "add", "cat": "MIX", "profile": "P-fin", "arch": "arm64", "mode": "thru", "ns": 16.44, "run": "Rcs11"}
+{"lang": "csharp", "impl": "System.Numerics.Decimal128", "op": "add", "cat": "MIX", "profile": "P-fin", "arch": "arm64", "mode": "thru", "ns": 16.77, "run": "Rcs11"}
 {"lang": "csharp", "impl": "System.Numerics.Decimal128", "op": "add", "cat": "MIX", "profile": "P-fin", "arch": "x86_64", "mode": "thru", "ns": 47.17, "run": "xRcs11"}
 {"lang": "csharp", "impl": "System.Numerics.Decimal128", "op": "add", "cat": "SQ", "profile": "P-gen", "arch": "arm64", "mode": "thru", "ns": 19.35, "run": "Rcs11"}
 {"lang": "csharp", "impl": "System.Numerics.Decimal128", "op": "add", "cat": "SQ", "profile": "P-gen", "arch": "x86_64", "mode": "thru", "ns": 64.42, "run": "xRcs11"}
@@ -40,7 +40,7 @@
 {"lang": "csharp", "impl": "System.Numerics.Decimal128", "op": "add", "cat": "OQ", "profile": "P-max", "arch": "x86_64", "mode": "thru", "ns": 728.31, "run": "xRcs11"}
 {"lang": "csharp", "impl": "System.Numerics.Decimal128", "op": "add", "cat": "FQ", "profile": "P-max", "arch": "arm64", "mode": "thru", "ns": 2485.17, "run": "Rcs11"}
 {"lang": "csharp", "impl": "System.Numerics.Decimal128", "op": "add", "cat": "FQ", "profile": "P-max", "arch": "x86_64", "mode": "thru", "ns": 6320.2, "run": "xRcs11"}
-{"lang": "csharp", "impl": "System.Numerics.Decimal128", "op": "sub", "cat": "MIX", "profile": "P-fin", "arch": "arm64", "mode": "thru", "ns": 15.49, "run": "Rcs11"}
+{"lang": "csharp", "impl": "System.Numerics.Decimal128", "op": "sub", "cat": "MIX", "profile": "P-fin", "arch": "arm64", "mode": "thru", "ns": 17.36, "run": "Rcs11"}
 {"lang": "csharp", "impl": "System.Numerics.Decimal128", "op": "sub", "cat": "MIX", "profile": "P-fin", "arch": "x86_64", "mode": "thru", "ns": 47.96, "run": "xRcs11"}
 {"lang": "csharp", "impl": "System.Numerics.Decimal128", "op": "sub", "cat": "SQ", "profile": "P-gen", "arch": "arm64", "mode": "thru", "ns": 19.5, "run": "Rcs11"}
 {"lang": "csharp", "impl": "System.Numerics.Decimal128", "op": "sub", "cat": "SQ", "profile": "P-gen", "arch": "x86_64", "mode": "thru", "ns": 64.83, "run": "xRcs11"}
@@ -90,7 +90,7 @@
 {"lang": "csharp", "impl": "System.Numerics.Decimal128", "op": "div", "cat": "PT", "profile": "P-gen", "arch": "x86_64", "mode": "thru", "ns": 525.23, "run": "xRcs11"}
 {"lang": "csharp", "impl": "System.Numerics.Decimal128", "op": "div", "cat": "XD", "profile": "P-max", "arch": "arm64", "mode": "thru", "ns": 568.1, "run": "Rcs11"}
 {"lang": "csharp", "impl": "System.Numerics.Decimal128", "op": "div", "cat": "XD", "profile": "P-max", "arch": "x86_64", "mode": "thru", "ns": 1220.89, "run": "xRcs11"}
-{"lang": "csharp", "impl": "d128", "op": "add", "cat": "MIX", "profile": "P-fin", "arch": "arm64", "mode": "thru", "ns": 3.98, "run": "Rcs11"}
+{"lang": "csharp", "impl": "d128", "op": "add", "cat": "MIX", "profile": "P-fin", "arch": "arm64", "mode": "thru", "ns": 2.66, "run": "Rcs11"}
 {"lang": "csharp", "impl": "d128", "op": "add", "cat": "MIX", "profile": "P-fin", "arch": "x86_64", "mode": "thru", "ns": 17.85, "run": "xRcs11"}
 {"lang": "csharp", "impl": "d128", "op": "add", "cat": "SQ", "profile": "P-gen", "arch": "arm64", "mode": "thru", "ns": 5.97, "run": "Rcs11"}
 {"lang": "csharp", "impl": "d128", "op": "add", "cat": "SQ", "profile": "P-gen", "arch": "x86_64", "mode": "thru", "ns": 16.85, "run": "xRcs11"}
@@ -108,7 +108,7 @@
 {"lang": "csharp", "impl": "d128", "op": "add", "cat": "OQ", "profile": "P-max", "arch": "x86_64", "mode": "thru", "ns": 79.92, "run": "xRcs11"}
 {"lang": "csharp", "impl": "d128", "op": "add", "cat": "FQ", "profile": "P-max", "arch": "arm64", "mode": "thru", "ns": 23.85, "run": "Rcs11"}
 {"lang": "csharp", "impl": "d128", "op": "add", "cat": "FQ", "profile": "P-max", "arch": "x86_64", "mode": "thru", "ns": 49.45, "run": "xRcs11"}
-{"lang": "csharp", "impl": "d128", "op": "sub", "cat": "MIX", "profile": "P-fin", "arch": "arm64", "mode": "thru", "ns": 3.11, "run": "Rcs11"}
+{"lang": "csharp", "impl": "d128", "op": "sub", "cat": "MIX", "profile": "P-fin", "arch": "arm64", "mode": "thru", "ns": 3.21, "run": "Rcs11"}
 {"lang": "csharp", "impl": "d128", "op": "sub", "cat": "MIX", "profile": "P-fin", "arch": "x86_64", "mode": "thru", "ns": 15.06, "run": "xRcs11"}
 {"lang": "csharp", "impl": "d128", "op": "sub", "cat": "SQ", "profile": "P-gen", "arch": "arm64", "mode": "thru", "ns": 9.06, "run": "Rcs11"}
 {"lang": "csharp", "impl": "d128", "op": "sub", "cat": "SQ", "profile": "P-gen", "arch": "x86_64", "mode": "thru", "ns": 19.32, "run": "xRcs11"}

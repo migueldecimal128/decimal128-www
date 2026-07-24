@@ -342,8 +342,8 @@ reference. `System.Decimal` (28 digits) is blank on any band its range cannot re
 
 | op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
 |---|---|---:|---:|---:|---:|
-| add | MIX | 16.44 | 11.37 | 3.98 | 2.96 |
-| sub | MIX | 15.49 | 13.38 | 3.11 | 2.96 |
+| add | MIX | 16.77 | 11.09 | 2.66 | 2.86 |
+| sub | MIX | 17.36 | 11.65 | 3.21 | 2.96 |
 | mul | CP | 11.01 | 23.54 | 1.87 | — |
 | mul | WP | 51.33 | 32.10 | 23.86 | — |
 | div | CD | 151.29 | 37.72 | 26.08 | 11.16 |
@@ -494,12 +494,16 @@ reference. `System.Decimal` (28 digits) is blank on any band its range cannot re
 
 ## 9. Recommendations
 
-### 9.1 Now — before GA (contracts, API shape, honesty)
-- **State the conformance boundary honestly:** correctly-rounded operations are TTE-only;
+### 9.1 Now — before GA
+- **State the truth regarding Rounding:** correctly-rounded operations are TTE-only;
   do not claim IEEE 754 rounding conformance beyond `roundTiesToEven`; do not present
   composed directed rounding as correctly-rounded (section 5.1).
-- **Settle the interchange API** so BID/DPD are symmetric and the internal representation is
-  hidden (section 7) — even if BID stays internal and any DPD/flag work follows later.
+- **Fix `ToString` to properly retain cohorts for round-trips:** no output conversion
+  preserves the quantum, so `ToString` is not IEEE 754 clause 5.12-conformant. 
+  Presumably this is in-the-works because nobody wants huge strings of digits. 
+- **Settle the interchange API** so BID/DPD are treated symmetrically and the
+  internal representation remains hidden. It will keep the door open for options in
+  the future. 
 - **Reserve the flag surface** so the verification channel and future semantics aren't
   foreclosed (section 5.2).
 - Rationale: these are semantic and API contracts, plus disclosure — cheap now, breaking or
@@ -507,11 +511,15 @@ reference. `System.Decimal` (28 digits) is blank on any band its range cannot re
 
 ### 9.2 Later — after GA (additive, non-breaking)
 - **Add fused rounding-direction operations:** alternate methods taking an explicit
-  `roundingDirection`, rounding the exact result once — using a true rounding-direction type,
-  not `MidpointRounding` (section 5.1). Drives the scorecard from 1/5 toward 5/5.
+  `roundingDirection`, rounding the exact result once. Use a true rounding-direction type,
+  not `MidpointRounding` (section 5.1). Consider making RoundingDirection the receiver ...
+  `RoundingDirection.add()`, `RoundingDirection.subtract()`
 - **Implement `fusedMultiplyAdd` (clause 5.4.1):** the required fused op (section 5.4). It almost certainly
   shares the same *compute-exact-then-round-once* finalize as the fused rounding-direction
   methods above, so the two are natural to build together.
+- **Add a quantum-preserving string conversion** (GDAS `to-scientific-string`) — a new format
+  specifier or method that round-trips the cohort (section 5.3). Closes the clause 5.12 gap;
+  non-breaking, so the familiar default can stay.
 - **Replace the naive division algorithm;** make scaling and trailing-zero stripping fast (section 8).
 - Broader performance tuning across op categories.
 - Full flag semantics behind the (Now-reserved) surface.
