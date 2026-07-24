@@ -46,9 +46,10 @@ heading: "System.Numerics.Decimal128 — .NET 11 Preview 7"
   double-rounded and *will produce incorrect results* very close to boundaries. Not
   compliant with IEEE 754. 
 - Status flags are absent. Strictly speaking, not compliant with IEEE 754. 
-- No string conversion preserves the quantum: distinct cohort members (e.g. `1×10²` and `100`)
-  format to the same text, and parse→format→parse loses the exponent. Not compliant with
-  IEEE 754 clause 5.12.
+- No `ToString` conversion is *fully* quantum-preserving: it holds for negative exponents
+  (`1.0` vs `1.00` format distinctly) but collapses positive-exponent cohorts (`1×10²` and
+  `100` format identically), so parse→format→parse can lose the exponent. Not compliant with
+  IEEE 754 clause 5.12, which requires at least one quantum-preserving output conversion.
 - `fusedMultiplyAdd` is absent — a required IEEE 754 operation. Not compliant with IEEE 754
   clause 5.4.1.
 - BID is well-hidden today; the representation is not exposed by the current API. The risk is
@@ -185,11 +186,12 @@ meets the first and fails the second.
 - **Into the format (parse) — compliant.** `Parse` preserves the quantum: `Parse("1E+2")` stores
   coefficient 1 / exponent 2; `Parse("100")` stores coefficient 100 / exponent 0 — distinct
   cohort members with distinct bits.
-- **Out of the format (format) — non-compliant.** **No** conversion from `Decimal128` to a string
-  preserves the quantum. Across 18 formatting paths — default, `G`, `G0…G34`, `R` (round-trip),
-  `E`, `F`, `N`, and custom exponential forms — *none* distinguishes `1×10²` from `100×10⁰`; every
-  one renders them identically. Consequently `Parse(x.ToString())` cannot recover `x`'s quantum,
-  and even `ToString("R")` — nominally the round-trip format — loses it.
+- **Out of the format (format) — non-compliant.** No conversion from `Decimal128` to a string
+  preserves the quantum for *all* values. It does for negative exponents (`1.0` and `1.00` format
+  distinctly), but **every** path collapses positive-exponent cohorts: across 18 formatting paths
+  — default, `G`, `G0…G34`, `R` (round-trip), `E`, `F`, `N`, and custom exponential forms — none
+  distinguishes `1×10²` from `100×10⁰`. Consequently `Parse(x.ToString())` cannot recover `x`'s
+  quantum for those values, and even `ToString("R")` — nominally the round-trip format — loses it.
 
   | value (distinct cohort members) | quantum-preserving string | every MSFT format |
   |---|---|---|
@@ -199,6 +201,11 @@ meets the first and fails the second.
   Because clause 5.12 requires *at least one* quantum-preserving conversion from the format and
   there is none, the SUT is **not conformant with clause 5.12** — an explicit IEEE 754
   non-compliance, not a GDAS style preference.
+- **Scope: the value is always correct — the failure is quantum-only.** The round-trip preserves
+  the value across the entire range, including the qExp = 6111 extreme: a 6,112-character string
+  parses back to the exact value (verified, and confirmed sensitive to a perturbed digit, so it
+  is genuinely read, not clamped). No precision or overflow bug hides in the long-string case; it
+  is strictly the cohort/quantum that is lost.
 - **Aggravating factors.** `ToString` never uses exponential notation at all, so toward
   decimal128's exponent limits (±~6144) it emits thousand-character strings where the canonical
   form emits ~7 (`1E+6000` → `1` followed by 6000 zeros); and `ToString("R")` failing to
