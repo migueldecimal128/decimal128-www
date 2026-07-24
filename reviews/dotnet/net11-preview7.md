@@ -17,62 +17,96 @@ heading: "System.Numerics.Decimal128 — .NET 11 Preview 7"
 ---
 
 ## 1. Framing
-- **Who I am** — an independent decimal128 specialist; no affiliation with the .NET team.
-  I maintain my own conformant implementation and a cross-checking (Rosetta) suite; that
+- I am an independent decimal128 specialist; no affiliation with the .NET team;
+  don't know anyone on the .NET team.
+  I maintain my own conformant implementation (decimal128-csharp) and a 
+  cross-checking (Rosetta) suite that
+  consolidates 60k test vectors in three different text formats from IBM and Intel; that
   is the lens for everything here.
-- **The bar** — IEEE 754-2019 decimal128 and GDAS (Cowlishaw), named explicitly throughout
-  (never "the spec" unqualified).
-- **The series** — one installment per release candidate; the same harness each time, so
-  readers can watch the type converge. Per-edition status vocabulary: *resolved /
-  still open / newly introduced*.
-- **Reading guide** — correctness is graded against the standards; performance is reported,
-  not graded, because it improves release-over-release without breaking anyone (see §8–§9).
-- **Through-line to set up here:** *confidence in the whole from evidence in the part.*
-  Two findings (rounding, flags) are really about how much trust the un-audited surface
-  has earned.
+  This document and the benchmark themselves are written with the assistance of Anthropic
+  Claude AI, but I take ownership/responsibility for the results. 
+- Reference materials include
+  * IEEE 754-2019 specification
+  * the Cowlishaw GDAS General Decimal Arithmetic Specification
+  * IBM Cowlishaw decTest validation suite
+  * IBM Haifa FPgen/FPtest hardware decimal floating point validation suite
+  * Intel 'libbid' Decimal Floating Point library 
+- The planned series shall include one installment per release candidate;
+  the same harness each time, so readers can watch the type converge. 
+- Correctness/compliance is graded against the standards. 
+  Benchmark performance is simply reported, not graded; presumably performance may show
+  improvement over release candidates, prior to GA. See sections 8 & 9. 
 
 ## 2. Executive Summary
-- **Lead with the win:** the numerical results are correct — verified bit-for-bit against
-  dectest, fptest, and libbid via the Rosetta suite. They nailed the part that is hardest
-  to get right.
-- **The one that matters:** rounding is composed, not fused. Directed rounding
-  (Ceiling/Floor/Round) is applied *after* ties-to-even has already rounded, so results are
-  double-rounded and wrong near boundaries.
-- **Scorecard:** Correct results ✅ / Rounding architecture ❌ / Flags ⚠️ absent /
-  Performance ⚠️ / Design (BID lock-in) ⚠️.
-- **Series scorecard line:** correctly-rounded operations = **1 of 5** rounding-direction
-  attributes (`roundTiesToEven` only). Track this number across RCs.
-- Findings tagged Now vs. Later up front.
+- The numerical results produced by System.Numerics.Decimal128 are correct, 
+  verified bit-for-bit against dectest, fptest, and libbid test vectors for
+  tiesToEven rounding. **This is the hardest part to get right, and they nailed it**
+- Rounding is a separately composed, not fused into the operations. Directed rounding
+  (Ceiling/Floor/Round) is applied *after* tiesToEven has already rounded, so results are
+  double-rounded and *will produce incorrect results* very close to boundaries. Not
+  compliant with IEEE 754. 
+- Status flags are absent. Strictly speaking, not compliant with IEEE 754. 
+- No string conversion preserves the quantum: distinct cohort members (e.g. `1×10²` and `100`)
+  format to the same text, and parse→format→parse loses the exponent. Not compliant with
+  IEEE 754 clause 5.12.
+- `fusedMultiplyAdd` is absent — a required IEEE 754 operation. Not compliant with IEEE 754
+  clause 5.4.1.
+- BID is well-hidden today; the representation is not exposed by the current API. The risk is
+  the DPD conversion they plan to add: if BID is surfaced there as the native value rather
+  than as a peer interchange format, the option of changing the internal representation 
+  in the future would require a breaking change. Exposure of BID as anything
+  other than a peer of DPD is effectively BID lock-in.
+- **Scorecard:** Correct results ✅ / IEEE 754 conformance ❌ — five clause-cited gaps:
+  rounding (5.1), flags (5.2), string conversion (5.3), `fusedMultiplyAdd` (5.4), and
+  `CompareTo` order (5.5, fix in progress) / Performance ⚠️ / Design — BID lock-in ⚠️.
 
 ## 3. Scope & Methodology
-- **Version under test:** .NET 11 preview 7, exact SDK/build.
+- **Version under test:** .NET 11 preview 7, SDK 11.0.100-preview.7.26366.102 as of 2026-07-14
 - **Reference standards:** IEEE 754-2019 decimal128 + GDAS.
-- **Verification suite:** Rosetta bit-identity against **dectest, fptest, and libbid** — the
-  evidentiary backbone; state vector counts and what bit-identity does and does not prove.
-- **Comparison cohort:** d128, libbid, `System.Decimal` (96-bit BCL baseline, flagged
-  out-of-cohort on range), `System.Numerics.Decimal128` (SUT).
+- **Verification suite:** Rosetta bit-identity against industry reference
+  **dectest, fptest, and libbid** test vector suites. 
+- **Bit-bridge caveat:** the SUT exposes no way to read its bits and no bitwise-equality
+  operator, so the bit-identity check reaches the encoding by reinterpreting the value as its
+  BID128 bit pattern (`Unsafe.BitCast`) and comparing through the port's BID codec. This is
+  valid only because — and only while — the SUT's in-memory layout *is* the BID128 interchange
+  encoding; that is an unsupported implementation detail, not an API contract (see section 7). It also
+  means cohort/quantum differences are caught, not just values. 
+- **Comparison cohort:** `System.Numerics.Decimal128` (the *system under test*, SUT), Intel libbid release 4, decimal128-csharp, `System.Decimal` (96-bit BCL baseline, flagged
+  out-of-cohort on range).
 - **Benchmark harness:** op-benchmark .NET 11 arm, InProcess toolchain, per-op input
   categories.
-- **Fairness caveats** (stated once, up front): value + ties-to-even comparison surface
-  where the SUT is TTE-only; FMA is port-only (the SUT has none).
+- **Fairness caveats:** bit-for-bit comparision of expected result values against only
+  tiesToEven vectors since the SUT only offers tiesToEven. 
 - **Reproducibility:** everything needed to rerun, so the series is auditable RC-over-RC.
 
 ## 4. What They Got Right
 - **Correct results, verified** — the central, non-trivial achievement; walk through the
   suite agreement (dectest / fptest / libbid).
-- **TTE as the default rounding-direction attribute — including on the operators — is the
-  correct, IEEE-consistent choice.** Operators can't carry a rounding attribute; binding
-  `+ − × ÷` to the standard default is exactly right. (This is an endorsement, not a
-  criticism — it sets up §5, which is about the *absence of an alternative*, not the default.)
+- **tiesToEven as the default rounding-direction attribute, is the  correct, IEEE-consistent choice**
+  Operators can't carry a rounding attribute; binding
+  `+ − × ÷` to the standard default is clearly/exactly right. 
 - Clean first-class BCL type and generic-math integration.
-- BID over DPD is the defensible representation choice (sets up §7's caveat).
+- BID over DPD is the defensible/obvious representation choice. However, it does not
+  need to be the assume/preferred representation visible through the API. 
 
-## 5. The Rounding Problem (Headline Finding)
+## 5. IEEE 754 Non-Compliance
 
-**5.1 What they built** — arithmetic always rounds ties-to-even; `Ceiling`/`Floor`/`Round`
-are separate functions applied *after* the operation has already rounded.
+The areas below are where preview 7 does **not** conform to IEEE 754-2019, each anchored to the
+clause it fails. Divergences the standard *permits*, or that are deliberate, are kept separate in
+section 6.
 
-**5.2 Why that's wrong — worked example.** Ask for the quotient of two full-precision
+### 5.1 Rounding 
+
+Rounding behavior is fundamental to the design of the IEEE 754 specifications. 
+It is not something that was/is simply 'bolted on' ... because if you try to
+add it on later then you will get incorrect results. 
+
+In this implementation arithmetic always rounds tiesToEven; `Ceiling`/`Floor`/`Round`
+are separate functions applied *after* the operation has already rounded. 
+
+This *double rounding* inevitably leads to incorrect results. 
+
+**Example.** Ask for the quotient of two full-precision
 decimals, rounded to an integer ties-away-from-zero:
 
 ```
@@ -82,102 +116,148 @@ b = 2000000000000000000000000000000000      (2x10^33)
 exact a / b = 2.4999999999999999999999999999999995      <- 35 digits, not representable
 
   correct  - round the exact quotient once, ties-away   -> 2
-  the API  - 1. divide: silently rounds to 34 digits, ties-to-EVEN -> 2.5
+  the API  - 1. divide: silently rounds to 34 digits, tiesToEven -> 2.5
              2. apply ties-away to 2.5                              -> 3
   result                                                            -> 3   (wrong)
 ```
 
-The `.5` the user's rounding mode needed was already consumed by a ties-to-even step they
+The `.5` the user's rounding mode needed was already consumed by a tiesToEven step they
 never asked for. The second rounding is handed `2.5` and has no way back to the true value.
 **And the answer is 2.5 — an everyday magnitude.** What carries the 34 digits is the
 *operands*; dividing two full-precision decimals is completely routine.
 
-**5.3 The necessary condition (pre-empt the "edge case" dismissal).** This *cannot* happen
+**When it occurs.** This *cannot* happen
 to a value that fits in 34 digits — the operation would be exact and the rounding applied
 to the true value. It requires the exact result to overflow the format's precision. That is
 not exotic: it is simply what happens when you divide two full-precision decimals near a
 rounding boundary. (Non-representability is *necessary*; proximity to a boundary within one
 ULP is what makes it *occur* — so it's real but not constant.)
 
-**5.4 The correct model** — the rounding-direction belongs *inside* the operation: round the
+**The correct model** — the rounding-direction belongs *inside* the operation: round the
 exact result **once**, to the requested mode. A post-hoc `Round`/`Floor`/`Ceiling` applied to
-an already-ties-to-even-rounded value is structurally incapable of producing the
+an already-tiesToEven-rounded value is structurally incapable of producing the
 correctly-rounded answer. This same *compute-exact-then-round-once* core is exactly what a
-correct `fusedMultiplyAdd` requires (§6.3): a naive FMA built from their existing
+correct `fusedMultiplyAdd` requires (section 5.4): a naive FMA built from their existing
 multiply-then-add would round `a*b` *before* adding `c`, reproducing this very
 double-rounding — which is why FMA's absence points at the same missing core, not a separate
 problem.
 
-**5.5 The conformance boundary (Now vs. Later).**
-- IEEE 754-2019 **§5.1** requires each operation to be performed *"as if it first produced an
-  intermediate result correct to infinite precision and with unbounded range, and then
-  rounded that intermediate result"* — **once** — under the applicable rounding-direction
-  attribute (**§4.3**). Post-hoc composition rounds **twice**.
+**The conformance boundary (Now vs. Later).**
+- IEEE 754-2019 **clause 4.3** states:
+  ```
+  Rounding takes a number regarded as infinitely precise and, if necessary, modifies it 
+  to fit in the destination’s format while signaling the inexact exception, underflow, 
+  or overflow when appropriate (see Clause 7). Except where stated otherwise, every 
+  operation shall be performed as if it first produced an intermediate result correct
+  to infinite precision and with unbounded range, and then rounded that result
+  according to one of the attributes in this clause.
+  ```
+- To accomplish this, rounding muyst be performed **once**. The existing API rounds **twice**. 
 - Consequence: under any non-default attribute — `roundTiesToAway`, `roundTowardPositive`,
   `roundTowardNegative`, `roundTowardZero` — decimal128 operations as exposed are **not
-  correctly rounded**. The implementation conforms to §5.1 for `roundTiesToEven` **only**.
-- **The fix is additive** — new fused operation overloads that take an explicit
-  `roundingDirection` and round the exact result once. Existing callers untouched, no
-  behavior change → the *implementation* is a legitimate **Later** (§9.2).
-- **The one genuine "Now" is disclosure:** by GA, do not claim IEEE 754 rounding conformance
-  beyond `roundTiesToEven`, and do not present composed directed rounding as
-  correctly-rounded. Cheap, non-breaking, and it protects the reputational claim.
-- Design note for the fused API: the parameter must be a true **rounding-direction** type,
-  **not** `System.MidpointRounding`. `MidpointRounding` governs only *ties*; the directed
-  attributes (`towardPositive/Negative/Zero`) change the rounding of *non-tie* results too,
-  so the midpoint enum would under-specify exactly the modes that matter.
+  correctly rounded**. The implementation conforms to IEEE 754 clause 5.1 for `roundTiesToEven` **only**.
+- Microsoft could address this deficiency **Later** by providing additional library 
+  entry points with roundingDirection as a passed parameter or receiver. 
+- For **Now** Microsoft should not claim IEEE 754 rounding conformance with
+  the current implementation; they should not present their two-step rounding
+  as correctly-rounded. 
 
-**5.6 The confidence cost.** The reputational exposure (§5.5) is the visible risk. The
-quieter one is inferential: correctly-rounded single rounding is the foundation of the
+### 5.2 Flags
+- No exception/status-flag support (inexact, invalid, overflow, underflow, division-by-zero).
+- Flags are *required* under IEEE 754.
+- Admittedly, flags are a minor functional gap for the vast majority of users.
+- The absence of flags is consistent with binary floating point (double/binary64).
+- The bigger issue is, it contributes to concerns about the spec-conformance of the
+  implementation. For a new implementation, flags (against known test vectors)
+  provide an *independent verification channel* to confirm that results are being computed by
+  the correct path.
+- **The absence of flags is a direct contributor to the confidence cost of section 5.6.**
+  Had they been present they would have restored some confidence about the rounding issue.
+  However, the absence of flags plants another *seed of doubt*.
+
+### 5.3 No quantum-preserving string conversion (IEEE 754 clause 5.12)
+IEEE 754-2019 **clause 5.12** requires, for decimal formats: *"All conversions from external
+character sequences to supported decimal formats shall preserve the quantum … unless rounding is
+necessary. At least one conversion from each supported decimal format shall preserve the quantum
+as well as the value and sign."* Two obligations — one for parsing, one for formatting. The SUT
+meets the first and fails the second.
+
+- **Into the format (parse) — compliant.** `Parse` preserves the quantum: `Parse("1E+2")` stores
+  coefficient 1 / exponent 2; `Parse("100")` stores coefficient 100 / exponent 0 — distinct
+  cohort members with distinct bits.
+- **Out of the format (format) — non-compliant.** **No** conversion from `Decimal128` to a string
+  preserves the quantum. Across 18 formatting paths — default, `G`, `G0…G34`, `R` (round-trip),
+  `E`, `F`, `N`, and custom exponential forms — *none* distinguishes `1×10²` from `100×10⁰`; every
+  one renders them identically. Consequently `Parse(x.ToString())` cannot recover `x`'s quantum,
+  and even `ToString("R")` — nominally the round-trip format — loses it.
+
+  | value (distinct cohort members) | quantum-preserving string | every MSFT format |
+  |---|---|---|
+  | 1 × 10² | `1E+2` | `100` |
+  | 100 × 10⁰ | `100` | `100` |
+
+  Because clause 5.12 requires *at least one* quantum-preserving conversion from the format and
+  there is none, the SUT is **not conformant with clause 5.12** — an explicit IEEE 754
+  non-compliance, not a GDAS style preference.
+- **Aggravating factors.** `ToString` never uses exponential notation at all, so toward
+  decimal128's exponent limits (±~6144) it emits thousand-character strings where the canonical
+  form emits ~7 (`1E+6000` → `1` followed by 6000 zeros); and `ToString("R")` failing to
+  round-trip the cohort is, on its own, a bug.
+- **The fix is additive.** Provide one quantum-preserving conversion (GDAS `to-scientific-string`)
+  as a new format specifier or method — non-breaking; the familiar default may stay. Until it
+  exists, the type cannot claim clause 5.12 conformance.
+
+### 5.4 No `fusedMultiplyAdd` (IEEE 754 clause 5.4.1)
+- **A required operation is missing.** `fusedMultiplyAdd` is a *required* general-computational
+  operation under IEEE 754-2019 **clause 5.4.1** — not a convenience. Its absence is a conformance
+  gap in its own right, parallel to the rounding gap in section 5.1.
+- **Remediation is additive → a "Later" (section 9.2).** Adding the op breaks no existing caller;
+  it can land in a future release.
+- A correct FMA forms the *exact* product
+  `a*b` and rounds **once** after adding `c`. Their multiply is already correctly-rounded, so
+  they *can* form and round an exact wide product — the capability exists. Yet a correct FMA
+  cannot be composed from their `multiply` then `add` (that rounds `a*b` first — the section 5.1
+  double-rounding again); it needs the same general *compute-exact-then-round-once* core that
+  correct directed rounding needs. FMA and directed rounding are one missing piece seen from
+  two different angles (section 5.1).
+
+### 5.5 `CompareTo` is value-order, not `totalOrder` (IEEE 754 clause 5.10)
+- *A real conformance gap.* As of preview 7, `CompareTo` orders by numeric value; it does not
+  implement IEEE 754-2019 clause 5.10 `totalOrder` (which distinguishes ±0, orders NaNs, and
+  separates cohort members).
+- **In progress:** commits landing toward RC1 indicate the team is already working on
+  `totalOrder`, so I expect to mark this *resolved* in the next installment.
+
+### 5.6 Erodes confidence
+
+Reputational exposure (section 5.1) is the visible risk.
+The quieter risk is inferential: correctly-rounded single rounding is the foundation of the
 standard, not a fine point, so exposing directed rounding as a second pass over an
-already-rounded value raises a fair question about how completely the composition problem was
-understood. A careful evaluator cannot contain that question to the rounding path alone — if
+already-rounded value raises a fair question about how completely Microsoft understands
+the problem space.
+
+A careful evaluator cannot contain that question to the rounding path alone — if
 a load-bearing invariant was missed here, confidence in the un-audited surface has to be
 discounted too. To be clear about scope: the numerical core is *verified correct*, so this
 reads as an API-design gap rather than an engine defect. But it is precisely why independent,
 standards-anchored verification is warranted, and why this series revisits each release
 rather than taking the surface at face value.
 
-The confidence cost is also **cumulative, not a single data point.** The absence of flags
-(§6) compounds it directly: it removes one of the independent channels that would let an
-outside evaluator confirm results were computed correctly, so the very evidence that could
-*restore* confidence after the rounding finding is the evidence that isn't there. Two
-signals pointing the same way — a missed foundational invariant, and a missing verification
-channel — reinforce rather than offset each other. The sharpest corroboration, though, is
-structural: the un-exposed directed rounding (§5.1) and the absent `fusedMultiplyAdd`
-(§6.3, §5.4.1) are **two required-operation gaps, reached from different angles, that resolve
-to a single architectural cause** — the apparent absence of a general
-*compute-exact-then-round-once* core. That is no longer one isolated slip to explain away.
+The confidence cost is also **cumulative, not a single data point** — this section is a cluster
+of clause-cited failures, not one slip. The absence of flags (section 5.2) compounds the others
+directly: it removes one of the independent channels that would let an outside evaluator confirm
+results were computed correctly, so the very evidence that could *restore* confidence after the
+rounding finding is the evidence that isn't there. The sharpest corroboration is structural: the
+un-exposed directed rounding (section 5.1) and the absent `fusedMultiplyAdd` (section 5.4) are
+**two required-operation gaps, reached from different angles, that resolve to a single
+architectural cause** — the apparent absence of a general *compute-exact-then-round-once* core.
+That is no longer one isolated slip to explain away.
 
-## 6. Secondary Findings & Conformance Observations
+## 6. Permitted & Intentional Divergences
 
-### 6.1 Flags (secondary finding)
-- No exception/status-flag support (inexact, invalid, overflow, underflow, division-by-zero).
-- **Impact is twofold:** (a) a modest functional gap for users who need sticky flags;
-  (b) more importantly for a new implementation, flags-against-known-vectors are an
-  *independent verification channel* — their absence removes a way to confirm results were
-  computed by the right *path*, not merely to the right *value*.
-- Framed ⚠️ not ❌ — reduces confidence rather than correctness.
-- **This is a direct contributor to the confidence cost of §5.6**, not a parallel theme: the
-  missing flags are a missing *verification channel*, so they subtract from exactly the
-  evidence that could have rebuilt confidence after the rounding finding. State the linkage
-  explicitly here and in the Executive Summary.
-
-### 6.2 Other conformance observations (from the Rosetta run)
-Three items surfaced by the Rosetta harness. Only the first is a real gap; the other two are a
-permitted choice and a deliberate one — and saying so is the point. Distinguishing genuine
-defects from IEEE-permitted / intentional behavior is what keeps this a critique rather than a
-complaint list.
-
-- **`CompareTo` is value-order, not §5.10 `totalOrder`** — *a real conformance gap.* As of
-  preview 7, `CompareTo` orders by numeric value; it does not implement IEEE 754-2019 §5.10
-  `totalOrder` (which distinguishes ±0, orders NaNs, and separates cohort members).
-  **In progress:** commits landing toward RC1 indicate the team is already working on
-  `totalOrder`, so I expect to mark this *resolved* in the next installment. (This is also the
-  clean counter-evidence for §5.6: the team is demonstrably responsive on conformance where
-  it's raised, which is why the confidence concern is scoped to the rounding-composition
-  design specifically, not the effort broadly. Good candidate for the series' first visible
-  *resolved* arc.)
+Two divergences the Rosetta harness surfaced that are **not** non-compliance — the standard
+permits the first, and the second is a deliberate .NET convention. Distinguishing real gaps from
+allowed behavior is what keeps this a critique rather than a complaint list.
 
 - **min/max cohort quantum differs from GDAS** — *IEEE-permitted, not a defect.* When
   `min`/`max` return one of two numerically-equal operands, the quantum (cohort member) chosen
@@ -185,47 +265,42 @@ complaint list.
   behavioral divergence for interop awareness, nothing more.
 
 - **Canonical NaN is negative** — *intentional; interop note only.* `Decimal128.NaN` is a
-  negative quiet NaN (`0xFC00…`), **verified on preview 7** (SDK `11.0.100-preview.7.26366.102`;
-  RC1 not checked). This is not an oversight — it is consistent with .NET's long-standing NaN
+  negative quiet NaN (`0xFC00…`), **verified on preview 7** (SDK `11.0.100-preview.7.26366.102`). This seems to be consistent with .NET's long-standing NaN
   convention: `double.NaN` (`0xFFF8…`), `float.NaN` (`0xFFC00000`), and `Half.NaN` (`0xFE00`)
-  are all negative. Fully IEEE-compliant (NaN sign is not numerically interpreted). Worth a line
-  purely because most IEEE/C reference implementations use a *positive* canonical NaN
-  (`0x7C00…`), so anyone bit-bridging against MS's default must know theirs is negative.
-
-### 6.3 No `fusedMultiplyAdd` (secondary finding — diagnostic)
-- **A required operation is missing.** `fusedMultiplyAdd` is a *required* general-computational
-  operation under IEEE 754-2019 **§5.4.1** — not a convenience. Its absence is a conformance gap
-  in its own right, parallel to the §5.1 rounding gap.
-- **Remediation is additive → a "Later" (§9.2).** Adding the op breaks no existing caller; it
-  can land in a future release.
-- **But it is diagnostic — that's why it's here.** A correct FMA forms the *exact* product
-  `a*b` and rounds **once** after adding `c`. Their multiply is already correctly-rounded, so
-  they *can* form and round an exact wide product — the capability exists. Yet a correct FMA
-  cannot be composed from their `multiply` then `add` (that rounds `a*b` first — the §5
-  double-rounding again); it needs the same general *compute-exact-then-round-once* core that
-  correct directed rounding needs. FMA and directed rounding are one missing core seen from two
-  angles (§5.4).
-- **Fair bound:** this is inference from *absence*, not proof. They demonstrably have exact wide
-  multiply, so the gap is a missing *generalization* — a reusable single-rounding finalize — not
-  missing capability. It feeds §5.6 as a second, independent signal; it does not by itself
-  convict.
+  are all negative. Fully IEEE-compliant.
+  Noted here simply because most IEEE/C reference implementations use a *positive* canonical NaN
+  (`0x7C00…`), so anyone performing bitWise comparison should know that Microsoft's default is
+  negative.
 
 ## 7. Design: The BID Lock-In Question
-- **7.1 BID was the right call** vs. DPD — but it carries a complicated decode.
-- **7.2 The concern** — the public API currently leaks the internal representation instead
-  of abstracting it.
-- **7.3 The recommendation** — treat DPD and BID as *symmetric interchange formats*: both
-  require an explicit **decode** on deserialization and **encode** on serialization; neither
-  is "the internal type in disguise." Keep BID internally if they like — but hide it behind
-  the API so the internal representation can change later without a breaking change.
-- **7.4 Why this is a "Now"** — it's an API-shape decision, cheap in preview,
-  expensive-to-breaking after GA.
+- **7.1 BID internally is the right call — and confirmed.** The type stores BID: reflection
+  shows two private `UInt64` words plus a non-public combination-field encoder, and the team
+  has said the implementation is based on BID and libbid (*per public github comments*).
+  BID over DPD is the defensible choice for a software implementation. 
+- **7.2 Today the representation is fully hidden — there is nothing leaking yet.** Preview 7
+  exposes *no* way to see or construct from the raw bits: no `GetBits`/`UInt128` accessor, no
+  constructor from bits, no binary interchange at all — the only I/O is string parse/format
+  (verified against the preview 7 SDK). The BID encoding is genuinely encapsulated. It stays
+  observable only the way any blittable struct's memory is (`MemoryMarshal` over its 16 bytes),
+  which is a property of all CLR value types, not an API decision.
+- **7.3 The concern is the interchange surface they are about to add.** The team has implied
+  it will offer conversion from DPD. That is exactly when the
+  representation can begin to leak — and "conversion *from* DPD" hints at the asymmetry to
+  avoid: DPD treated as a foreign import while BID is exposed as the native value.
+- **7.4 The recommendation — symmetric interchange, decided now.** Treat BID and DPD as *peer*
+  interchange formats: an explicit **decode** inbound and **encode** outbound for *both*, with
+  neither surfaced as "the raw value." Keep BID internally if you like, but explicitly
+  encode/decode through that API boundary, so the internal representation can change later
+  without breaking callers. This surface is being designed right now, so getting the symmetry
+  right should be nearly free; retrofitting it after GA is a breaking change ... and in
+  practice it will probably never change. 
 
 ## 8. Performance
 - **8.1 The division problem** — the current divide is a naive algorithm; scaling operations
   pay for it.
-- **8.2 The double hit** — divide is slow, *then* trailing-zero stripping is slow, so
-  division-heavy workloads are penalized twice. (Shared root cause with §5: the exact
+- **8.2 The double hit** — The divide operation itself is slow,
+  *then* trailing-zero stripping requires additional (slow) division operations, so
+  division-heavy workloads are penalized heavily. (Shared root cause with section 5.1: the exact
   quotient is where both the correctness bug and the perf cost live.)
 - **8.3 Four-way benchmarks** — per-op tables (decimal128-csharp / `Decimal128` /
   `System.Decimal` / libbid) by input category; lead with division/scaling where the gap is
@@ -239,16 +314,16 @@ reference. `System.Decimal` (28 digits) is blank on any band its range cannot re
 
 <!-- BEGIN GENERATED net11-pfin-abs -->
 
-| op | cat | decimal128-csharp | Decimal128 (.NET 11) | System.Decimal | libbid |
+| op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
 |---|---|---:|---:|---:|---:|
-| add | MIX | 3.98 | 16.44 | 2.96 | 11.37 |
-| sub | MIX | 3.11 | 15.49 | 2.96 | 13.38 |
-| mul | CP | 1.87 | 11.01 | — | 23.54 |
-| mul | WP | 23.86 | 51.33 | — | 32.10 |
-| div | CD | 26.08 | 151.29 | 11.16 | 37.72 |
-| div | WD | 45.99 | 188.46 | 27.22 | 39.06 |
-| div | ET | 14.15 | 235.56 | 5.16 | 5.96 |
-| div | PT | 5.22 | 240.20 | 12.34 | 6.06 |
+| add | MIX | 16.44 | 11.37 | 3.98 | 2.96 |
+| sub | MIX | 15.49 | 13.38 | 3.11 | 2.96 |
+| mul | CP | 11.01 | 23.54 | 1.87 | — |
+| mul | WP | 51.33 | 32.10 | 23.86 | — |
+| div | CD | 151.29 | 37.72 | 26.08 | 11.16 |
+| div | WD | 188.46 | 39.06 | 45.99 | 27.22 |
+| div | ET | 235.56 | 5.96 | 14.15 | 5.16 |
+| div | PT | 240.20 | 6.06 | 5.22 | 12.34 |
 
 <!-- END GENERATED net11-pfin-abs -->
 
@@ -256,11 +331,11 @@ reference. `System.Decimal` (28 digits) is blank on any band its range cannot re
 
 <!-- BEGIN GENERATED net11-mul-abs -->
 
-| op | cat | decimal128-csharp | Decimal128 (.NET 11) | System.Decimal | libbid |
+| op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
 |---|---|---:|---:|---:|---:|
-| mul | CP | 2.24 | 10.93 | — | 23.10 |
-| mul | WP | 22.03 | 47.85 | — | 33.19 |
-| mul | XP | 50.99 | 1217.57 | — | 42.29 |
+| mul | CP | 10.93 | 23.10 | 2.24 | — |
+| mul | WP | 47.85 | 33.19 | 22.03 | — |
+| mul | XP | 1217.57 | 42.29 | 50.99 | — |
 
 <!-- END GENERATED net11-mul-abs -->
 
@@ -268,13 +343,13 @@ reference. `System.Decimal` (28 digits) is blank on any band its range cannot re
 
 <!-- BEGIN GENERATED net11-div-abs -->
 
-| op | cat | decimal128-csharp | Decimal128 (.NET 11) | System.Decimal | libbid |
+| op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
 |---|---|---:|---:|---:|---:|
-| div | CD | 29.33 | 118.44 | — | 36.52 |
-| div | WD | 48.07 | 157.80 | — | 37.53 |
-| div | XD | 48.34 | 560.19 | — | 39.01 |
-| div | ET | 19.17 | 152.48 | — | 10.87 |
-| div | PT | 10.98 | 148.50 | — | 10.76 |
+| div | CD | 118.44 | 36.52 | 29.33 | — |
+| div | WD | 157.80 | 37.53 | 48.07 | — |
+| div | XD | 560.19 | 39.01 | 48.34 | — |
+| div | ET | 152.48 | 10.87 | 19.17 | — |
+| div | PT | 148.50 | 10.76 | 10.98 | — |
 
 <!-- END GENERATED net11-div-abs -->
 
@@ -282,13 +357,13 @@ reference. `System.Decimal` (28 digits) is blank on any band its range cannot re
 
 <!-- BEGIN GENERATED net11-add-abs -->
 
-| op | cat | decimal128-csharp | Decimal128 (.NET 11) | System.Decimal | libbid |
+| op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
 |---|---|---:|---:|---:|---:|
-| add | SQ | 5.97 | 19.35 | 2.49 | 8.63 |
-| add | NQ | 4.92 | 19.49 | 4.11 | 8.34 |
-| add | MQ | 15.76 | 20.15 | 4.18 | 8.63 |
-| add | OQ | 39.40 | 142.85 | — | 13.40 |
-| add | FQ | 34.98 | 1245.45 | — | 9.21 |
+| add | SQ | 19.35 | 8.63 | 5.97 | 2.49 |
+| add | NQ | 19.49 | 8.34 | 4.92 | 4.11 |
+| add | MQ | 20.15 | 8.63 | 15.76 | 4.18 |
+| add | OQ | 142.85 | 13.40 | 39.40 | — |
+| add | FQ | 1245.45 | 9.21 | 34.98 | — |
 
 <!-- END GENERATED net11-add-abs -->
 
@@ -296,21 +371,26 @@ reference. `System.Decimal` (28 digits) is blank on any band its range cannot re
 
 <!-- BEGIN GENERATED net11-sub-abs -->
 
-| op | cat | decimal128-csharp | Decimal128 (.NET 11) | System.Decimal | libbid |
+| op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
 |---|---|---:|---:|---:|---:|
-| sub | SQ | 9.06 | 19.50 | 2.66 | 9.06 |
-| sub | NQ | 5.83 | 19.21 | 4.16 | 10.86 |
-| sub | MQ | 14.81 | 19.17 | 4.11 | 8.85 |
-| sub | OQ | 39.87 | 142.13 | — | 16.89 |
-| sub | FQ | 32.31 | 1244.61 | — | 10.25 |
+| sub | SQ | 19.50 | 9.06 | 9.06 | 2.66 |
+| sub | NQ | 19.21 | 10.86 | 5.83 | 4.16 |
+| sub | MQ | 19.17 | 8.85 | 14.81 | 4.11 |
+| sub | OQ | 142.13 | 16.89 | 39.87 | — |
+| sub | FQ | 1244.61 | 10.25 | 32.31 | — |
 
 <!-- END GENERATED net11-sub-abs -->
 
 - **8.4 Interpretation** — where the gap is algorithmic vs. JIT/runtime; call out
-  `System.Decimal`'s 96-bit range difference so it isn't read as like-for-like.
+  `System.Decimal`'s 96-bit range difference so it isn't read as like-for-like. And note the
+  tell: the SUT stores BID internally — verified here by decoding its bits — and the team has
+  said it is based on libbid (per public github comments), yet Decimal128 runs 3–30× slower than
+  libbid across these bands. The gap is therefore the managed reimplementation, not the BID
+  approach — their own reference is the fast one.
 - **8.5 The stakes** — a slow first release reinforces the myth that *software* decimal
-  floating point is inherently slow. It isn't; d128 and libbid show the headroom. This is
-  the narrative cost of shipping performance-last.
+  floating point is inherently slow. It isn't; d128 and libbid show the headroom — and libbid
+  is the very reference their implementation is based on. This is the narrative cost of
+  shipping performance-last.
 - **8.6 Why this is a "Later"** — every number here is improvable in a future release without
   breaking a single caller.
 - **8.7 Series baseline** — these are the numbers the next RC is measured against.
@@ -320,22 +400,22 @@ reference. `System.Decimal` (28 digits) is blank on any band its range cannot re
 ### 9.1 Now — before GA (contracts, API shape, honesty)
 - **State the conformance boundary honestly:** correctly-rounded operations are TTE-only;
   do not claim IEEE 754 rounding conformance beyond `roundTiesToEven`; do not present
-  composed directed rounding as correctly-rounded (§5.5).
+  composed directed rounding as correctly-rounded (section 5.1).
 - **Settle the interchange API** so BID/DPD are symmetric and the internal representation is
-  hidden (§7) — even if BID stays internal and any DPD/flag work follows later.
+  hidden (section 7) — even if BID stays internal and any DPD/flag work follows later.
 - **Reserve the flag surface** so the verification channel and future semantics aren't
-  foreclosed (§6).
+  foreclosed (section 5.2).
 - Rationale: these are semantic and API contracts, plus disclosure — cheap now, breaking or
   reputation-damaging after GA.
 
 ### 9.2 Later — after GA (additive, non-breaking)
 - **Add fused rounding-direction operations:** alternate methods taking an explicit
   `roundingDirection`, rounding the exact result once — using a true rounding-direction type,
-  not `MidpointRounding` (§5.5). Drives the scorecard from 1/5 toward 5/5.
-- **Implement `fusedMultiplyAdd` (§5.4.1):** the required fused op (§6.3). It almost certainly
+  not `MidpointRounding` (section 5.1). Drives the scorecard from 1/5 toward 5/5.
+- **Implement `fusedMultiplyAdd` (clause 5.4.1):** the required fused op (section 5.4). It almost certainly
   shares the same *compute-exact-then-round-once* finalize as the fused rounding-direction
   methods above, so the two are natural to build together.
-- **Replace the naive division algorithm;** make scaling and trailing-zero stripping fast (§8).
+- **Replace the naive division algorithm;** make scaling and trailing-zero stripping fast (section 8).
 - Broader performance tuning across op categories.
 - Full flag semantics behind the (Now-reserved) surface.
 - Rationale: purely additive; no reason to gate GA on them, safe to iterate across the series.
@@ -361,14 +441,14 @@ reference. `System.Decimal` (28 digits) is blank on any band its range cannot re
 - **B. Full per-op benchmark tables** — raw ns/op from the op-benchmark store.
 
 *FMA (arm64) — `Decimal128` and `System.Decimal` are blank because neither has a fused
-multiply-add; this corroborates §6.3.*
+multiply-add; this corroborates section 5.4.*
 
 <!-- BEGIN GENERATED net11-fma-abs -->
 
-| op | cat | decimal128-csharp | Decimal128 (.NET 11) | System.Decimal | libbid |
+| op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
 |---|---|---:|---:|---:|---:|
-| fma | FN | 107.51 | — | — | 84.00 |
-| fma | FF | 83.93 | — | — | 57.07 |
+| fma | FN | — | 84.00 | 107.51 | — |
+| fma | FF | — | 57.07 | 83.93 | — |
 
 <!-- END GENERATED net11-fma-abs -->
 
@@ -378,16 +458,16 @@ The same bands on x86_64 (InProcess run `xRcs11`):
 
 <!-- BEGIN GENERATED net11-pfin-abs-x86 -->
 
-| op | cat | decimal128-csharp | Decimal128 (.NET 11) | System.Decimal | libbid |
+| op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
 |---|---|---:|---:|---:|---:|
-| add | MIX | 17.85 | 47.17 | 15.99 | 32.11 |
-| sub | MIX | 15.06 | 47.96 | 15.71 | 36.74 |
-| mul | CP | 5.34 | 43.43 | — | 46.14 |
-| mul | WP | 55.80 | 137.73 | — | 60.57 |
-| div | CD | 109.87 | 439.54 | 61.56 | 78.27 |
-| div | WD | 124.96 | 488.51 | 111.77 | 82.95 |
-| div | ET | 28.79 | 621.48 | 16.06 | 19.44 |
-| div | PT | 11.77 | 636.05 | 67.56 | 19.26 |
+| add | MIX | 47.17 | 32.11 | 17.85 | 15.99 |
+| sub | MIX | 47.96 | 36.74 | 15.06 | 15.71 |
+| mul | CP | 43.43 | 46.14 | 5.34 | — |
+| mul | WP | 137.73 | 60.57 | 55.80 | — |
+| div | CD | 439.54 | 78.27 | 109.87 | 61.56 |
+| div | WD | 488.51 | 82.95 | 124.96 | 111.77 |
+| div | ET | 621.48 | 19.44 | 28.79 | 16.06 |
+| div | PT | 636.05 | 19.26 | 11.77 | 67.56 |
 
 <!-- END GENERATED net11-pfin-abs-x86 -->
 
@@ -395,11 +475,11 @@ The same bands on x86_64 (InProcess run `xRcs11`):
 
 <!-- BEGIN GENERATED net11-mul-abs-x86 -->
 
-| op | cat | decimal128-csharp | Decimal128 (.NET 11) | System.Decimal | libbid |
+| op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
 |---|---|---:|---:|---:|---:|
-| mul | CP | 7.59 | 41.41 | — | 46.33 |
-| mul | WP | 52.80 | 130.07 | — | 67.28 |
-| mul | XP | 84.97 | 2986.32 | — | 95.35 |
+| mul | CP | 41.41 | 46.33 | 7.59 | — |
+| mul | WP | 130.07 | 67.28 | 52.80 | — |
+| mul | XP | 2986.32 | 95.35 | 84.97 | — |
 
 <!-- END GENERATED net11-mul-abs-x86 -->
 
@@ -407,13 +487,13 @@ The same bands on x86_64 (InProcess run `xRcs11`):
 
 <!-- BEGIN GENERATED net11-div-abs-x86 -->
 
-| op | cat | decimal128-csharp | Decimal128 (.NET 11) | System.Decimal | libbid |
+| op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
 |---|---|---:|---:|---:|---:|
-| div | CD | 104.79 | 379.53 | — | 82.56 |
-| div | WD | 116.41 | 442.40 | — | 87.22 |
-| div | XD | 115.59 | 1189.40 | — | 86.84 |
-| div | ET | 52.30 | 540.04 | — | 30.95 |
-| div | PT | 11.85 | 525.23 | — | 31.12 |
+| div | CD | 379.53 | 82.56 | 104.79 | — |
+| div | WD | 442.40 | 87.22 | 116.41 | — |
+| div | XD | 1189.40 | 86.84 | 115.59 | — |
+| div | ET | 540.04 | 30.95 | 52.30 | — |
+| div | PT | 525.23 | 31.12 | 11.85 | — |
 
 <!-- END GENERATED net11-div-abs-x86 -->
 
@@ -421,13 +501,13 @@ The same bands on x86_64 (InProcess run `xRcs11`):
 
 <!-- BEGIN GENERATED net11-add-abs-x86 -->
 
-| op | cat | decimal128-csharp | Decimal128 (.NET 11) | System.Decimal | libbid |
+| op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
 |---|---|---:|---:|---:|---:|
-| add | SQ | 16.85 | 64.42 | 11.85 | 30.55 |
-| add | NQ | 16.65 | 67.34 | 16.67 | 32.21 |
-| add | MQ | 42.58 | 67.92 | 17.57 | 31.68 |
-| add | OQ | 84.60 | 353.25 | — | 47.35 |
-| add | FQ | 65.20 | 3162.13 | — | 30.07 |
+| add | SQ | 64.42 | 30.55 | 16.85 | 11.85 |
+| add | NQ | 67.34 | 32.21 | 16.65 | 16.67 |
+| add | MQ | 67.92 | 31.68 | 42.58 | 17.57 |
+| add | OQ | 353.25 | 47.35 | 84.60 | — |
+| add | FQ | 3162.13 | 30.07 | 65.20 | — |
 
 <!-- END GENERATED net11-add-abs-x86 -->
 
@@ -435,13 +515,13 @@ The same bands on x86_64 (InProcess run `xRcs11`):
 
 <!-- BEGIN GENERATED net11-sub-abs-x86 -->
 
-| op | cat | decimal128-csharp | Decimal128 (.NET 11) | System.Decimal | libbid |
+| op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
 |---|---|---:|---:|---:|---:|
-| sub | SQ | 19.32 | 64.83 | 12.03 | 35.44 |
-| sub | NQ | 19.00 | 66.44 | 16.70 | 37.04 |
-| sub | MQ | 41.83 | 68.44 | 16.02 | 35.97 |
-| sub | OQ | 85.34 | 356.31 | — | 51.86 |
-| sub | FQ | 63.64 | 3150.05 | — | 34.95 |
+| sub | SQ | 64.83 | 35.44 | 19.32 | 12.03 |
+| sub | NQ | 66.44 | 37.04 | 19.00 | 16.70 |
+| sub | MQ | 68.44 | 35.97 | 41.83 | 16.02 |
+| sub | OQ | 356.31 | 51.86 | 85.34 | — |
+| sub | FQ | 3150.05 | 34.95 | 63.64 | — |
 
 <!-- END GENERATED net11-sub-abs-x86 -->
 
@@ -449,10 +529,10 @@ The same bands on x86_64 (InProcess run `xRcs11`):
 
 <!-- BEGIN GENERATED net11-fma-abs-x86 -->
 
-| op | cat | decimal128-csharp | Decimal128 (.NET 11) | System.Decimal | libbid |
+| op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
 |---|---|---:|---:|---:|---:|
-| fma | FN | 187.99 | — | — | 160.41 |
-| fma | FF | 146.06 | — | — | 123.46 |
+| fma | FN | — | 160.41 | 187.99 | — |
+| fma | FF | — | 123.46 | 146.06 | — |
 
 <!-- END GENERATED net11-fma-abs-x86 -->
 - **C. Verification methodology** — vector sources (dectest / fptest / libbid), counts, and
