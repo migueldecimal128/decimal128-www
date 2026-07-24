@@ -227,9 +227,85 @@ complaint list.
 - **8.2 The double hit** — divide is slow, *then* trailing-zero stripping is slow, so
   division-heavy workloads are penalized twice. (Shared root cause with §5: the exact
   quotient is where both the correctness bug and the perf cost live.)
-- **8.3 Four-way benchmarks** — per-op tables (d128 / libbid / `System.Decimal` /
-  `Decimal128`) by input category; lead with division/scaling where the gap is starkest,
-  then add/sub, mul, convert, round-trip.
+- **8.3 Four-way benchmarks** — per-op tables (decimal128-csharp / `Decimal128` /
+  `System.Decimal` / libbid) by input category; lead with division/scaling where the gap is
+  starkest, then add/sub, mul.
+
+Generated from the op-benchmark store (arm64; ns/op, lower is better). `decimal128-csharp` is
+this reviewer's port; `Decimal128 (.NET 11)` is the type under review; libbid is the C
+reference. `System.Decimal` (28 digits) is blank on any band its range cannot represent.
+
+*Realistic financial mix (P-fin):*
+
+<!-- BEGIN GENERATED net11-pfin-abs -->
+
+| op | cat | decimal128-csharp | Decimal128 (.NET 11) | System.Decimal | libbid |
+|---|---|---:|---:|---:|---:|
+| add | MIX | 3.98 | 16.44 | 2.96 | 11.37 |
+| sub | MIX | 3.11 | 15.49 | 2.96 | 13.38 |
+| mul | CP | 1.87 | 11.01 | — | 23.54 |
+| mul | WP | 23.86 | 51.33 | — | 32.10 |
+| div | CD | 26.08 | 151.29 | 11.16 | 37.72 |
+| div | WD | 45.99 | 188.46 | 27.22 | 39.06 |
+| div | ET | 14.15 | 235.56 | 5.16 | 5.96 |
+| div | PT | 5.22 | 240.20 | 12.34 | 6.06 |
+
+<!-- END GENERATED net11-pfin-abs -->
+
+*Multiply (P-gen):*
+
+<!-- BEGIN GENERATED net11-mul-abs -->
+
+| op | cat | decimal128-csharp | Decimal128 (.NET 11) | System.Decimal | libbid |
+|---|---|---:|---:|---:|---:|
+| mul | CP | 2.24 | 10.93 | — | 23.10 |
+| mul | WP | 22.03 | 47.85 | — | 33.19 |
+| mul | XP | 50.99 | 1217.57 | — | 42.29 |
+
+<!-- END GENERATED net11-mul-abs -->
+
+*Divide (P-gen):*
+
+<!-- BEGIN GENERATED net11-div-abs -->
+
+| op | cat | decimal128-csharp | Decimal128 (.NET 11) | System.Decimal | libbid |
+|---|---|---:|---:|---:|---:|
+| div | CD | 29.33 | 118.44 | — | 36.52 |
+| div | WD | 48.07 | 157.80 | — | 37.53 |
+| div | XD | 48.34 | 560.19 | — | 39.01 |
+| div | ET | 19.17 | 152.48 | — | 10.87 |
+| div | PT | 10.98 | 148.50 | — | 10.76 |
+
+<!-- END GENERATED net11-div-abs -->
+
+*Add (P-gen):*
+
+<!-- BEGIN GENERATED net11-add-abs -->
+
+| op | cat | decimal128-csharp | Decimal128 (.NET 11) | System.Decimal | libbid |
+|---|---|---:|---:|---:|---:|
+| add | SQ | 5.97 | 19.35 | 2.49 | 8.63 |
+| add | NQ | 4.92 | 19.49 | 4.11 | 8.34 |
+| add | MQ | 15.76 | 20.15 | 4.18 | 8.63 |
+| add | OQ | 39.40 | 142.85 | — | 13.40 |
+| add | FQ | 34.98 | 1245.45 | — | 9.21 |
+
+<!-- END GENERATED net11-add-abs -->
+
+*Subtract (P-gen):*
+
+<!-- BEGIN GENERATED net11-sub-abs -->
+
+| op | cat | decimal128-csharp | Decimal128 (.NET 11) | System.Decimal | libbid |
+|---|---|---:|---:|---:|---:|
+| sub | SQ | 9.06 | 19.50 | 2.66 | 9.06 |
+| sub | NQ | 5.83 | 19.21 | 4.16 | 10.86 |
+| sub | MQ | 14.81 | 19.17 | 4.11 | 8.85 |
+| sub | OQ | 39.87 | 142.13 | — | 16.89 |
+| sub | FQ | 32.31 | 1244.61 | — | 10.25 |
+
+<!-- END GENERATED net11-sub-abs -->
+
 - **8.4 Interpretation** — where the gap is algorithmic vs. JIT/runtime; call out
   `System.Decimal`'s 96-bit range difference so it isn't read as like-for-like.
 - **8.5 The stakes** — a slow first release reinforces the myth that *software* decimal
@@ -282,7 +358,103 @@ complaint list.
 ## 11. Appendices
 - **A. Rounding worked example** — the ties-away vs. TTE divergence (the ~2.5 case), plus the
   necessary-condition note (why a value that fits in 34 digits can never trigger it).
-- **B. Full per-op benchmark tables** — raw ns + ratios.
+- **B. Full per-op benchmark tables** — raw ns/op from the op-benchmark store.
+
+*FMA (arm64) — `Decimal128` and `System.Decimal` are blank because neither has a fused
+multiply-add; this corroborates §6.3.*
+
+<!-- BEGIN GENERATED net11-fma-abs -->
+
+| op | cat | decimal128-csharp | Decimal128 (.NET 11) | System.Decimal | libbid |
+|---|---|---:|---:|---:|---:|
+| fma | FN | 107.51 | — | — | 84.00 |
+| fma | FF | 83.93 | — | — | 57.07 |
+
+<!-- END GENERATED net11-fma-abs -->
+
+The same bands on x86_64 (InProcess run `xRcs11`):
+
+*Financial mix (P-fin), x86_64:*
+
+<!-- BEGIN GENERATED net11-pfin-abs-x86 -->
+
+| op | cat | decimal128-csharp | Decimal128 (.NET 11) | System.Decimal | libbid |
+|---|---|---:|---:|---:|---:|
+| add | MIX | 17.85 | 47.17 | 15.99 | 32.11 |
+| sub | MIX | 15.06 | 47.96 | 15.71 | 36.74 |
+| mul | CP | 5.34 | 43.43 | — | 46.14 |
+| mul | WP | 55.80 | 137.73 | — | 60.57 |
+| div | CD | 109.87 | 439.54 | 61.56 | 78.27 |
+| div | WD | 124.96 | 488.51 | 111.77 | 82.95 |
+| div | ET | 28.79 | 621.48 | 16.06 | 19.44 |
+| div | PT | 11.77 | 636.05 | 67.56 | 19.26 |
+
+<!-- END GENERATED net11-pfin-abs-x86 -->
+
+*Multiply (P-gen), x86_64:*
+
+<!-- BEGIN GENERATED net11-mul-abs-x86 -->
+
+| op | cat | decimal128-csharp | Decimal128 (.NET 11) | System.Decimal | libbid |
+|---|---|---:|---:|---:|---:|
+| mul | CP | 7.59 | 41.41 | — | 46.33 |
+| mul | WP | 52.80 | 130.07 | — | 67.28 |
+| mul | XP | 84.97 | 2986.32 | — | 95.35 |
+
+<!-- END GENERATED net11-mul-abs-x86 -->
+
+*Divide (P-gen), x86_64:*
+
+<!-- BEGIN GENERATED net11-div-abs-x86 -->
+
+| op | cat | decimal128-csharp | Decimal128 (.NET 11) | System.Decimal | libbid |
+|---|---|---:|---:|---:|---:|
+| div | CD | 104.79 | 379.53 | — | 82.56 |
+| div | WD | 116.41 | 442.40 | — | 87.22 |
+| div | XD | 115.59 | 1189.40 | — | 86.84 |
+| div | ET | 52.30 | 540.04 | — | 30.95 |
+| div | PT | 11.85 | 525.23 | — | 31.12 |
+
+<!-- END GENERATED net11-div-abs-x86 -->
+
+*Add (P-gen), x86_64:*
+
+<!-- BEGIN GENERATED net11-add-abs-x86 -->
+
+| op | cat | decimal128-csharp | Decimal128 (.NET 11) | System.Decimal | libbid |
+|---|---|---:|---:|---:|---:|
+| add | SQ | 16.85 | 64.42 | 11.85 | 30.55 |
+| add | NQ | 16.65 | 67.34 | 16.67 | 32.21 |
+| add | MQ | 42.58 | 67.92 | 17.57 | 31.68 |
+| add | OQ | 84.60 | 353.25 | — | 47.35 |
+| add | FQ | 65.20 | 3162.13 | — | 30.07 |
+
+<!-- END GENERATED net11-add-abs-x86 -->
+
+*Subtract (P-gen), x86_64:*
+
+<!-- BEGIN GENERATED net11-sub-abs-x86 -->
+
+| op | cat | decimal128-csharp | Decimal128 (.NET 11) | System.Decimal | libbid |
+|---|---|---:|---:|---:|---:|
+| sub | SQ | 19.32 | 64.83 | 12.03 | 35.44 |
+| sub | NQ | 19.00 | 66.44 | 16.70 | 37.04 |
+| sub | MQ | 41.83 | 68.44 | 16.02 | 35.97 |
+| sub | OQ | 85.34 | 356.31 | — | 51.86 |
+| sub | FQ | 63.64 | 3150.05 | — | 34.95 |
+
+<!-- END GENERATED net11-sub-abs-x86 -->
+
+*FMA, x86_64:*
+
+<!-- BEGIN GENERATED net11-fma-abs-x86 -->
+
+| op | cat | decimal128-csharp | Decimal128 (.NET 11) | System.Decimal | libbid |
+|---|---|---:|---:|---:|---:|
+| fma | FN | 187.99 | — | — | 160.41 |
+| fma | FF | 146.06 | — | — | 123.46 |
+
+<!-- END GENERATED net11-fma-abs-x86 -->
 - **C. Verification methodology** — vector sources (dectest / fptest / libbid), counts, and
   any skip/divergence list.
 - **D. Environment & reproduction** — SDK versions, toolchain flags, machine/arch.
