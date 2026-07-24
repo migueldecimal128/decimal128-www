@@ -192,8 +192,8 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| swift | fma | FN | FMA | arm64 | thru | 83.92 | libbid | 84.00 | **1.00×** | Rswsw2 |  |
-| swift | fma | FF | FMA | arm64 | thru | 42.30 | libbid | 57.07 | **1.35×** | Rswsw2 |  |
+| swift | fma | FN | FMA | arm64 | thru | 83.92 | - | - | - | Rswsw2 |  |
+| swift | fma | FF | FMA | arm64 | thru | 42.30 | - | - | - | Rswsw2 |  |
 
 <!-- END GENERATED fma-rel-swift -->
 
@@ -203,8 +203,8 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| swift | fma | FN | FMA | x86_64 | thru | 151.25 | libbid | 160.41 | **1.06×** | xRswsw2 |  |
-| swift | fma | FF | FMA | x86_64 | thru | 85.38 | libbid | 123.46 | **1.45×** | xRswsw2 |  |
+| swift | fma | FN | FMA | x86_64 | thru | 151.25 | - | - | - | xRswsw2 |  |
+| swift | fma | FF | FMA | x86_64 | thru | 85.38 | - | - | - | xRswsw2 |  |
 
 <!-- END GENERATED fma-rel-swift-x86 -->
 

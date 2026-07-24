@@ -192,8 +192,8 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| kotlin | fma | FN | FMA | arm64 | thru‡ | 108.72 | libbid | 84.00 | **0.77×** | Rkosw2 |  |
-| kotlin | fma | FF | FMA | arm64 | thru‡ | 82.63 | libbid | 57.07 | **0.69×** | Rkosw2 |  |
+| kotlin | fma | FN | FMA | arm64 | thru‡ | 108.72 | - | - | - | Rkosw2 |  |
+| kotlin | fma | FF | FMA | arm64 | thru‡ | 82.63 | - | - | - | Rkosw2 |  |
 
 <!-- END GENERATED fma-rel-kotlin -->
 
@@ -203,8 +203,8 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| kotlin | fma | FN | FMA | x86_64 | thru‡ | 233.51 | libbid | 160.41 | **0.69×** | xRkosw2 |  |
-| kotlin | fma | FF | FMA | x86_64 | thru‡ | 178.64 | libbid | 123.46 | **0.69×** | xRkosw2 |  |
+| kotlin | fma | FN | FMA | x86_64 | thru‡ | 233.51 | - | - | - | xRkosw2 |  |
+| kotlin | fma | FF | FMA | x86_64 | thru‡ | 178.64 | - | - | - | xRkosw2 |  |
 
 <!-- END GENERATED fma-rel-kotlin-x86 -->
 

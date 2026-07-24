@@ -193,8 +193,8 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| rust | fma | FN | FMA | arm64 | thru | 21.90 | libbid | 84.00 | **3.84×** | Rrsw2 |  |
-| rust | fma | FF | FMA | arm64 | thru | 33.92 | libbid | 57.07 | **1.68×** | Rrsw2 |  |
+| rust | fma | FN | FMA | arm64 | thru | 21.90 | - | - | - | Rrsw2 |  |
+| rust | fma | FF | FMA | arm64 | thru | 33.92 | - | - | - | Rrsw2 |  |
 
 <!-- END GENERATED fma-rel-rust -->
 
@@ -204,8 +204,8 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| rust | fma | FN | FMA | x86_64 | thru | 62.65 | libbid | 160.41 | **2.56×** | xRrsw2 |  |
-| rust | fma | FF | FMA | x86_64 | thru | 69.00 | libbid | 123.46 | **1.79×** | xRrsw2 |  |
+| rust | fma | FN | FMA | x86_64 | thru | 62.65 | - | - | - | xRrsw2 |  |
+| rust | fma | FF | FMA | x86_64 | thru | 69.00 | - | - | - | xRrsw2 |  |
 
 <!-- END GENERATED fma-rel-rust-x86 -->
 

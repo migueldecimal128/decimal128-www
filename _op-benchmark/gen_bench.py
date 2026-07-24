@@ -232,6 +232,10 @@ def render_relational(idx, spec):
                 peer = ip
             elif port in NO_LIBBID_PORTS:
                 peer = None          # idiom-peer-or-nothing: libbid fallback suppressed
+            elif profile == "FMA" and port != "c":
+                peer = None          # libbid is a C library, not an FMA alternative a
+                                     # rust/zig/swift/java/kotlin programmer can reach; only
+                                     # C keeps libbid here (python uses its decimal.Decimal peer)
             else:
                 peer = "libbid"
             # real = the reference/idiom peer + this port's conformant extra peers, minus the
@@ -345,10 +349,11 @@ SPECS = {
   "div-rel":  dict(kind="relational", groups=[
                    dict(profile="P-gen", ops=["div"], cats=["CD","WD","XD","ET","PT"], ports=_REL_PORTS, extra=_REL_EXTRA_NONFMA),
                ]),
-  # FMA — d128 band-shape (FN/FF/FN÷FF) matrix + peer relational. Every conformant
-  # reference exposes a native fused multiply-add (one rounding): C libbid/decQuad/mpd
-  # + python decimal.Decimal. Ports without an in-language fused-FMA peer fall back to
-  # the libbid universal reference (rust/zig/swift/java/kotlin); go/csharp show "-".
+  # FMA — d128 band-shape (FN/FF/FN÷FF) matrix + peer relational. The only reachable
+  # fused-multiply-add peers are the ones exposed in each language: C libbid/decQuad/mpd
+  # + python decimal.Decimal. libbid is NOT borrowed as a universal FMA reference for the
+  # other ports (it is a C library no rust/zig/swift/java/kotlin programmer would reach for
+  # FMA), so rust/zig/swift/java/kotlin — like go/csharp — show "-" (d128-only).
   "fma":  dict(kind="fma", ports=ALL_PORTS),
   "fma-rel": dict(kind="relational", groups=[
                    dict(profile="FMA", ops=["fma"], cats=["FN","FF"], ports=_REL_PORTS, extra=_REL_EXTRA),

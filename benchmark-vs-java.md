@@ -192,8 +192,8 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| java | fma | FN | FMA | arm64 | thru‡ | 99.27 | libbid | 84.00 | **0.85×** | Rjasw2 |  |
-| java | fma | FF | FMA | arm64 | thru‡ | 68.97 | libbid | 57.07 | **0.83×** | Rjasw2 |  |
+| java | fma | FN | FMA | arm64 | thru‡ | 99.27 | - | - | - | Rjasw2 |  |
+| java | fma | FF | FMA | arm64 | thru‡ | 68.97 | - | - | - | Rjasw2 |  |
 
 <!-- END GENERATED fma-rel-java -->
 
@@ -203,8 +203,8 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| java | fma | FN | FMA | x86_64 | thru‡ | 219.34 | libbid | 160.41 | **0.73×** | xRjasw2 |  |
-| java | fma | FF | FMA | x86_64 | thru‡ | 179.09 | libbid | 123.46 | **0.69×** | xRjasw2 |  |
+| java | fma | FN | FMA | x86_64 | thru‡ | 219.34 | - | - | - | xRjasw2 |  |
+| java | fma | FF | FMA | x86_64 | thru‡ | 179.09 | - | - | - | xRjasw2 |  |
 
 <!-- END GENERATED fma-rel-java-x86 -->
 

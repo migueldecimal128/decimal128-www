@@ -192,8 +192,8 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| zig | fma | FN | FMA | arm64 | thru | 67.72 | libbid | 84.00 | **1.24×** | Rzgsw2 |  |
-| zig | fma | FF | FMA | arm64 | thru | 42.28 | libbid | 57.07 | **1.35×** | Rzgsw2 |  |
+| zig | fma | FN | FMA | arm64 | thru | 67.72 | - | - | - | Rzgsw2 |  |
+| zig | fma | FF | FMA | arm64 | thru | 42.28 | - | - | - | Rzgsw2 |  |
 
 <!-- END GENERATED fma-rel-zig -->
 
@@ -203,8 +203,8 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| zig | fma | FN | FMA | x86_64 | thru | 116.12 | libbid | 160.41 | **1.38×** | xRzgsw2 |  |
-| zig | fma | FF | FMA | x86_64 | thru | 83.12 | libbid | 123.46 | **1.49×** | xRzgsw2 |  |
+| zig | fma | FN | FMA | x86_64 | thru | 116.12 | - | - | - | xRzgsw2 |  |
+| zig | fma | FF | FMA | x86_64 | thru | 83.12 | - | - | - | xRzgsw2 |  |
 
 <!-- END GENERATED fma-rel-zig-x86 -->
 
