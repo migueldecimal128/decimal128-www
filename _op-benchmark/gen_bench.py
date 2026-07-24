@@ -316,30 +316,6 @@ def render_fma(idx, spec):
         out.append(f"| {lbl:<{lw}}| {fn:>{w[0]}} | {ff:>{w[1]}} | {rt:>{w[2]}} | {run:<{w[3]}} |")
     return "\n".join(out)
 
-# ------------------------------------------------ render: review (abs, N-col) --
-def render_review_abs(idx, spec):
-    """Absolute ns/op with one column per named impl and one row per (op,cat) band —
-    for a review that lines several implementations up side by side on identical
-    operands (e.g. decimal128-csharp / Decimal128 (.NET 11) / System.Decimal / libbid).
-    Reads the same store as every other block. `cols` = [(lang, impl, header), ...];
-    `pairs` = [(op, cat), ...] (or ops×cats). A cell is the headline ns for that impl at
-    that band/arch, or an em dash where the impl has no record (e.g. System.Decimal on a
-    band its 28-digit range can't represent, Decimal128 on FMA)."""
-    arch    = spec.get("arch", "arm64")
-    profile = spec["profile"]
-    cols    = spec["cols"]
-    pairs   = spec.get("pairs") or [(op, c) for op in spec["ops"] for c in spec["cats"]]
-    heads   = [h for (_l, _i, h) in cols]
-    out = ["| op | cat | " + " | ".join(heads) + " |",
-           "|---|---|" + "|".join(["---:"] * len(heads)) + "|"]
-    for op, cat in pairs:
-        cells = []
-        for (lang, impl, _h) in cols:
-            r = get(idx, lang, impl, op, cat, profile, arch)
-            cells.append(fmt(r["ns"]) if r else "—")
-        out.append(f"| {op} | {cat} | " + " | ".join(cells) + " |")
-    return "\n".join(out)
-
 # ---------------------------------------------------------------- specs -------
 ALL_PORTS = ["c","rust","zig","swift","csharp","go","java","kotlin","python"]
 _REL_PORTS = ["c","rust","zig","swift","csharp","go","java","kotlin","python"]
@@ -391,32 +367,6 @@ SPECS = {
                              ("mul",["CP","WP"]),("div",["CD","WD","ET","PT"])]),
 }
 
-# --- .NET 11 review: four-impl absolute-ns tables ---------------------------------
-# One column each for decimal128-csharp (our port's d128), Decimal128 (.NET 11, the SUT),
-# System.Decimal (the 28-digit BCL type), and libbid (the C reference). Same store as every
-# other block; System.Decimal renders "—" where its range can't represent the band, and
-# Decimal128 renders "—" for FMA (it has none). The x86 clone loop below yields the -x86
-# variants for free. These specs are NOT per-port projected (they're csharp/c-pinned already).
-_NET11_COLS = [("csharp", "d128",                        "decimal128-csharp"),
-               ("csharp", "System.Numerics.Decimal128",  "Decimal128 (.NET 11)"),
-               ("csharp", "System.Decimal",              "System.Decimal"),
-               ("c",      "libbid",                       "libbid")]
-SPECS.update({
-  "net11-pfin-abs": dict(kind="review_abs", profile="P-fin", cols=_NET11_COLS,
-                    pairs=[("add","MIX"),("sub","MIX"),("mul","CP"),("mul","WP"),
-                           ("div","CD"),("div","WD"),("div","ET"),("div","PT")]),
-  "net11-add-abs":  dict(kind="review_abs", profile="P-gen", cols=_NET11_COLS,
-                    pairs=[("add",c) for c in ["SQ","NQ","MQ","OQ","FQ"]]),
-  "net11-sub-abs":  dict(kind="review_abs", profile="P-gen", cols=_NET11_COLS,
-                    pairs=[("sub",c) for c in ["SQ","NQ","MQ","OQ","FQ"]]),
-  "net11-mul-abs":  dict(kind="review_abs", profile="P-gen", cols=_NET11_COLS,
-                    pairs=[("mul",c) for c in ["CP","WP","XP"]]),
-  "net11-div-abs":  dict(kind="review_abs", profile="P-gen", cols=_NET11_COLS,
-                    pairs=[("div",c) for c in ["CD","WD","XD","ET","PT"]]),
-  "net11-fma-abs":  dict(kind="review_abs", profile="FMA", cols=_NET11_COLS,
-                    pairs=[("fma","FN"),("fma","FF")]),
-})
-
 # ------------------------------------------------------- per-port projections --
 # The relational / finmix reports are published PER LANGUAGE (one benchmark-vs-<port>.md
 # page each), not as one all-port document. For every relational base spec we derive a
@@ -456,8 +406,7 @@ for _sid in list(SPECS):
     SPECS[f"{_sid}-x86"] = _x
 
 _RENDERERS = {"matrix": render_matrix, "relational": render_relational,
-              "relational_pfin": render_relational_pfin, "fma": render_fma,
-              "review_abs": render_review_abs}
+              "relational_pfin": render_relational_pfin, "fma": render_fma}
 
 def render(idx, sid):
     spec = SPECS[sid]
