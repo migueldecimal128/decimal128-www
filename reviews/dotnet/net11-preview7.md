@@ -102,7 +102,11 @@ ULP is what makes it *occur* — so it's real but not constant.)
 **5.4 The correct model** — the rounding-direction belongs *inside* the operation: round the
 exact result **once**, to the requested mode. A post-hoc `Round`/`Floor`/`Ceiling` applied to
 an already-ties-to-even-rounded value is structurally incapable of producing the
-correctly-rounded answer.
+correctly-rounded answer. This same *compute-exact-then-round-once* core is exactly what a
+correct `fusedMultiplyAdd` requires (§6.3): a naive FMA built from their existing
+multiply-then-add would round `a*b` *before* adding `c`, reproducing this very
+double-rounding — which is why FMA's absence points at the same missing core, not a separate
+problem.
 
 **5.5 The conformance boundary (Now vs. Later).**
 - IEEE 754-2019 **§5.1** requires each operation to be performed *"as if it first produced an
@@ -139,7 +143,11 @@ The confidence cost is also **cumulative, not a single data point.** The absence
 outside evaluator confirm results were computed correctly, so the very evidence that could
 *restore* confidence after the rounding finding is the evidence that isn't there. Two
 signals pointing the same way — a missed foundational invariant, and a missing verification
-channel — reinforce rather than offset each other.
+channel — reinforce rather than offset each other. The sharpest corroboration, though, is
+structural: the un-exposed directed rounding (§5.1) and the absent `fusedMultiplyAdd`
+(§6.3, §5.4.1) are **two required-operation gaps, reached from different angles, that resolve
+to a single architectural cause** — the apparent absence of a general
+*compute-exact-then-round-once* core. That is no longer one isolated slip to explain away.
 
 ## 6. Secondary Findings & Conformance Observations
 
@@ -183,6 +191,24 @@ complaint list.
   are all negative. Fully IEEE-compliant (NaN sign is not numerically interpreted). Worth a line
   purely because most IEEE/C reference implementations use a *positive* canonical NaN
   (`0x7C00…`), so anyone bit-bridging against MS's default must know theirs is negative.
+
+### 6.3 No `fusedMultiplyAdd` (secondary finding — diagnostic)
+- **A required operation is missing.** `fusedMultiplyAdd` is a *required* general-computational
+  operation under IEEE 754-2019 **§5.4.1** — not a convenience. Its absence is a conformance gap
+  in its own right, parallel to the §5.1 rounding gap.
+- **Remediation is additive → a "Later" (§9.2).** Adding the op breaks no existing caller; it
+  can land in a future release.
+- **But it is diagnostic — that's why it's here.** A correct FMA forms the *exact* product
+  `a*b` and rounds **once** after adding `c`. Their multiply is already correctly-rounded, so
+  they *can* form and round an exact wide product — the capability exists. Yet a correct FMA
+  cannot be composed from their `multiply` then `add` (that rounds `a*b` first — the §5
+  double-rounding again); it needs the same general *compute-exact-then-round-once* core that
+  correct directed rounding needs. FMA and directed rounding are one missing core seen from two
+  angles (§5.4).
+- **Fair bound:** this is inference from *absence*, not proof. They demonstrably have exact wide
+  multiply, so the gap is a missing *generalization* — a reusable single-rounding finalize — not
+  missing capability. It feeds §5.6 as a second, independent signal; it does not by itself
+  convict.
 
 ## 7. Design: The BID Lock-In Question
 - **7.1 BID was the right call** vs. DPD — but it carries a complicated decode.
@@ -230,6 +256,9 @@ complaint list.
 - **Add fused rounding-direction operations:** alternate methods taking an explicit
   `roundingDirection`, rounding the exact result once — using a true rounding-direction type,
   not `MidpointRounding` (§5.5). Drives the scorecard from 1/5 toward 5/5.
+- **Implement `fusedMultiplyAdd` (§5.4.1):** the required fused op (§6.3). It almost certainly
+  shares the same *compute-exact-then-round-once* finalize as the fused rounding-direction
+  methods above, so the two are natural to build together.
 - **Replace the naive division algorithm;** make scaling and trailing-zero stripping fast (§8).
 - Broader performance tuning across op categories.
 - Full flag semantics behind the (Now-reserved) surface.
