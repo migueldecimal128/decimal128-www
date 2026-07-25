@@ -2,7 +2,7 @@
 layout: default
 permalink: /reviews/dotnet/net11-preview7.html
 title: "System.Numerics.Decimal128 (.NET 11 Preview 7): An Independent Review — Decimal128"
-description: "An independent, standards-anchored review of Microsoft's System.Numerics.Decimal128 as of .NET 11 preview 7 — verified numerically correct, with findings on rounding (double-rounding), status flags, division performance, and BID encapsulation."
+description: "An independent, standards-anchored review of Microsoft's System.Numerics.Decimal128 as of .NET 11 preview 7 — verified numerically correct, with findings on rounding (double-rounding), status flags, string conversion (ToString), division performance, and BID encapsulation."
 heading: "System.Numerics.Decimal128 — .NET 11 Preview 7"
 ---
 
@@ -28,10 +28,10 @@ heading: "System.Numerics.Decimal128 — .NET 11 Preview 7"
   but I take ownership and responsibility for the claims/content/results. 
 - Reference materials include
   * IEEE 754-2019 specification
-  * the Cowlishaw GDAS General Decimal Arithmetic Specification
+  * IBM Cowlishaw GDAS General Decimal Arithmetic Specification 1.70 (speleotrove.com/decimal/)
   * IBM Cowlishaw decTest validation suite
   * IBM Haifa FPgen/FPtest hardware decimal floating point validation suite
-  * Intel 'libbid' Decimal Floating Point library 
+  * Intel 'libbid' Decimal Floating Point library (www.intel.com/content/www/us/en/developer/articles/tool/intel-decimal-floating-point-math-library.html)
 - The planned series shall include one installment per release candidate;
   the same harness each time, so readers can watch the type converge. 
 - Correctness/compliance is graded against the standards. 
@@ -44,13 +44,13 @@ heading: "System.Numerics.Decimal128 — .NET 11 Preview 7"
   tiesToEven rounding. **This is the hardest part to get right, and they nailed it**
 - Rounding is separately composed, not fused into the operations. Directed rounding
   (Ceiling/Floor/Round) is applied *after* tiesToEven has already rounded, so results are
-  double-rounded and *will produce incorrect results* very close to boundaries. Not
-  compliant with IEEE 754. 
+  double-rounded and *will produce incorrect results* with values very close to
+  boundaries. Not compliant with IEEE 754. 
 - Status flags are absent. Strictly speaking, not compliant with IEEE 754. 
 - `ToString` conversion is currently not quantum-preserving for strictly
   positive exponents. For positive exponents (1E2) parse => format => parse
   will lose the exponent/cohort. Not compliant with
-  IEEE 754 clause 5.12, which requires at least one quantum-preserving output conversion. (`ToString` is clearly a work-in-progress ... see below)
+  IEEE 754 clause 5.12 (`ToString` is presumably a work-in-progress ... see below)
 - `fusedMultiplyAdd` is absent — a required IEEE 754 operation. Not compliant
   with IEEE 754 clause 5.4.1.
 - BID is well-hidden today; the representation is not exposed by the current
@@ -101,8 +101,7 @@ section 6.
 ### 5.1 Rounding 
 
 Rounding behavior is fundamental to the design of the IEEE 754 specifications. 
-It is not something that was/is simply 'bolted on' ... because if you try to
-add it on later then you will get incorrect results. 
+It is not something that was/is simply 'bolted on'. 
 
 In this implementation arithmetic always rounds tiesToEven; `Ceiling`/`Floor`/`Round`
 are separate functions applied *after* the operation has already rounded. 
@@ -127,7 +126,7 @@ exact a / b = 2.4999999999999999999999999999999995      <- 35 digits, not repres
 The `.5` the user's rounding mode needed was already consumed by a tiesToEven step they
 never asked for. The second rounding is handed `2.5` and has no way back to the true value.
 **And the answer is 2.5 — an everyday magnitude.** What carries the 34 digits is the
-*operands*; dividing two full-precision decimals is completely routine.
+*operands*; dividing two full-precision decimals is routine.
 
 **When it occurs.** This *cannot* happen
 to a value that fits in 34 digits — the operation would be exact and the rounding applied
@@ -159,7 +158,7 @@ problem.
 - Consequence: under any non-default attribute — `roundTiesToAway`, `roundTowardPositive`,
   `roundTowardNegative`, `roundTowardZero` — decimal128 operations as exposed are **not
   correctly rounded**. The implementation conforms to IEEE 754 clause 5.1 for `roundTiesToEven` **only**.
-- Microsoft could address this deficiency **Later** by providing additional library 
+- Microsoft can address this deficiency **Later** by providing additional library 
   entry points with roundingDirection as a passed parameter or receiver. 
 - For **Now** Microsoft should not claim IEEE 754 rounding conformance with
   the current implementation; they should not present their two-step rounding
@@ -175,8 +174,8 @@ problem.
   provide an *independent verification channel* to confirm that results are being computed by
   the correct path.
 - **The absence of flags is a direct contributor to the confidence cost of section 5.6.**
-  Had they been present they would have restored some confidence about the rounding issue.
-  However, the absence of flags plants another *seed of doubt*.
+  Had flags been present they would have restored some confidence about the rounding issue.
+  However, the complete absence of flags plants another *seed of doubt*.
 
 ### 5.3 No quantum-preserving string conversion (IEEE 754 clause 5.12)
 IEEE 754-2019 **clause 5.12** requires, for decimal formats: *"All conversions from external
@@ -188,7 +187,7 @@ meets the first and fails the second.
 - **Into the format (parse) — compliant.** `Parse` preserves the quantum: `Parse("1E+2")` stores
   coefficient 1 / exponent 2; `Parse("100")` stores coefficient 100 / exponent 0 — distinct
   cohort members with distinct bits. Compliance is confirmed by looking at the bits with 
-  `Unsafe.BitCast`. 
+  `Unsafe.BitCast` and confirming BID representation. 
 - **Out of the format (format) — non-compliant.** No conversion from `Decimal128` to a string
   preserves the quantum for *all* values. It does for negative exponents (`1.0` and `1.00` format
   distinctly), but **every** path collapses positive-exponent cohorts: across 18 formatting paths
@@ -234,10 +233,10 @@ meets the first and fails the second.
 - **A required operation is missing.** `fusedMultiplyAdd` is a *required* general-computational
   operation under IEEE 754-2019 **clause 5.4.1** — not a convenience. Its absence is a conformance
   gap in its own right, parallel to the rounding gap in section 5.1.
-- I acknowledge the presence of a `System.Numerics.Decimal128.MultiplyAddEstimate(Decimal128 left, Decimal128 right, Decimal128 addend)` which offers full disclosure
+- I acknowledge the presence of a `System.Numerics.Decimal128.MultiplyAddEstimate(Decimal128 left, Decimal128 right, Decimal128 addend)` whose name offers full disclosure
 about the semantics. 
-- **Remediation is additive → a "Later" (section 9.2).** Adding the op breaks no existing caller;
-  it can land in a future release.
+- **Remediation is additive → a "Later" (section 9.2).** Adding the FMA operation breaks
+  no existing caller ... it can land in a future release.
 - A correct FMA forms the *exact* product
   `a*b` and rounds **once** after adding `c`. Their multiply is already correctly-rounded, so
   they *can* form and round an exact wide product — the capability exists. Yet a correct FMA
@@ -299,7 +298,7 @@ convention.
   negative.
 
 ## 7. Design: The BID Lock-In Question
-- **7.1 BID internally is the right call — and confirmed.** The type stores BID: reflection
+- **7.1 BID internally is the right call.** The type stores BID: reflection
   shows two private `UInt64` words plus a non-public combination-field encoder, and the team
   has said the implementation is based on BID and libbid (*per public github comments*).
   BID over DPD is the defensible choice for a software implementation. 
@@ -317,10 +316,11 @@ convention.
 - **7.4 The recommendation — symmetric interchange, decided now.** Treat BID and DPD as *peer*
   interchange formats: an explicit **decode** inbound and **encode** outbound for *both*, with
   neither surfaced as "the raw value." Keep BID internally if you like, but explicitly
-  encode/decode through that API boundary, so the internal representation can change later
-  without breaking callers. This surface is being designed right now, so getting the symmetry
-  right should be nearly free; retrofitting it after GA is a breaking change ... and in
-  practice it will probably never change. 
+  encode/decode through that API boundary. The encode/decode calls can be NOOPs for BID. But
+  this will preserve the option of changing the internal representation without breaking
+  callers. This surface is being designed right now, so getting the symmetry
+  right should be nearly free; retrofitting it after GA would be a breaking change ... and in
+  practice it probably never happen. 
 
 ## 8. Performance
 - **8.1 The division problem** — the current divide is a naive algorithm; scaling operations
@@ -486,9 +486,8 @@ reference. `System.Decimal` (28 digits) is blank on any band its range cannot re
   libbid across these bands. The gap is therefore the managed reimplementation, not the BID
   approach — their own reference is the fast one.
 - **8.5 The stakes** — a slow first release reinforces the myth that *software* decimal
-  floating point is inherently slow. It isn't; d128 and libbid show the headroom — and libbid
-  is the very reference their implementation is based on. This is the narrative cost of
-  shipping performance-last.
+  floating point is inherently slow. It doesn't have to be. libbid and decimal128-csharp 
+  show the headroom; libbid is the very reference their implementation is based on. 
 - **8.6 Why this is a "Later"** — every number here is improvable in a future release without
   breaking a single caller.
 - **8.7 Series baseline** — these are the numbers the next RC is measured against.
@@ -526,51 +525,15 @@ reference. `System.Decimal` (28 digits) is blank on any band its range cannot re
 - Full flag semantics behind the (Now-reserved) surface.
 - Rationale: purely additive; no reason to gate GA on them, safe to iterate across the series.
 
-> **Judgment call (not a "Now"):** even though the fused rounding API is additive, there is a
-> reputational case for MS *choosing* to ship it at GA so the correct path exists from day
-> one. Their call to make — phrased as a recommendation, not a requirement.
-
 ## 10. Conclusion
 - They got the math right — the foundation is sound. What remains is making rounding *fused*
   before the composed pattern hardens into an assumed contract, being honest about the
   conformance boundary, and not letting a slow first release define the ceiling for software
   decimal.
+- Presumably ToString() behavior will be corrected. 
 - Callback to the through-line: the open items are less about any single wrong answer than
   about how much of the un-audited surface has earned trust — which is what the series exists
   to keep testing.
 - What I'll be watching for in the next RC (fused rounding-direction ops; the scorecard 1/5
   climbing; division/scaling perf; any flag surface).
 
-## 11. Appendices
-- **A. Rounding worked example** — the ties-away vs. TTE divergence (the ~2.5 case), plus the
-  necessary-condition note (why a value that fits in 34 digits can never trigger it).
-- **B. Full per-op benchmark tables** — raw ns/op from the op-benchmark store.
-
-*FMA — M3 Pro (arm64). `Decimal128` and `System.Decimal` are blank because neither has a fused
-multiply-add; this corroborates section 5.4.*
-
-<!-- BEGIN GENERATED net11-fma-abs -->
-
-| op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
-|---|---|---:|---:|---:|---:|
-| fma | FN | — | 84.00 | 107.51 | — |
-| fma | FF | — | 57.07 | 83.93 | — |
-
-<!-- END GENERATED net11-fma-abs -->
-
-*FMA — i9-9880H (x86_64):*
-
-<!-- BEGIN GENERATED net11-fma-abs-x86 -->
-
-| op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
-|---|---|---:|---:|---:|---:|
-| fma | FN | — | 160.41 | 187.99 | — |
-| fma | FF | — | 123.46 | 146.06 | — |
-
-<!-- END GENERATED net11-fma-abs-x86 -->
-
-- **C. Verification methodology** — vector sources (dectest / fptest / libbid), counts, and
-  any skip/divergence list.
-- **D. Environment & reproduction** — SDK versions, toolchain flags, machine/arch.
-
-</div>
