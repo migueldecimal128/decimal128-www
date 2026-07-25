@@ -22,16 +22,16 @@ heading: "System.Numerics.Decimal128 — .NET 11 Preview 7"
   I don't know anyone on the .NET team.
   I maintain my own conformant implementation (decimal128-csharp) and a 
   cross-checking (Rosetta) suite that
-  consolidates 60k IEEE 754 decimal128 test vectors in three different text formats from IBM and Intel. Rosetta parses the text formats in their original form, calls the appropriate operation for the implementation under test, and compares bit-wise conformance of the expected result. 
+  consolidates 57k IEEE 754 decimal128 test vectors in three different text formats from IBM and Intel. Rosetta parses the text formats in their original form, calls the appropriate operation for the implementation under test, and compares bit-wise conformance of the expected result. 
 - This document, Rosetta, and the benchmark harness are written with
   the assistance of Anthropic Claude AI, 
   but I take ownership and responsibility for the claims/content/results. 
 - Reference materials include
-  * IEEE 754-2019 specification
-  * IBM Cowlishaw GDAS General Decimal Arithmetic Specification 1.70 (speleotrove.com/decimal/)
-  * IBM Cowlishaw decTest validation suite
-  * IBM Haifa FPgen/FPtest hardware decimal floating point validation suite
-  * Intel 'libbid' Decimal Floating Point library (www.intel.com/content/www/us/en/developer/articles/tool/intel-decimal-floating-point-math-library.html)
+  * [IEEE 754-2019 specification](https://www.google.com/search?q=ieee+754-2019+pdf)
+  * [IBM Cowlishaw GDAS General Decimal Arithmetic Specification 1.70](https://speleotrove.com/decimal/decarith.pdf)
+  * [IBM Cowlishaw decTest validation suite](https://speleotrove.com/decimal/dectest.html)
+  * [IBM Haifa FPgen/FPtest hardware decimal floating point validation suite](https://web.archive.org/web/20081006095103/http://www.haifa.il.ibm.com/projects/verification/fpgen/doc.html)
+  * [Intel 'libbid' Decimal Floating Point library](https://www.intel.com/content/www/us/en/developer/articles/tool/intel-decimal-floating-point-math-library.html)
 - The planned series shall include one installment per release candidate;
   the same harness each time, so readers can watch the type converge. 
 - Correctness/compliance is graded against the standards. 
@@ -47,9 +47,10 @@ heading: "System.Numerics.Decimal128 — .NET 11 Preview 7"
   double-rounded and *will produce incorrect results* with values very close to
   boundaries. Not compliant with IEEE 754. 
 - Status flags are absent. Strictly speaking, not compliant with IEEE 754. 
-- `ToString` conversion is currently not quantum-preserving for strictly
-  positive exponents. For positive exponents (1E2) parse => format => parse
-  will lose the exponent/cohort. Not compliant with
+- `ToString` does not ever use scientific notation. As a result, `ToString` is not
+  quantum-preserving for strictly positive exponents. 
+  For positive exponents (1E2) parse => format => parse
+  will lose the exponent/cohort. This behavior is not compliant with
   IEEE 754 clause 5.12 (`ToString` is presumably a work-in-progress ... see below)
 - `fusedMultiplyAdd` is absent — a required IEEE 754 operation. Not compliant
   with IEEE 754 clause 5.4.1.
@@ -68,8 +69,9 @@ heading: "System.Numerics.Decimal128 — .NET 11 Preview 7"
 - **Reference standards:** IEEE 754-2019 decimal128 + GDAS.
 - **Verification suite:** Rosetta bit-identity against industry reference
   **dectest, fptest, and libbid** test vector suites. 
-- **Bit-bridge caveat:** the SUT exposes no way to read its bits and no bitwise-equality
-  operator, so the bit-identity check reaches the encoding by reinterpreting the value as its
+- **Bit-bridge caveat:** the SUT System Under Test exposes no way to read its bits, 
+  no bitwise-equality operator, and `ToString` does not preserve cohort. 
+  Therefore, the bit-identity check reaches the encoding by reinterpreting the value as its
   BID128 bit pattern (`Unsafe.BitCast`) and comparing through the port's BID codec. This is
   valid only because — and only while — the SUT's in-memory layout *is* the BID128 interchange
   encoding; that is an unsupported implementation detail, not an API contract (see section 7). It also

@@ -25,10 +25,11 @@ Headline conformance measures, tracked edition to edition.
 
 | Measure | Preview 7 |
 |---------|-----------|
-| Numerical results (value) correct vs. `decTest` / `fptest` / `libbid` | ✅ verified |
-| Correctly-rounded operations (of 5 IEEE rounding-direction attributes) | **1 / 5** (`roundTiesToEven` only) |
+| Numerical results bitwiseEQ vs. `decTest` / `fptest` / `libbid` | ✅ verified |
+| compliant rounding | ❌ `roundTiesToEven` only |
 | Status flags | ❌ none |
-| `CompareTo` implements §5.10 `totalOrder` | ❌ (in progress toward RC1) |
+| `ToString` preserves cohort | ❌ never uses scientific notation |
+| implements §5.10 `totalOrder` | ❌ (in progress toward RC1) |
 
 *Columns are added as each release is reviewed, so the trend is visible at a glance.*
 
@@ -38,7 +39,7 @@ Headline conformance measures, tracked edition to edition.
 
 | Date | Release | Review | Headline |
 |------|---------|--------|----------|
-| 2026-07-14 | preview 7 | [Read →](dotnet/net11-preview7.html) *(draft — in progress)* | Numerically correct; rounding is composed rather than fused (double-rounding); no status flags; naive division. |
+| 2026-07-14 | preview 7 | [Read →](dotnet/net11-preview7.html) | Numerically correct; no status flags; rounding is composed rather than fused (double-rounding); ToString needs work; missing TotalOrder; missing FMA; naive division. |
 
 *Release candidate and GA editions will be added under this heading as they are
-published; later .NET versions get their own heading above this one.*
+published.*
