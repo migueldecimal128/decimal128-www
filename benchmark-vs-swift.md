@@ -30,14 +30,14 @@ The headline: one realistic 64-bit financial operation mix — a `MIX` add/sub s
 
 | port | op | cat | profile | arch | mode | ns | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| swift | add | MIX | P-fin | arm64 | thru | 5.88 | Foundation.Decimal | 322.48 | **54.84×** | Rswsw2 | compact idiom peer |
-| swift | sub | MIX | P-fin | arm64 | thru | 4.88 | Foundation.Decimal | 326.44 | **66.89×** | Rswsw2 | compact idiom peer |
-| swift | mul | CP | P-fin | arm64 | thru | 2.16 | Foundation.Decimal | 279.55 | **129.42×** | Rswsw2 | compact idiom peer |
-| swift | mul | WP | P-fin | arm64 | thru | 21.02 | Foundation.Decimal | 283.48 | **13.49×** | Rswsw2 | compact idiom peer |
-| swift | div | CD | P-fin | arm64 | thru | 36.05 | Foundation.Decimal | 1242.58 | **34.47×** | Rswsw2 | compact idiom peer |
-| swift | div | WD | P-fin | arm64 | thru | 48.91 | Foundation.Decimal | 664.99 | **13.60×** | Rswsw2 | compact idiom peer |
-| swift | div | ET | P-fin | arm64 | thru | 10.59 | Foundation.Decimal | 3577.28 | **337.80×** | Rswsw2 | compact idiom peer |
-| swift | div | PT | P-fin | arm64 | thru | 7.00 | Foundation.Decimal | 3491.84 | **498.83×** | Rswsw2 | compact idiom peer |
+| swift | add | MIX | P-fin | arm64 | thru | 4.33 | Foundation.Decimal | 316.91 | **73.19×** | Rswsw2 | compact idiom peer |
+| swift | sub | MIX | P-fin | arm64 | thru | 4.72 | Foundation.Decimal | 363.01 | **76.91×** | Rswsw2 | compact idiom peer |
+| swift | mul | CP | P-fin | arm64 | thru | 2.16 | Foundation.Decimal | 294.62 | **136.40×** | Rswsw2 | compact idiom peer |
+| swift | mul | WP | P-fin | arm64 | thru | 20.96 | Foundation.Decimal | 296.43 | **14.14×** | Rswsw2 | compact idiom peer |
+| swift | div | CD | P-fin | arm64 | thru | 39.23 | Foundation.Decimal | 1295.88 | **33.03×** | Rswsw2 | compact idiom peer |
+| swift | div | WD | P-fin | arm64 | thru | 52.34 | Foundation.Decimal | 697.65 | **13.33×** | Rswsw2 | compact idiom peer |
+| swift | div | ET | P-fin | arm64 | thru | 9.82 | Foundation.Decimal | 3738.33 | **380.69×** | Rswsw2 | compact idiom peer |
+| swift | div | PT | P-fin | arm64 | thru | 7.15 | Foundation.Decimal | 3637.84 | **508.79×** | Rswsw2 | compact idiom peer |
 
 <!-- END GENERATED pfin-rel-swift -->
 
@@ -68,11 +68,11 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| swift | add | SQ | P-gen | arm64 | thru | 5.82 | Foundation.Decimal | 318.97 | **54.81×** | Rswsw2 | compact idiom peer |
-| swift | add | NQ | P-gen | arm64 | thru | 8.14 | Foundation.Decimal | 399.23 | **49.05×** | Rswsw2 | compact idiom peer |
-| swift | add | MQ | P-gen | arm64 | thru | 14.79 | Foundation.Decimal | 420.39 | **28.42×** | Rswsw2 | compact idiom peer |
-| swift | add | OQ | P-gen | arm64 | thru | 20.41 | Foundation.Decimal | 557.82 | **27.33×** | Rswsw2 | compact idiom peer |
-| swift | add | FQ | P-gen | arm64 | thru | 16.37 | Foundation.Decimal | 293.90 | **17.95×** | Rswsw2 | compact idiom peer |
+| swift | add | SQ | P-gen | arm64 | thru | 5.80 | Foundation.Decimal | 317.31 | **54.71×** | Rswsw2 | compact idiom peer |
+| swift | add | NQ | P-gen | arm64 | thru | 8.19 | Foundation.Decimal | 399.50 | **48.78×** | Rswsw2 | compact idiom peer |
+| swift | add | MQ | P-gen | arm64 | thru | 15.06 | Foundation.Decimal | 403.37 | **26.78×** | Rswsw2 | compact idiom peer |
+| swift | add | OQ | P-gen | arm64 | thru | 20.66 | Foundation.Decimal | 536.95 | **25.99×** | Rswsw2 | compact idiom peer |
+| swift | add | FQ | P-gen | arm64 | thru | 16.56 | Foundation.Decimal | 280.00 | **16.91×** | Rswsw2 | compact idiom peer |
 
 <!-- END GENERATED add-rel-swift -->
 
@@ -100,11 +100,11 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| swift | sub | SQ | P-gen | arm64 | thru | 5.48 | Foundation.Decimal | 322.24 | **58.80×** | Rswsw2 | compact idiom peer |
-| swift | sub | NQ | P-gen | arm64 | thru | 7.78 | Foundation.Decimal | 402.44 | **51.73×** | Rswsw2 | compact idiom peer |
-| swift | sub | MQ | P-gen | arm64 | thru | 14.38 | Foundation.Decimal | 423.93 | **29.48×** | Rswsw2 | compact idiom peer |
-| swift | sub | OQ | P-gen | arm64 | thru | 19.58 | Foundation.Decimal | 559.63 | **28.58×** | Rswsw2 | compact idiom peer |
-| swift | sub | FQ | P-gen | arm64 | thru | 15.62 | Foundation.Decimal | 294.97 | **18.88×** | Rswsw2 | compact idiom peer |
+| swift | sub | SQ | P-gen | arm64 | thru | 5.10 | Foundation.Decimal | 323.80 | **63.49×** | Rswsw2 | compact idiom peer |
+| swift | sub | NQ | P-gen | arm64 | thru | 7.84 | Foundation.Decimal | 403.41 | **51.46×** | Rswsw2 | compact idiom peer |
+| swift | sub | MQ | P-gen | arm64 | thru | 14.45 | Foundation.Decimal | 406.16 | **28.11×** | Rswsw2 | compact idiom peer |
+| swift | sub | OQ | P-gen | arm64 | thru | 19.65 | Foundation.Decimal | 538.40 | **27.40×** | Rswsw2 | compact idiom peer |
+| swift | sub | FQ | P-gen | arm64 | thru | 15.57 | Foundation.Decimal | 281.04 | **18.05×** | Rswsw2 | compact idiom peer |
 
 <!-- END GENERATED sub-rel-swift -->
 
@@ -132,9 +132,9 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| swift | mul | CP | P-gen | arm64 | thru | 3.38 | Foundation.Decimal | 296.40 | **87.69×** | Rswsw2 | compact idiom peer |
-| swift | mul | WP | P-gen | arm64 | thru | 20.44 | Foundation.Decimal | 313.64 | **15.34×** | Rswsw2 | compact idiom peer |
-| swift | mul | XP | P-gen | arm64 | thru | 25.58 | Foundation.Decimal | 847.96 | **33.15×** | Rswsw2 | compact idiom peer |
+| swift | mul | CP | P-gen | arm64 | thru | 3.39 | Foundation.Decimal | 296.13 | **87.35×** | Rswsw2 | compact idiom peer |
+| swift | mul | WP | P-gen | arm64 | thru | 20.58 | Foundation.Decimal | 316.01 | **15.36×** | Rswsw2 | compact idiom peer |
+| swift | mul | XP | P-gen | arm64 | thru | 25.60 | Foundation.Decimal | 850.83 | **33.24×** | Rswsw2 | compact idiom peer |
 
 <!-- END GENERATED mul-rel-swift -->
 
@@ -160,11 +160,11 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| swift | div | CD | P-gen | arm64 | thru | 37.96 | Foundation.Decimal | 1374.10 | **36.20×** | Rswsw2 | compact idiom peer |
-| swift | div | WD | P-gen | arm64 | thru | 50.71 | Foundation.Decimal | 902.58 | **17.80×** | Rswsw2 | compact idiom peer |
-| swift | div | XD | P-gen | arm64 | thru | 50.45 | Foundation.Decimal | 691.38 | **13.70×** | Rswsw2 | compact idiom peer |
-| swift | div | ET | P-gen | arm64 | thru | 10.58 | Foundation.Decimal | 3262.31 | **308.35×** | Rswsw2 | compact idiom peer |
-| swift | div | PT | P-gen | arm64 | thru | 7.15 | Foundation.Decimal | 3135.91 | **438.59×** | Rswsw2 | compact idiom peer |
+| swift | div | CD | P-gen | arm64 | thru | 38.67 | Foundation.Decimal | 1367.93 | **35.37×** | Rswsw2 | compact idiom peer |
+| swift | div | WD | P-gen | arm64 | thru | 51.00 | Foundation.Decimal | 899.89 | **17.64×** | Rswsw2 | compact idiom peer |
+| swift | div | XD | P-gen | arm64 | thru | 49.63 | Foundation.Decimal | 686.71 | **13.84×** | Rswsw2 | compact idiom peer |
+| swift | div | ET | P-gen | arm64 | thru | 9.82 | Foundation.Decimal | 3202.04 | **326.07×** | Rswsw2 | compact idiom peer |
+| swift | div | PT | P-gen | arm64 | thru | 7.16 | Foundation.Decimal | 3095.19 | **432.29×** | Rswsw2 | compact idiom peer |
 
 <!-- END GENERATED div-rel-swift -->
 
@@ -192,8 +192,8 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| swift | fma | FN | FMA | arm64 | thru | 83.92 | - | - | - | Rswsw2 |  |
-| swift | fma | FF | FMA | arm64 | thru | 42.30 | - | - | - | Rswsw2 |  |
+| swift | fma | FN | FMA | arm64 | thru | 83.99 | - | - | - | Rswsw2 |  |
+| swift | fma | FF | FMA | arm64 | thru | 42.23 | - | - | - | Rswsw2 |  |
 
 <!-- END GENERATED fma-rel-swift -->
 
