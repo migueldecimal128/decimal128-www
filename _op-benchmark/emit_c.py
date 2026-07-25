@@ -16,6 +16,10 @@ Peers (libbid/decq/mpd) via the plain per-band benchmark.
 
 Usage: emit_c.py <bench_binary> [--run-id Rc2] [--min-time 0.05s]
 """
+# CONTRACT (store-only stage): this emitter writes ONLY the JSONL store
+# (results.*.jsonl / runs.*.jsonl). It never writes a report page (*.md) and
+# never imports or invokes gen_bench. Splicing reports is a separate stage
+# (splice_benchmark_reports.sh / gen_bench.py). See ArchSplitStoreWorkOrder.md.
 import json, re, sys, os, subprocess, glob, collections
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -133,12 +137,12 @@ def main():
     opo = {"add":0,"sub":1,"mul":2,"div":3,"fma":4}
     cato = {c:i for i,c in enumerate(["SQ","NQ","MQ","OQ","FQ","CP","WP","XP","CD","WD","XD","ET","PT","FN","FF","MIX"])}
     pro = {"P-fin":0,"P-gen":1,"P-max":2,"FMA":3}
-    merged = _merge_store(os.path.join(HERE, "results.c.jsonl"), recs, KEY)
+    merged = _merge_store(os.path.join(HERE, f"results.c.{ARCH}.jsonl"), recs, KEY)
     rows = sorted(merged.values(), key=lambda r:(r["impl"],opo[r["op"]],pro[r["profile"]],cato[r["cat"]]))
-    with open(os.path.join(HERE, "results.c.jsonl"), "w") as f:
+    with open(os.path.join(HERE, f"results.c.{ARCH}.jsonl"), "w") as f:
         for r in rows:
             f.write(json.dumps({k:r[k] for k in KO}, ensure_ascii=False) + "\n")
-    print(f"rewrote results.c.jsonl ({len(rows)} records)")
+    print(f"rewrote results.c.{ARCH}.jsonl ({len(rows)} records)")
 
     # mint / update the run in runs.jsonl
     upsert_run(run, ctx)
@@ -146,7 +150,7 @@ def main():
     for k in sorted(by): print(f"   {k}: {by[k]}")
 
 def upsert_run(run, ctx):
-    p = os.path.join(HERE, "runs.jsonl")
+    p = os.path.join(HERE, f"runs.{ARCH}.jsonl")
     lines = [l for l in open(p).read().splitlines() if l.strip()]
     runs = [json.loads(l) for l in lines]
     runs = [r for r in runs if r["run"] != run]

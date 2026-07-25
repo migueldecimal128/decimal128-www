@@ -10,6 +10,10 @@ cwd=<repo> (the resources/ submodule must be bumped to the swept commit).
 
 Usage: emit_python.py [--repo ~/decimal128/python] [--run-id Rpysw2]
 """
+# CONTRACT (store-only stage): this emitter writes ONLY the JSONL store
+# (results.*.jsonl / runs.*.jsonl). It never writes a report page (*.md) and
+# never imports or invokes gen_bench. Splicing reports is a separate stage
+# (splice_benchmark_reports.sh / gen_bench.py). See ArchSplitStoreWorkOrder.md.
 import json, os, sys, subprocess, collections
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -74,14 +78,14 @@ def main():
     cato = {c: i for i, c in enumerate(["SQ", "NQ", "MQ", "OQ", "FQ", "CP", "WP", "XP",
                                         "CD", "WD", "XD", "ET", "PT", "FN", "FF", "MIX"])}
     pro = {"P-fin": 0, "P-gen": 1, "P-max": 2, "FMA": 3}
-    merged = _merge_store(os.path.join(HERE, "results.python.jsonl"), recs, KEY)
+    merged = _merge_store(os.path.join(HERE, f"results.python.{ARCH}.jsonl"), recs, KEY)
     rows = sorted(merged.values(), key=lambda r: (r["impl"], opo[r["op"]], pro[r["profile"]], cato[r["cat"]]))
-    with open(os.path.join(HERE, "results.python.jsonl"), "w") as f:
+    with open(os.path.join(HERE, f"results.python.{ARCH}.jsonl"), "w") as f:
         for r in rows:
             f.write(json.dumps({k: r[k] for k in KO}, ensure_ascii=False) + "\n")
-    print(f"rewrote results.python.jsonl ({len(rows)} records)")
+    print(f"rewrote results.python.{ARCH}.jsonl ({len(rows)} records)")
 
-    p = os.path.join(HERE, "runs.jsonl")
+    p = os.path.join(HERE, f"runs.{ARCH}.jsonl")
     runs = [json.loads(l) for l in open(p).read().splitlines() if l.strip()]
     runs = [r for r in runs if r["run"] != run]
     runs.append({"run": run, "date": "", "machine": MACHINE,

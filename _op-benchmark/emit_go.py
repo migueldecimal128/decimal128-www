@@ -10,6 +10,10 @@ Mints run Rgosw2 (arm64) / pass --run-id xRgosw2 on x86.
 
 Usage: emit_go.py [--crate ~/decimal128/go] [--run-id Rgosw2] [--benchtime 1s]
 """
+# CONTRACT (store-only stage): this emitter writes ONLY the JSONL store
+# (results.*.jsonl / runs.*.jsonl). It never writes a report page (*.md) and
+# never imports or invokes gen_bench. Splicing reports is a separate stage
+# (splice_benchmark_reports.sh / gen_bench.py). See ArchSplitStoreWorkOrder.md.
 import json, os, sys, re, subprocess, collections
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -74,14 +78,14 @@ def main():
     opo = {"add":0,"sub":1,"mul":2,"div":3,"fma":4}
     cato = {c:i for i,c in enumerate(["SQ","NQ","MQ","OQ","FQ","CP","WP","XP","CD","WD","XD","ET","PT","FN","FF","MIX"])}
     pro = {"P-fin":0,"P-gen":1,"P-max":2,"FMA":3}
-    merged = _merge_store(os.path.join(HERE, "results.go.jsonl"), recs, KEY)
+    merged = _merge_store(os.path.join(HERE, f"results.go.{ARCH}.jsonl"), recs, KEY)
     rows = sorted(merged.values(), key=lambda r:(r["impl"],opo[r["op"]],pro[r["profile"]],cato[r["cat"]]))
-    with open(os.path.join(HERE, "results.go.jsonl"), "w") as f:
+    with open(os.path.join(HERE, f"results.go.{ARCH}.jsonl"), "w") as f:
         for r in rows:
             f.write(json.dumps({k:r[k] for k in KO}, ensure_ascii=False) + "\n")
-    print(f"rewrote results.go.jsonl ({len(rows)} records)")
+    print(f"rewrote results.go.{ARCH}.jsonl ({len(rows)} records)")
 
-    p = os.path.join(HERE, "runs.jsonl")
+    p = os.path.join(HERE, f"runs.{ARCH}.jsonl")
     runs = [json.loads(l) for l in open(p).read().splitlines() if l.strip()]
     runs = [r for r in runs if r["run"] != run]
     runs.append({"run": run, "date": "", "machine": MACHINE,

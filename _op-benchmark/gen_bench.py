@@ -64,9 +64,11 @@ def load_impls():
     return json.load(open(os.path.join(HERE, "impls.json")))
 
 def load_runs():
+    # Glob every runs.<arch>.jsonl (the store is arch-split: each box writes only its own
+    # arch's provenance file). Run-ids are globally unique across arches, so union by run-id
+    # is conflict-free.
     idx = {}
-    p = os.path.join(HERE, "runs.jsonl")
-    if os.path.exists(p):
+    for p in sorted(glob.glob(os.path.join(HERE, "runs.*.jsonl"))):
         for line in open(p):
             line = line.strip()
             if line:
@@ -74,7 +76,8 @@ def load_runs():
     return idx
 
 def load_results():
-    """Glob every results.<lang>.jsonl, validate, upsert into an index keyed by
+    """Glob every results.<lang>.<arch>.jsonl (the store is arch-split — each box owns its
+    own arch's files), validate, upsert into an index keyed by
     (lang,impl,op,cat,profile,mode,arch) -- one record per cell (last wins)."""
     idx, runs_cited = {}, set()
     for path in sorted(glob.glob(os.path.join(HERE, "results.*.jsonl"))):
