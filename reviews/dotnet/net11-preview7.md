@@ -17,14 +17,15 @@ heading: "System.Numerics.Decimal128 — .NET 11 Preview 7"
 ---
 
 ## 1. Framing
-- I am an independent decimal128 specialist; no affiliation with the .NET team;
-  don't know anyone on the .NET team.
+- I am an independent decimal128 specialist. 
+  I have no affiliation with the .NET team. 
+  I don't know anyone on the .NET team.
   I maintain my own conformant implementation (decimal128-csharp) and a 
   cross-checking (Rosetta) suite that
   consolidates 60k IEEE 754 decimal128 test vectors in three different text formats from IBM and Intel. Rosetta parses the text formats in their original form, calls the appropriate operation for the implementation under test, and compares bit-wise conformance of the expected result. 
 - This document, Rosetta, and the benchmark harness are written with
   the assistance of Anthropic Claude AI, 
-  but I take ownership/responsibility for the results. 
+  but I take ownership and responsibility for the claims/content/results. 
 - Reference materials include
   * IEEE 754-2019 specification
   * the Cowlishaw GDAS General Decimal Arithmetic Specification
@@ -41,7 +42,7 @@ heading: "System.Numerics.Decimal128 — .NET 11 Preview 7"
 - The numerical results produced by System.Numerics.Decimal128 are correct, 
   verified bit-for-bit against dectest, fptest, and libbid test vectors for
   tiesToEven rounding. **This is the hardest part to get right, and they nailed it**
-- Rounding is a separately composed, not fused into the operations. Directed rounding
+- Rounding is separately composed, not fused into the operations. Directed rounding
   (Ceiling/Floor/Round) is applied *after* tiesToEven has already rounded, so results are
   double-rounded and *will produce incorrect results* very close to boundaries. Not
   compliant with IEEE 754. 
@@ -77,7 +78,7 @@ heading: "System.Numerics.Decimal128 — .NET 11 Preview 7"
   out-of-cohort on range).
 - **Benchmark harness:** op-benchmark .NET 11 arm, InProcess toolchain, per-op input
   categories.
-- **Fairness caveats:** bit-for-bit comparision of expected result values against only
+- **Fairness caveats:** bit-for-bit comparison of expected result values against only
   tiesToEven vectors since the SUT only offers tiesToEven. 
 - **Reproducibility:** everything needed to rerun, so the series is auditable RC-over-RC.
 
@@ -154,7 +155,7 @@ problem.
   to infinite precision and with unbounded range, and then rounded that result
   according to one of the attributes in this clause.
   ```
-- To accomplish this, rounding muyst be performed **once**. The existing API rounds **twice**. 
+- To accomplish this, rounding must be performed **once**. The existing API rounds **twice**. 
 - Consequence: under any non-default attribute — `roundTiesToAway`, `roundTowardPositive`,
   `roundTowardNegative`, `roundTowardZero` — decimal128 operations as exposed are **not
   correctly rounded**. The implementation conforms to IEEE 754 clause 5.1 for `roundTiesToEven` **only**.
@@ -187,7 +188,7 @@ meets the first and fails the second.
 - **Into the format (parse) — compliant.** `Parse` preserves the quantum: `Parse("1E+2")` stores
   coefficient 1 / exponent 2; `Parse("100")` stores coefficient 100 / exponent 0 — distinct
   cohort members with distinct bits. Compliance is confirmed by looking at the bits with 
-  `Unsafe.bitcast`. 
+  `Unsafe.BitCast`. 
 - **Out of the format (format) — non-compliant.** No conversion from `Decimal128` to a string
   preserves the quantum for *all* values. It does for negative exponents (`1.0` and `1.00` format
   distinctly), but **every** path collapses positive-exponent cohorts: across 18 formatting paths
@@ -274,8 +275,8 @@ results were computed correctly, so the very evidence that could *restore* confi
 rounding finding is the evidence that isn't there. The sharpest corroboration is structural: the
 un-exposed directed rounding (section 5.1) and the absent `fusedMultiplyAdd` (section 5.4) are
 **two required-operation gaps, reached from different angles, that resolve to a single
-architectural cause.** The apparent absence of a general *compute-exact-then-round-once* core. 
-starts to smell like a design flaw rather than an isolated slip. 
+architectural cause** — the apparent absence of a general *compute-exact-then-round-once*
+core. That absence starts to smell like a design flaw rather than an isolated slip. 
 
 ## 6. Permitted & Intentional Divergences
 
@@ -313,7 +314,7 @@ convention.
   representation can begin to leak — and "conversion *from* DPD" hints at the asymmetry to
   avoid: DPD treated as a foreign import while BID is exposed as the native value. 
   (My hunch is that in 2026 there is more DPD128 than BID128 data in the world)
-  - **7.4 The recommendation — symmetric interchange, decided now.** Treat BID and DPD as *peer*
+- **7.4 The recommendation — symmetric interchange, decided now.** Treat BID and DPD as *peer*
   interchange formats: an explicit **decode** inbound and **encode** outbound for *both*, with
   neither surfaced as "the raw value." Keep BID internally if you like, but explicitly
   encode/decode through that API boundary, so the internal representation can change later
@@ -359,14 +360,14 @@ reference. `System.Decimal` (28 digits) is blank on any band its range cannot re
 
 | op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
 |---|---|---:|---:|---:|---:|
-| add | MIX | 47.17 | 32.11 | 17.85 | 15.99 |
-| sub | MIX | 47.96 | 36.74 | 15.06 | 15.71 |
-| mul | CP | 43.43 | 46.14 | 5.34 | — |
-| mul | WP | 137.73 | 60.57 | 55.80 | — |
-| div | CD | 439.54 | 78.27 | 109.87 | 61.56 |
-| div | WD | 488.51 | 82.95 | 124.96 | 111.77 |
-| div | ET | 621.48 | 19.44 | 28.79 | 16.06 |
-| div | PT | 636.05 | 19.26 | 11.77 | 67.56 |
+| add | MIX | 34.24 | 32.11 | 9.23 | 9.21 |
+| sub | MIX | 38.10 | 36.74 | 12.81 | 10.99 |
+| mul | CP | 39.19 | 46.14 | 5.89 | — |
+| mul | WP | 150.39 | 60.57 | 44.00 | — |
+| div | CD | 427.92 | 78.27 | 100.36 | 53.57 |
+| div | WD | 476.74 | 82.95 | 115.88 | 102.94 |
+| div | ET | 620.41 | 19.44 | 27.94 | 14.45 |
+| div | PT | 626.14 | 19.26 | 13.45 | 59.99 |
 
 <!-- END GENERATED net11-pfin-abs-x86 -->
 

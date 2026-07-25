@@ -6,8 +6,9 @@ description: "An independent, standards-anchored review series tracking Microsof
 heading: ".NET — System.Numerics.Decimal128"
 ---
 
-A per-release review series tracking **`System.Numerics.Decimal128`**, the
-128-bit decimal floating-point type Microsoft is introducing in .NET. One
+A pre-release review series tracking **`System.Numerics.Decimal128`**, the
+128-bit decimal floating-point type Microsoft plans to introduce in .NET 11,
+targeted Nov 2026. One
 installment is published for each preview and release candidate through GA, and
 the series continues into subsequent .NET versions — each edition run through the
 same standards-anchored harness so the type can be watched as it converges.
