@@ -296,7 +296,7 @@ away.
 | XD | extra-wide divisor | divide, divisor 20–34 digits (256÷128, costliest). |
 | ET | exact / terminating | divide, exact quotient — early-out then trailing-zero strip. |
 | PT | power-of-ten divisor | divide by 10ᵏ; dedicated fast path that skips the divide kernel. |
-| MIX | financial mix | mixed, realistic financial operand stream (P-fin), not a single path. |
+| MIX | financial mix | add/sub, realistic financial operand stream (P-fin): log-uniform ≤ 19-digit operands, ~15/16 positive, ~75% sharing one currency-scale quantum (qExp ∈ {0, −2, −4, −6}); spans SQ/NQ rather than a single path. |
 
 *Realistic financial mix (P-fin) — M3 Pro (arm64):*
 
