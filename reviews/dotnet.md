@@ -8,10 +8,10 @@ heading: ".NET — System.Numerics.Decimal128"
 
 A pre-release review series tracking **`System.Numerics.Decimal128`**, the
 128-bit decimal floating-point type Microsoft plans to introduce in .NET 11,
-targeted Nov 2026. One
-installment is published for each preview and release candidate through GA, and
-the series continues into subsequent .NET versions — each edition run through the
-same standards-anchored harness so the type can be watched as it converges.
+targeted Nov 2026. One installment is published for each preview and release
+candidate through GA. 
+Each edition run through the same standards-anchored harness so the 
+type can be watched as it converges.
 
 New here? The full method and motivation live on the
 [Reviews home](../reviews.html): an independent decimal128 specialist, unaffiliated
