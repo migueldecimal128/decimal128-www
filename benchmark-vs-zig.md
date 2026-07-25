@@ -47,14 +47,14 @@ The headline: one realistic 64-bit financial operation mix — a `MIX` add/sub s
 
 | port | op | cat | profile | arch | mode | ns | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| zig | add | MIX | P-fin | x86_64 | thru | 10.51 | libbid | 32.11 | **3.06×** | xRzgsw2 |  |
-| zig | sub | MIX | P-fin | x86_64 | thru | 8.13 | libbid | 36.74 | **4.52×** | xRzgsw2 |  |
-| zig | mul | CP | P-fin | x86_64 | thru | 5.52 | libbid | 46.14 | **8.36×** | xRzgsw2 |  |
-| zig | mul | WP | P-fin | x86_64 | thru | 30.27 | libbid | 60.57 | **2.00×** | xRzgsw2 |  |
-| zig | div | CD | P-fin | x86_64 | thru | 68.19 | libbid | 78.27 | **1.15×** | xRzgsw2 |  |
-| zig | div | WD | P-fin | x86_64 | thru | 93.67 | libbid | 82.95 | **0.89×** | xRzgsw2 |  |
-| zig | div | ET | P-fin | x86_64 | thru | 21.12 | libbid | 19.44 | **0.92×** | xRzgsw2 |  |
-| zig | div | PT | P-fin | x86_64 | thru | 11.82 | libbid | 19.26 | **1.63×** | xRzgsw2 |  |
+| zig | add | MIX | P-fin | x86_64 | thru | 9.94 | libbid | 28.09 | **2.83×** | xRzgsw2 |  |
+| zig | sub | MIX | P-fin | x86_64 | thru | 7.67 | libbid | 29.12 | **3.80×** | xRzgsw2 |  |
+| zig | mul | CP | P-fin | x86_64 | thru | 5.25 | libbid | 44.34 | **8.45×** | xRzgsw2 |  |
+| zig | mul | WP | P-fin | x86_64 | thru | 29.29 | libbid | 58.84 | **2.01×** | xRzgsw2 |  |
+| zig | div | CD | P-fin | x86_64 | thru | 65.19 | libbid | 73.35 | **1.13×** | xRzgsw2 |  |
+| zig | div | WD | P-fin | x86_64 | thru | 90.38 | libbid | 79.45 | **0.88×** | xRzgsw2 |  |
+| zig | div | ET | P-fin | x86_64 | thru | 20.19 | libbid | 18.93 | **0.94×** | xRzgsw2 |  |
+| zig | div | PT | P-fin | x86_64 | thru | 11.71 | libbid | 18.69 | **1.60×** | xRzgsw2 |  |
 
 <!-- END GENERATED pfin-rel-zig-x86 -->
 
@@ -82,11 +82,11 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| zig | add | SQ | P-gen | x86_64 | thru | 9.69 | libbid | 30.55 | **3.15×** | xRzgsw2 |  |
-| zig | add | NQ | P-gen | x86_64 | thru | 14.88 | libbid | 32.21 | **2.16×** | xRzgsw2 |  |
-| zig | add | MQ | P-gen | x86_64 | thru | 19.92 | libbid | 31.68 | **1.59×** | xRzgsw2 |  |
-| zig | add | OQ | P-gen | x86_64 | thru | 34.87 | libbid | 47.35 | **1.36×** | xRzgsw2 |  |
-| zig | add | FQ | P-gen | x86_64 | thru | 20.60 | libbid | 30.07 | **1.46×** | xRzgsw2 |  |
+| zig | add | SQ | P-gen | x86_64 | thru | 8.98 | libbid | 30.49 | **3.40×** | xRzgsw2 |  |
+| zig | add | NQ | P-gen | x86_64 | thru | 14.49 | libbid | 32.84 | **2.27×** | xRzgsw2 |  |
+| zig | add | MQ | P-gen | x86_64 | thru | 19.18 | libbid | 31.94 | **1.67×** | xRzgsw2 |  |
+| zig | add | OQ | P-gen | x86_64 | thru | 33.43 | libbid | 49.07 | **1.47×** | xRzgsw2 |  |
+| zig | add | FQ | P-gen | x86_64 | thru | 19.73 | libbid | 31.26 | **1.58×** | xRzgsw2 |  |
 
 <!-- END GENERATED add-rel-zig-x86 -->
 
@@ -114,11 +114,11 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| zig | sub | SQ | P-gen | x86_64 | thru | 6.02 | libbid | 35.44 | **5.89×** | xRzgsw2 |  |
-| zig | sub | NQ | P-gen | x86_64 | thru | 16.04 | libbid | 37.04 | **2.31×** | xRzgsw2 |  |
-| zig | sub | MQ | P-gen | x86_64 | thru | 22.06 | libbid | 35.97 | **1.63×** | xRzgsw2 |  |
-| zig | sub | OQ | P-gen | x86_64 | thru | 37.20 | libbid | 51.86 | **1.39×** | xRzgsw2 |  |
-| zig | sub | FQ | P-gen | x86_64 | thru | 23.34 | libbid | 34.95 | **1.50×** | xRzgsw2 |  |
+| zig | sub | SQ | P-gen | x86_64 | thru | 5.79 | libbid | 35.60 | **6.15×** | xRzgsw2 |  |
+| zig | sub | NQ | P-gen | x86_64 | thru | 15.45 | libbid | 36.06 | **2.33×** | xRzgsw2 |  |
+| zig | sub | MQ | P-gen | x86_64 | thru | 20.43 | libbid | 34.36 | **1.68×** | xRzgsw2 |  |
+| zig | sub | OQ | P-gen | x86_64 | thru | 34.81 | libbid | 50.67 | **1.46×** | xRzgsw2 |  |
+| zig | sub | FQ | P-gen | x86_64 | thru | 22.12 | libbid | 33.98 | **1.54×** | xRzgsw2 |  |
 
 <!-- END GENERATED sub-rel-zig-x86 -->
 
@@ -144,9 +144,9 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| zig | mul | CP | P-gen | x86_64 | thru | 6.14 | libbid | 46.33 | **7.55×** | xRzgsw2 |  |
-| zig | mul | WP | P-gen | x86_64 | thru | 29.31 | libbid | 67.28 | **2.30×** | xRzgsw2 |  |
-| zig | mul | XP | P-gen | x86_64 | thru | 43.85 | libbid | 95.35 | **2.17×** | xRzgsw2 |  |
+| zig | mul | CP | P-gen | x86_64 | thru | 5.97 | libbid | 46.30 | **7.76×** | xRzgsw2 |  |
+| zig | mul | WP | P-gen | x86_64 | thru | 28.44 | libbid | 64.78 | **2.28×** | xRzgsw2 |  |
+| zig | mul | XP | P-gen | x86_64 | thru | 41.90 | libbid | 93.04 | **2.22×** | xRzgsw2 |  |
 
 <!-- END GENERATED mul-rel-zig-x86 -->
 
@@ -174,11 +174,11 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| zig | div | CD | P-gen | x86_64 | thru | 72.08 | libbid | 82.56 | **1.15×** | xRzgsw2 |  |
-| zig | div | WD | P-gen | x86_64 | thru | 91.94 | libbid | 87.22 | **0.95×** | xRzgsw2 |  |
-| zig | div | XD | P-gen | x86_64 | thru | 77.11 | libbid | 86.84 | **1.13×** | xRzgsw2 |  |
-| zig | div | ET | P-gen | x86_64 | thru | 33.29 | libbid | 30.95 | **0.93×** | xRzgsw2 |  |
-| zig | div | PT | P-gen | x86_64 | thru | 11.84 | libbid | 31.12 | **2.63×** | xRzgsw2 |  |
+| zig | div | CD | P-gen | x86_64 | thru | 67.93 | libbid | 80.72 | **1.19×** | xRzgsw2 |  |
+| zig | div | WD | P-gen | x86_64 | thru | 88.34 | libbid | 80.21 | **0.91×** | xRzgsw2 |  |
+| zig | div | XD | P-gen | x86_64 | thru | 77.54 | libbid | 81.28 | **1.05×** | xRzgsw2 |  |
+| zig | div | ET | P-gen | x86_64 | thru | 31.58 | libbid | 29.08 | **0.92×** | xRzgsw2 |  |
+| zig | div | PT | P-gen | x86_64 | thru | 11.51 | libbid | 29.57 | **2.57×** | xRzgsw2 |  |
 
 <!-- END GENERATED div-rel-zig-x86 -->
 
@@ -203,8 +203,8 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| zig | fma | FN | FMA | x86_64 | thru | 116.12 | - | - | - | xRzgsw2 |  |
-| zig | fma | FF | FMA | x86_64 | thru | 83.12 | - | - | - | xRzgsw2 |  |
+| zig | fma | FN | FMA | x86_64 | thru | 112.17 | - | - | - | xRzgsw2 |  |
+| zig | fma | FF | FMA | x86_64 | thru | 80.35 | - | - | - | xRzgsw2 |  |
 
 <!-- END GENERATED fma-rel-zig-x86 -->
 

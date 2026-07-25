@@ -47,14 +47,14 @@ The headline: one realistic 64-bit financial operation mix — a `MIX` add/sub s
 
 | port | op | cat | profile | arch | mode | ns | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| python | add | MIX | P-fin | x86_64 | thru | 49.58 | decimal.Decimal | 128.19 | **2.59×** | xRpysw2 | compact idiom peer |
-| python | sub | MIX | P-fin | x86_64 | thru | 46.44 | decimal.Decimal | 127.06 | **2.74×** | xRpysw2 | compact idiom peer |
-| python | mul | CP | P-fin | x86_64 | thru | 39.38 | decimal.Decimal | 116.11 | **2.95×** | xRpysw2 | compact idiom peer |
-| python | mul | WP | P-fin | x86_64 | thru | 77.05 | decimal.Decimal | 136.59 | **1.77×** | xRpysw2 | compact idiom peer |
-| python | div | CD | P-fin | x86_64 | thru | 114.36 | decimal.Decimal | 210.13 | **1.84×** | xRpysw2 | compact idiom peer |
-| python | div | WD | P-fin | x86_64 | thru | 128.60 | decimal.Decimal | 232.63 | **1.81×** | xRpysw2 | compact idiom peer |
-| python | div | ET | P-fin | x86_64 | thru | 55.28 | decimal.Decimal | 189.98 | **3.44×** | xRpysw2 | compact idiom peer |
-| python | div | PT | P-fin | x86_64 | thru | 44.19 | decimal.Decimal | 182.85 | **4.14×** | xRpysw2 | compact idiom peer |
+| python | add | MIX | P-fin | x86_64 | thru | 44.94 | decimal.Decimal | 126.47 | **2.81×** | xRpysw2 | compact idiom peer |
+| python | sub | MIX | P-fin | x86_64 | thru | 45.81 | decimal.Decimal | 126.35 | **2.76×** | xRpysw2 | compact idiom peer |
+| python | mul | CP | P-fin | x86_64 | thru | 39.10 | decimal.Decimal | 115.66 | **2.96×** | xRpysw2 | compact idiom peer |
+| python | mul | WP | P-fin | x86_64 | thru | 76.91 | decimal.Decimal | 132.73 | **1.73×** | xRpysw2 | compact idiom peer |
+| python | div | CD | P-fin | x86_64 | thru | 114.23 | decimal.Decimal | 208.07 | **1.82×** | xRpysw2 | compact idiom peer |
+| python | div | WD | P-fin | x86_64 | thru | 124.50 | decimal.Decimal | 228.09 | **1.83×** | xRpysw2 | compact idiom peer |
+| python | div | ET | P-fin | x86_64 | thru | 54.29 | decimal.Decimal | 186.32 | **3.43×** | xRpysw2 | compact idiom peer |
+| python | div | PT | P-fin | x86_64 | thru | 43.37 | decimal.Decimal | 177.04 | **4.08×** | xRpysw2 | compact idiom peer |
 
 <!-- END GENERATED pfin-rel-python-x86 -->
 
@@ -82,11 +82,11 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| python | add | SQ | P-gen | x86_64 | thru | 46.78 | decimal.Decimal | 124.88 | **2.67×** | xRpysw2 | compact idiom peer |
-| python | add | NQ | P-gen | x86_64 | thru | 49.80 | decimal.Decimal | 144.98 | **2.91×** | xRpysw2 | compact idiom peer |
-| python | add | MQ | P-gen | x86_64 | thru | 64.67 | decimal.Decimal | 148.85 | **2.30×** | xRpysw2 | compact idiom peer |
-| python | add | OQ | P-gen | x86_64 | thru | 74.68 | decimal.Decimal | 170.91 | **2.29×** | xRpysw2 | compact idiom peer |
-| python | add | FQ | P-gen | x86_64 | thru | 65.32 | decimal.Decimal | 167.26 | **2.56×** | xRpysw2 | compact idiom peer |
+| python | add | SQ | P-gen | x86_64 | thru | 43.04 | decimal.Decimal | 120.72 | **2.80×** | xRpysw2 | compact idiom peer |
+| python | add | NQ | P-gen | x86_64 | thru | 45.08 | decimal.Decimal | 138.56 | **3.07×** | xRpysw2 | compact idiom peer |
+| python | add | MQ | P-gen | x86_64 | thru | 54.57 | decimal.Decimal | 141.12 | **2.59×** | xRpysw2 | compact idiom peer |
+| python | add | OQ | P-gen | x86_64 | thru | 70.69 | decimal.Decimal | 169.21 | **2.39×** | xRpysw2 | compact idiom peer |
+| python | add | FQ | P-gen | x86_64 | thru | 61.73 | decimal.Decimal | 161.05 | **2.61×** | xRpysw2 | compact idiom peer |
 
 <!-- END GENERATED add-rel-python-x86 -->
 
@@ -114,11 +114,11 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| python | sub | SQ | P-gen | x86_64 | thru | 43.28 | decimal.Decimal | 125.79 | **2.91×** | xRpysw2 | compact idiom peer |
-| python | sub | NQ | P-gen | x86_64 | thru | 49.32 | decimal.Decimal | 145.23 | **2.94×** | xRpysw2 | compact idiom peer |
-| python | sub | MQ | P-gen | x86_64 | thru | 65.98 | decimal.Decimal | 147.79 | **2.24×** | xRpysw2 | compact idiom peer |
-| python | sub | OQ | P-gen | x86_64 | thru | 74.12 | decimal.Decimal | 172.99 | **2.33×** | xRpysw2 | compact idiom peer |
-| python | sub | FQ | P-gen | x86_64 | thru | 66.69 | decimal.Decimal | 167.99 | **2.52×** | xRpysw2 | compact idiom peer |
+| python | sub | SQ | P-gen | x86_64 | thru | 40.72 | decimal.Decimal | 118.37 | **2.91×** | xRpysw2 | compact idiom peer |
+| python | sub | NQ | P-gen | x86_64 | thru | 46.69 | decimal.Decimal | 137.99 | **2.96×** | xRpysw2 | compact idiom peer |
+| python | sub | MQ | P-gen | x86_64 | thru | 56.16 | decimal.Decimal | 139.95 | **2.49×** | xRpysw2 | compact idiom peer |
+| python | sub | OQ | P-gen | x86_64 | thru | 72.58 | decimal.Decimal | 163.88 | **2.26×** | xRpysw2 | compact idiom peer |
+| python | sub | FQ | P-gen | x86_64 | thru | 62.54 | decimal.Decimal | 164.32 | **2.63×** | xRpysw2 | compact idiom peer |
 
 <!-- END GENERATED sub-rel-python-x86 -->
 
@@ -144,9 +144,9 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| python | mul | CP | P-gen | x86_64 | thru | 42.50 | decimal.Decimal | 118.09 | **2.78×** | xRpysw2 | compact idiom peer |
-| python | mul | WP | P-gen | x86_64 | thru | 76.97 | decimal.Decimal | 143.11 | **1.86×** | xRpysw2 | compact idiom peer |
-| python | mul | XP | P-gen | x86_64 | thru | 90.70 | decimal.Decimal | 162.30 | **1.79×** | xRpysw2 | compact idiom peer |
+| python | mul | CP | P-gen | x86_64 | thru | 40.26 | decimal.Decimal | 112.84 | **2.80×** | xRpysw2 | compact idiom peer |
+| python | mul | WP | P-gen | x86_64 | thru | 74.54 | decimal.Decimal | 137.20 | **1.84×** | xRpysw2 | compact idiom peer |
+| python | mul | XP | P-gen | x86_64 | thru | 89.62 | decimal.Decimal | 156.37 | **1.74×** | xRpysw2 | compact idiom peer |
 
 <!-- END GENERATED mul-rel-python-x86 -->
 
@@ -174,11 +174,11 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| python | div | CD | P-gen | x86_64 | thru | 115.87 | decimal.Decimal | 218.17 | **1.88×** | xRpysw2 | compact idiom peer |
-| python | div | WD | P-gen | x86_64 | thru | 126.30 | decimal.Decimal | 231.83 | **1.84×** | xRpysw2 | compact idiom peer |
-| python | div | XD | P-gen | x86_64 | thru | 119.02 | decimal.Decimal | 350.89 | **2.95×** | xRpysw2 | compact idiom peer |
-| python | div | ET | P-gen | x86_64 | thru | 65.54 | decimal.Decimal | 204.19 | **3.12×** | xRpysw2 | compact idiom peer |
-| python | div | PT | P-gen | x86_64 | thru | 44.33 | decimal.Decimal | 187.39 | **4.23×** | xRpysw2 | compact idiom peer |
+| python | div | CD | P-gen | x86_64 | thru | 113.16 | decimal.Decimal | 207.04 | **1.83×** | xRpysw2 | compact idiom peer |
+| python | div | WD | P-gen | x86_64 | thru | 122.92 | decimal.Decimal | 224.06 | **1.82×** | xRpysw2 | compact idiom peer |
+| python | div | XD | P-gen | x86_64 | thru | 113.20 | decimal.Decimal | 330.52 | **2.92×** | xRpysw2 | compact idiom peer |
+| python | div | ET | P-gen | x86_64 | thru | 62.56 | decimal.Decimal | 195.34 | **3.12×** | xRpysw2 | compact idiom peer |
+| python | div | PT | P-gen | x86_64 | thru | 42.30 | decimal.Decimal | 177.91 | **4.21×** | xRpysw2 | compact idiom peer |
 
 <!-- END GENERATED div-rel-python-x86 -->
 
@@ -203,8 +203,8 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| python | fma | FN | FMA | x86_64 | thru | 229.88 | decimal.Decimal | 290.52 | **1.26×** | xRpysw2 | compact idiom peer |
-| python | fma | FF | FMA | x86_64 | thru | 190.33 | decimal.Decimal | 337.71 | **1.77×** | xRpysw2 | compact idiom peer |
+| python | fma | FN | FMA | x86_64 | thru | 218.62 | decimal.Decimal | 279.68 | **1.28×** | xRpysw2 | compact idiom peer |
+| python | fma | FF | FMA | x86_64 | thru | 178.93 | decimal.Decimal | 319.51 | **1.79×** | xRpysw2 | compact idiom peer |
 
 <!-- END GENERATED fma-rel-python-x86 -->
 

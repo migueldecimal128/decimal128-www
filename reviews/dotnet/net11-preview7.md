@@ -343,14 +343,14 @@ reference. `System.Decimal` (28 digits) is blank on any band its range cannot re
 
 | op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
 |---|---|---:|---:|---:|---:|
-| add | MIX | 16.77 | 11.09 | 2.66 | 2.86 |
-| sub | MIX | 17.36 | 11.65 | 3.21 | 2.96 |
-| mul | CP | 11.01 | 23.54 | 1.87 | — |
-| mul | WP | 51.33 | 32.10 | 23.86 | — |
-| div | CD | 151.29 | 37.72 | 26.08 | 11.16 |
-| div | WD | 188.46 | 39.06 | 45.99 | 27.22 |
-| div | ET | 235.56 | 5.96 | 14.15 | 5.16 |
-| div | PT | 240.20 | 6.06 | 5.22 | 12.34 |
+| add | MIX | 17.07 | 10.75 | 2.69 | 2.79 |
+| sub | MIX | 17.14 | 13.35 | 3.15 | 3.00 |
+| mul | CP | 11.12 | 23.54 | 1.77 | — |
+| mul | WP | 47.54 | 32.43 | 23.87 | — |
+| div | CD | 154.95 | 36.12 | 27.24 | 11.15 |
+| div | WD | 181.82 | 39.16 | 41.73 | 26.96 |
+| div | ET | 237.56 | 6.10 | 14.03 | 5.17 |
+| div | PT | 242.05 | 6.10 | 5.30 | 12.53 |
 
 <!-- END GENERATED net11-pfin-abs -->
 
@@ -360,14 +360,14 @@ reference. `System.Decimal` (28 digits) is blank on any band its range cannot re
 
 | op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
 |---|---|---:|---:|---:|---:|
-| add | MIX | 34.24 | 32.11 | 9.23 | 9.21 |
-| sub | MIX | 38.10 | 36.74 | 12.81 | 10.99 |
-| mul | CP | 39.19 | 46.14 | 5.89 | — |
-| mul | WP | 150.39 | 60.57 | 44.00 | — |
-| div | CD | 427.92 | 78.27 | 100.36 | 53.57 |
-| div | WD | 476.74 | 82.95 | 115.88 | 102.94 |
-| div | ET | 620.41 | 19.44 | 27.94 | 14.45 |
-| div | PT | 626.14 | 19.26 | 13.45 | 59.99 |
+| add | MIX | 33.88 | 28.09 | 8.73 | 8.84 |
+| sub | MIX | 37.11 | 29.12 | 12.92 | 10.74 |
+| mul | CP | 39.88 | 44.34 | 5.81 | — |
+| mul | WP | 125.92 | 58.84 | 46.74 | — |
+| div | CD | 425.02 | 73.35 | 99.01 | 52.53 |
+| div | WD | 473.24 | 79.45 | 117.28 | 101.76 |
+| div | ET | 619.39 | 18.93 | 27.36 | 15.59 |
+| div | PT | 629.83 | 18.69 | 11.93 | 59.05 |
 
 <!-- END GENERATED net11-pfin-abs-x86 -->
 
@@ -377,11 +377,11 @@ reference. `System.Decimal` (28 digits) is blank on any band its range cannot re
 
 | op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
 |---|---|---:|---:|---:|---:|
-| add | SQ | 19.35 | 8.63 | 5.97 | 2.49 |
-| add | NQ | 19.49 | 8.34 | 4.92 | 4.11 |
-| add | MQ | 20.15 | 8.63 | 15.76 | 4.18 |
-| add | OQ | 142.85 | 13.40 | 39.40 | — |
-| add | FQ | 1245.45 | 9.21 | 34.98 | — |
+| add | SQ | 19.82 | 8.44 | 6.02 | 2.52 |
+| add | NQ | 18.97 | 9.37 | 4.91 | 4.15 |
+| add | MQ | 19.64 | 8.94 | 15.97 | 3.99 |
+| add | OQ | 143.67 | 14.26 | 39.53 | — |
+| add | FQ | 1251.36 | 9.34 | 34.82 | — |
 
 <!-- END GENERATED net11-add-abs -->
 
@@ -391,11 +391,11 @@ reference. `System.Decimal` (28 digits) is blank on any band its range cannot re
 
 | op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
 |---|---|---:|---:|---:|---:|
-| add | SQ | 64.42 | 30.55 | 16.85 | 11.85 |
-| add | NQ | 67.34 | 32.21 | 16.65 | 16.67 |
-| add | MQ | 67.92 | 31.68 | 42.58 | 17.57 |
-| add | OQ | 353.25 | 47.35 | 84.60 | — |
-| add | FQ | 3162.13 | 30.07 | 65.20 | — |
+| add | SQ | 61.70 | 30.49 | 15.32 | 11.86 |
+| add | NQ | 65.57 | 32.84 | 17.57 | 16.64 |
+| add | MQ | 65.65 | 31.94 | 42.15 | 17.36 |
+| add | OQ | 340.59 | 49.07 | 82.23 | — |
+| add | FQ | 3044.09 | 31.26 | 62.37 | — |
 
 <!-- END GENERATED net11-add-abs-x86 -->
 
@@ -405,11 +405,11 @@ reference. `System.Decimal` (28 digits) is blank on any band its range cannot re
 
 | op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
 |---|---|---:|---:|---:|---:|
-| sub | SQ | 19.50 | 9.06 | 9.06 | 2.66 |
-| sub | NQ | 19.21 | 10.86 | 5.83 | 4.16 |
-| sub | MQ | 19.17 | 8.85 | 14.81 | 4.11 |
-| sub | OQ | 142.13 | 16.89 | 39.87 | — |
-| sub | FQ | 1244.61 | 10.25 | 32.31 | — |
+| sub | SQ | 19.58 | 8.66 | 9.15 | 2.56 |
+| sub | NQ | 19.09 | 9.93 | 5.78 | 4.15 |
+| sub | MQ | 19.27 | 9.08 | 14.98 | 4.08 |
+| sub | OQ | 143.85 | 14.91 | 39.88 | — |
+| sub | FQ | 1251.64 | 10.50 | 33.74 | — |
 
 <!-- END GENERATED net11-sub-abs -->
 
@@ -419,11 +419,11 @@ reference. `System.Decimal` (28 digits) is blank on any band its range cannot re
 
 | op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
 |---|---|---:|---:|---:|---:|
-| sub | SQ | 64.83 | 35.44 | 19.32 | 12.03 |
-| sub | NQ | 66.44 | 37.04 | 19.00 | 16.70 |
-| sub | MQ | 68.44 | 35.97 | 41.83 | 16.02 |
-| sub | OQ | 356.31 | 51.86 | 85.34 | — |
-| sub | FQ | 3150.05 | 34.95 | 63.64 | — |
+| sub | SQ | 62.10 | 35.60 | 18.83 | 11.48 |
+| sub | NQ | 64.81 | 36.06 | 18.34 | 16.47 |
+| sub | MQ | 66.56 | 34.36 | 41.39 | 15.64 |
+| sub | OQ | 358.81 | 50.67 | 81.43 | — |
+| sub | FQ | 3094.16 | 33.98 | 64.33 | — |
 
 <!-- END GENERATED net11-sub-abs-x86 -->
 
@@ -433,9 +433,9 @@ reference. `System.Decimal` (28 digits) is blank on any band its range cannot re
 
 | op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
 |---|---|---:|---:|---:|---:|
-| mul | CP | 10.93 | 23.10 | 2.24 | — |
-| mul | WP | 47.85 | 33.19 | 22.03 | — |
-| mul | XP | 1217.57 | 42.29 | 50.99 | — |
+| mul | CP | 10.95 | 22.98 | 2.18 | — |
+| mul | WP | 54.22 | 33.15 | 22.83 | — |
+| mul | XP | 1222.02 | 42.97 | 52.39 | — |
 
 <!-- END GENERATED net11-mul-abs -->
 
@@ -445,9 +445,9 @@ reference. `System.Decimal` (28 digits) is blank on any band its range cannot re
 
 | op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
 |---|---|---:|---:|---:|---:|
-| mul | CP | 41.41 | 46.33 | 7.59 | — |
-| mul | WP | 130.07 | 67.28 | 52.80 | — |
-| mul | XP | 2986.32 | 95.35 | 84.97 | — |
+| mul | CP | 37.33 | 46.30 | 7.38 | — |
+| mul | WP | 121.90 | 64.78 | 51.32 | — |
+| mul | XP | 2968.36 | 93.04 | 82.92 | — |
 
 <!-- END GENERATED net11-mul-abs-x86 -->
 
@@ -457,11 +457,11 @@ reference. `System.Decimal` (28 digits) is blank on any band its range cannot re
 
 | op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
 |---|---|---:|---:|---:|---:|
-| div | CD | 118.44 | 36.52 | 29.33 | — |
-| div | WD | 157.80 | 37.53 | 48.07 | — |
-| div | XD | 560.19 | 39.01 | 48.34 | — |
-| div | ET | 152.48 | 10.87 | 19.17 | — |
-| div | PT | 148.50 | 10.76 | 10.98 | — |
+| div | CD | 113.46 | 37.45 | 29.45 | — |
+| div | WD | 158.00 | 37.57 | 47.00 | — |
+| div | XD | 561.63 | 39.17 | 49.02 | — |
+| div | ET | 153.02 | 11.67 | 19.14 | — |
+| div | PT | 151.10 | 11.43 | 11.67 | — |
 
 <!-- END GENERATED net11-div-abs -->
 
@@ -471,11 +471,11 @@ reference. `System.Decimal` (28 digits) is blank on any band its range cannot re
 
 | op | cat | Decimal128 (.NET 11) | libbid | decimal128-csharp | System.Decimal |
 |---|---|---:|---:|---:|---:|
-| div | CD | 379.53 | 82.56 | 104.79 | — |
-| div | WD | 442.40 | 87.22 | 116.41 | — |
-| div | XD | 1189.40 | 86.84 | 115.59 | — |
-| div | ET | 540.04 | 30.95 | 52.30 | — |
-| div | PT | 525.23 | 31.12 | 11.85 | — |
+| div | CD | 361.56 | 80.72 | 101.57 | — |
+| div | WD | 428.13 | 80.21 | 110.76 | — |
+| div | XD | 1160.87 | 81.28 | 112.82 | — |
+| div | ET | 516.67 | 29.08 | 52.27 | — |
+| div | PT | 501.95 | 29.57 | 11.28 | — |
 
 <!-- END GENERATED net11-div-abs-x86 -->
 

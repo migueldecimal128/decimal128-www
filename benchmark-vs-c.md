@@ -65,30 +65,30 @@ The headline: one realistic 64-bit financial operation mix — a `MIX` add/sub s
 
 | port | op | cat | profile | arch | mode | ns | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| c | add | MIX | P-fin | x86_64 | thru | 10.44 | libbid | 32.11 | **3.08×** | xRc2 |  |
-| c | sub | MIX | P-fin | x86_64 | thru | 6.72 | libbid | 36.74 | **5.47×** | xRc2 |  |
-| c | mul | CP | P-fin | x86_64 | thru | 2.55 | libbid | 46.14 | **18.09×** | xRc2 |  |
-| c | mul | WP | P-fin | x86_64 | thru | 42.64 | libbid | 60.57 | **1.42×** | xRc2 |  |
-| c | div | CD | P-fin | x86_64 | thru | 88.20 | libbid | 78.27 | **0.89×** | xRc2 |  |
-| c | div | WD | P-fin | x86_64 | thru | 102.49 | libbid | 82.95 | **0.81×** | xRc2 |  |
-| c | div | ET | P-fin | x86_64 | thru | 18.48 | libbid | 19.44 | **1.05×** | xRc2 |  |
-| c | div | PT | P-fin | x86_64 | thru | 10.11 | libbid | 19.26 | **1.91×** | xRc2 |  |
-| c | add | MIX | P-fin | x86_64 | thru | 10.44 | decQuad | 56.19 | **5.38×** | xRc2 |  |
-| c | sub | MIX | P-fin | x86_64 | thru | 6.72 | decQuad | 63.02 | **9.38×** | xRc2 |  |
-| c | mul | CP | P-fin | x86_64 | thru | 2.55 | decQuad | 58.79 | **23.05×** | xRc2 |  |
-| c | mul | WP | P-fin | x86_64 | thru | 42.64 | decQuad | 69.11 | **1.62×** | xRc2 |  |
-| c | div | CD | P-fin | x86_64 | thru | 88.20 | decQuad | 136.82 | **1.55×** | xRc2 |  |
-| c | div | WD | P-fin | x86_64 | thru | 102.49 | decQuad | 241.68 | **2.36×** | xRc2 |  |
-| c | div | ET | P-fin | x86_64 | thru | 18.48 | decQuad | 76.25 | **4.13×** | xRc2 |  |
-| c | div | PT | P-fin | x86_64 | thru | 10.11 | decQuad | 69.21 | **6.85×** | xRc2 |  |
-| c | add | MIX | P-fin | x86_64 | thru | 10.44 | mpdecimal | 39.01 | **3.74×** | xRc2 |  |
-| c | sub | MIX | P-fin | x86_64 | thru | 6.72 | mpdecimal | 38.11 | **5.67×** | xRc2 |  |
-| c | mul | CP | P-fin | x86_64 | thru | 2.55 | mpdecimal | 32.79 | **12.86×** | xRc2 |  |
-| c | mul | WP | P-fin | x86_64 | thru | 42.64 | mpdecimal | 43.78 | **1.03×** | xRc2 |  |
-| c | div | CD | P-fin | x86_64 | thru | 88.20 | mpdecimal | 155.55 | **1.76×** | xRc2 |  |
-| c | div | WD | P-fin | x86_64 | thru | 102.49 | mpdecimal | 278.12 | **2.71×** | xRc2 |  |
-| c | div | ET | P-fin | x86_64 | thru | 18.48 | mpdecimal | 137.16 | **7.42×** | xRc2 |  |
-| c | div | PT | P-fin | x86_64 | thru | 10.11 | mpdecimal | 91.16 | **9.02×** | xRc2 |  |
+| c | add | MIX | P-fin | x86_64 | thru | 5.63 | libbid | 28.09 | **4.99×** | xRc2 |  |
+| c | sub | MIX | P-fin | x86_64 | thru | 5.70 | libbid | 29.12 | **5.11×** | xRc2 |  |
+| c | mul | CP | P-fin | x86_64 | thru | 2.42 | libbid | 44.34 | **18.32×** | xRc2 |  |
+| c | mul | WP | P-fin | x86_64 | thru | 40.91 | libbid | 58.84 | **1.44×** | xRc2 |  |
+| c | div | CD | P-fin | x86_64 | thru | 72.47 | libbid | 73.35 | **1.01×** | xRc2 |  |
+| c | div | WD | P-fin | x86_64 | thru | 99.28 | libbid | 79.45 | **0.80×** | xRc2 |  |
+| c | div | ET | P-fin | x86_64 | thru | 18.22 | libbid | 18.93 | **1.04×** | xRc2 |  |
+| c | div | PT | P-fin | x86_64 | thru | 9.94 | libbid | 18.69 | **1.88×** | xRc2 |  |
+| c | add | MIX | P-fin | x86_64 | thru | 5.63 | decQuad | 32.63 | **5.80×** | xRc2 |  |
+| c | sub | MIX | P-fin | x86_64 | thru | 5.70 | decQuad | 77.41 | **13.58×** | xRc2 |  |
+| c | mul | CP | P-fin | x86_64 | thru | 2.42 | decQuad | 55.85 | **23.08×** | xRc2 |  |
+| c | mul | WP | P-fin | x86_64 | thru | 40.91 | decQuad | 65.79 | **1.61×** | xRc2 |  |
+| c | div | CD | P-fin | x86_64 | thru | 72.47 | decQuad | 135.69 | **1.87×** | xRc2 |  |
+| c | div | WD | P-fin | x86_64 | thru | 99.28 | decQuad | 233.68 | **2.35×** | xRc2 |  |
+| c | div | ET | P-fin | x86_64 | thru | 18.22 | decQuad | 73.36 | **4.03×** | xRc2 |  |
+| c | div | PT | P-fin | x86_64 | thru | 9.94 | decQuad | 65.67 | **6.61×** | xRc2 |  |
+| c | add | MIX | P-fin | x86_64 | thru | 5.63 | mpdecimal | 33.07 | **5.87×** | xRc2 |  |
+| c | sub | MIX | P-fin | x86_64 | thru | 5.70 | mpdecimal | 36.50 | **6.40×** | xRc2 |  |
+| c | mul | CP | P-fin | x86_64 | thru | 2.42 | mpdecimal | 30.93 | **12.78×** | xRc2 |  |
+| c | mul | WP | P-fin | x86_64 | thru | 40.91 | mpdecimal | 41.63 | **1.02×** | xRc2 |  |
+| c | div | CD | P-fin | x86_64 | thru | 72.47 | mpdecimal | 153.54 | **2.12×** | xRc2 |  |
+| c | div | WD | P-fin | x86_64 | thru | 99.28 | mpdecimal | 271.44 | **2.73×** | xRc2 |  |
+| c | div | ET | P-fin | x86_64 | thru | 18.22 | mpdecimal | 134.79 | **7.40×** | xRc2 |  |
+| c | div | PT | P-fin | x86_64 | thru | 9.94 | mpdecimal | 88.80 | **8.93×** | xRc2 |  |
 
 <!-- END GENERATED pfin-rel-c-x86 -->
 
@@ -126,21 +126,21 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| c | add | SQ | P-gen | x86_64 | thru | 8.99 | libbid | 30.55 | **3.40×** | xRc2 |  |
-| c | add | NQ | P-gen | x86_64 | thru | 13.01 | libbid | 32.21 | **2.48×** | xRc2 |  |
-| c | add | MQ | P-gen | x86_64 | thru | 24.99 | libbid | 31.68 | **1.27×** | xRc2 |  |
-| c | add | OQ | P-gen | x86_64 | thru | 46.65 | libbid | 47.35 | **1.02×** | xRc2 |  |
-| c | add | FQ | P-gen | x86_64 | thru | 32.83 | libbid | 30.07 | **0.92×** | xRc2 |  |
-| c | add | SQ | P-gen | x86_64 | thru | 8.99 | decQuad | 52.08 | **5.79×** | xRc2 |  |
-| c | add | NQ | P-gen | x86_64 | thru | 13.01 | decQuad | 105.97 | **8.15×** | xRc2 |  |
-| c | add | MQ | P-gen | x86_64 | thru | 24.99 | decQuad | 78.42 | **3.14×** | xRc2 |  |
-| c | add | OQ | P-gen | x86_64 | thru | 46.65 | decQuad | 88.54 | **1.90×** | xRc2 |  |
-| c | add | FQ | P-gen | x86_64 | thru | 32.83 | decQuad | 71.69 | **2.18×** | xRc2 |  |
-| c | add | SQ | P-gen | x86_64 | thru | 8.99 | mpdecimal | 37.15 | **4.13×** | xRc2 |  |
-| c | add | NQ | P-gen | x86_64 | thru | 13.01 | mpdecimal | 63.41 | **4.87×** | xRc2 |  |
-| c | add | MQ | P-gen | x86_64 | thru | 24.99 | mpdecimal | 54.74 | **2.19×** | xRc2 |  |
-| c | add | OQ | P-gen | x86_64 | thru | 46.65 | mpdecimal | 128.03 | **2.74×** | xRc2 |  |
-| c | add | FQ | P-gen | x86_64 | thru | 32.83 | mpdecimal | 88.62 | **2.70×** | xRc2 |  |
+| c | add | SQ | P-gen | x86_64 | thru | 7.97 | libbid | 30.49 | **3.83×** | xRc2 |  |
+| c | add | NQ | P-gen | x86_64 | thru | 12.22 | libbid | 32.84 | **2.69×** | xRc2 |  |
+| c | add | MQ | P-gen | x86_64 | thru | 23.29 | libbid | 31.94 | **1.37×** | xRc2 |  |
+| c | add | OQ | P-gen | x86_64 | thru | 42.89 | libbid | 49.07 | **1.14×** | xRc2 |  |
+| c | add | FQ | P-gen | x86_64 | thru | 31.37 | libbid | 31.26 | **1.00×** | xRc2 |  |
+| c | add | SQ | P-gen | x86_64 | thru | 7.97 | decQuad | 51.90 | **6.51×** | xRc2 |  |
+| c | add | NQ | P-gen | x86_64 | thru | 12.22 | decQuad | 82.97 | **6.79×** | xRc2 |  |
+| c | add | MQ | P-gen | x86_64 | thru | 23.29 | decQuad | 79.09 | **3.40×** | xRc2 |  |
+| c | add | OQ | P-gen | x86_64 | thru | 42.89 | decQuad | 88.03 | **2.05×** | xRc2 |  |
+| c | add | FQ | P-gen | x86_64 | thru | 31.37 | decQuad | 71.27 | **2.27×** | xRc2 |  |
+| c | add | SQ | P-gen | x86_64 | thru | 7.97 | mpdecimal | 36.43 | **4.57×** | xRc2 |  |
+| c | add | NQ | P-gen | x86_64 | thru | 12.22 | mpdecimal | 56.56 | **4.63×** | xRc2 |  |
+| c | add | MQ | P-gen | x86_64 | thru | 23.29 | mpdecimal | 56.22 | **2.41×** | xRc2 |  |
+| c | add | OQ | P-gen | x86_64 | thru | 42.89 | mpdecimal | 131.21 | **3.06×** | xRc2 |  |
+| c | add | FQ | P-gen | x86_64 | thru | 31.37 | mpdecimal | 88.40 | **2.82×** | xRc2 |  |
 
 <!-- END GENERATED add-rel-c-x86 -->
 
@@ -178,21 +178,21 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| c | sub | SQ | P-gen | x86_64 | thru | 5.38 | libbid | 35.44 | **6.59×** | xRc2 |  |
-| c | sub | NQ | P-gen | x86_64 | thru | 13.42 | libbid | 37.04 | **2.76×** | xRc2 |  |
-| c | sub | MQ | P-gen | x86_64 | thru | 24.60 | libbid | 35.97 | **1.46×** | xRc2 |  |
-| c | sub | OQ | P-gen | x86_64 | thru | 45.68 | libbid | 51.86 | **1.14×** | xRc2 |  |
-| c | sub | FQ | P-gen | x86_64 | thru | 33.35 | libbid | 34.95 | **1.05×** | xRc2 |  |
-| c | sub | SQ | P-gen | x86_64 | thru | 5.38 | decQuad | 58.61 | **10.89×** | xRc2 |  |
-| c | sub | NQ | P-gen | x86_64 | thru | 13.42 | decQuad | 87.22 | **6.50×** | xRc2 |  |
-| c | sub | MQ | P-gen | x86_64 | thru | 24.60 | decQuad | 84.37 | **3.43×** | xRc2 |  |
-| c | sub | OQ | P-gen | x86_64 | thru | 45.68 | decQuad | 93.20 | **2.04×** | xRc2 |  |
-| c | sub | FQ | P-gen | x86_64 | thru | 33.35 | decQuad | 74.36 | **2.23×** | xRc2 |  |
-| c | sub | SQ | P-gen | x86_64 | thru | 5.38 | mpdecimal | 37.38 | **6.95×** | xRc2 |  |
-| c | sub | NQ | P-gen | x86_64 | thru | 13.42 | mpdecimal | 54.46 | **4.06×** | xRc2 |  |
-| c | sub | MQ | P-gen | x86_64 | thru | 24.60 | mpdecimal | 54.08 | **2.20×** | xRc2 |  |
-| c | sub | OQ | P-gen | x86_64 | thru | 45.68 | mpdecimal | 126.94 | **2.78×** | xRc2 |  |
-| c | sub | FQ | P-gen | x86_64 | thru | 33.35 | mpdecimal | 84.08 | **2.52×** | xRc2 |  |
+| c | sub | SQ | P-gen | x86_64 | thru | 5.06 | libbid | 35.60 | **7.04×** | xRc2 |  |
+| c | sub | NQ | P-gen | x86_64 | thru | 13.33 | libbid | 36.06 | **2.71×** | xRc2 |  |
+| c | sub | MQ | P-gen | x86_64 | thru | 23.87 | libbid | 34.36 | **1.44×** | xRc2 |  |
+| c | sub | OQ | P-gen | x86_64 | thru | 43.39 | libbid | 50.67 | **1.17×** | xRc2 |  |
+| c | sub | FQ | P-gen | x86_64 | thru | 31.41 | libbid | 33.98 | **1.08×** | xRc2 |  |
+| c | sub | SQ | P-gen | x86_64 | thru | 5.06 | decQuad | 58.82 | **11.62×** | xRc2 |  |
+| c | sub | NQ | P-gen | x86_64 | thru | 13.33 | decQuad | 84.85 | **6.37×** | xRc2 |  |
+| c | sub | MQ | P-gen | x86_64 | thru | 23.87 | decQuad | 82.42 | **3.45×** | xRc2 |  |
+| c | sub | OQ | P-gen | x86_64 | thru | 43.39 | decQuad | 91.52 | **2.11×** | xRc2 |  |
+| c | sub | FQ | P-gen | x86_64 | thru | 31.41 | decQuad | 73.64 | **2.34×** | xRc2 |  |
+| c | sub | SQ | P-gen | x86_64 | thru | 5.06 | mpdecimal | 35.09 | **6.93×** | xRc2 |  |
+| c | sub | NQ | P-gen | x86_64 | thru | 13.33 | mpdecimal | 52.94 | **3.97×** | xRc2 |  |
+| c | sub | MQ | P-gen | x86_64 | thru | 23.87 | mpdecimal | 54.97 | **2.30×** | xRc2 |  |
+| c | sub | OQ | P-gen | x86_64 | thru | 43.39 | mpdecimal | 124.29 | **2.86×** | xRc2 |  |
+| c | sub | FQ | P-gen | x86_64 | thru | 31.41 | mpdecimal | 83.23 | **2.65×** | xRc2 |  |
 
 <!-- END GENERATED sub-rel-c-x86 -->
 
@@ -224,15 +224,15 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| c | mul | CP | P-gen | x86_64 | thru | 4.39 | libbid | 46.33 | **10.55×** | xRc2 |  |
-| c | mul | WP | P-gen | x86_64 | thru | 42.60 | libbid | 67.28 | **1.58×** | xRc2 |  |
-| c | mul | XP | P-gen | x86_64 | thru | 51.91 | libbid | 95.35 | **1.84×** | xRc2 |  |
-| c | mul | CP | P-gen | x86_64 | thru | 4.39 | decQuad | 57.65 | **13.13×** | xRc2 |  |
-| c | mul | WP | P-gen | x86_64 | thru | 42.60 | decQuad | 70.59 | **1.66×** | xRc2 |  |
-| c | mul | XP | P-gen | x86_64 | thru | 51.91 | decQuad | 87.63 | **1.69×** | xRc2 |  |
-| c | mul | CP | P-gen | x86_64 | thru | 4.39 | mpdecimal | 65.40 | **14.90×** | xRc2 |  |
-| c | mul | WP | P-gen | x86_64 | thru | 42.60 | mpdecimal | 185.44 | **4.35×** | xRc2 |  |
-| c | mul | XP | P-gen | x86_64 | thru | 51.91 | mpdecimal | 229.09 | **4.41×** | xRc2 |  |
+| c | mul | CP | P-gen | x86_64 | thru | 4.39 | libbid | 46.30 | **10.55×** | xRc2 |  |
+| c | mul | WP | P-gen | x86_64 | thru | 40.35 | libbid | 64.78 | **1.61×** | xRc2 |  |
+| c | mul | XP | P-gen | x86_64 | thru | 48.65 | libbid | 93.04 | **1.91×** | xRc2 |  |
+| c | mul | CP | P-gen | x86_64 | thru | 4.39 | decQuad | 56.50 | **12.87×** | xRc2 |  |
+| c | mul | WP | P-gen | x86_64 | thru | 40.35 | decQuad | 68.65 | **1.70×** | xRc2 |  |
+| c | mul | XP | P-gen | x86_64 | thru | 48.65 | decQuad | 84.39 | **1.73×** | xRc2 |  |
+| c | mul | CP | P-gen | x86_64 | thru | 4.39 | mpdecimal | 62.52 | **14.24×** | xRc2 |  |
+| c | mul | WP | P-gen | x86_64 | thru | 40.35 | mpdecimal | 184.16 | **4.56×** | xRc2 |  |
+| c | mul | XP | P-gen | x86_64 | thru | 48.65 | mpdecimal | 223.01 | **4.58×** | xRc2 |  |
 
 <!-- END GENERATED mul-rel-c-x86 -->
 
@@ -270,21 +270,21 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| c | div | CD | P-gen | x86_64 | thru | 91.83 | libbid | 82.56 | **0.90×** | xRc2 |  |
-| c | div | WD | P-gen | x86_64 | thru | 103.64 | libbid | 87.22 | **0.84×** | xRc2 |  |
-| c | div | XD | P-gen | x86_64 | thru | 96.37 | libbid | 86.84 | **0.90×** | xRc2 |  |
-| c | div | ET | P-gen | x86_64 | thru | 29.93 | libbid | 30.95 | **1.03×** | xRc2 |  |
-| c | div | PT | P-gen | x86_64 | thru | 10.39 | libbid | 31.12 | **3.00×** | xRc2 |  |
-| c | div | CD | P-gen | x86_64 | thru | 91.83 | decQuad | 149.17 | **1.62×** | xRc2 |  |
-| c | div | WD | P-gen | x86_64 | thru | 103.64 | decQuad | 253.49 | **2.45×** | xRc2 |  |
-| c | div | XD | P-gen | x86_64 | thru | 96.37 | decQuad | 396.69 | **4.12×** | xRc2 |  |
-| c | div | ET | P-gen | x86_64 | thru | 29.93 | decQuad | 102.90 | **3.44×** | xRc2 |  |
-| c | div | PT | P-gen | x86_64 | thru | 10.39 | decQuad | 86.11 | **8.29×** | xRc2 |  |
-| c | div | CD | P-gen | x86_64 | thru | 91.83 | mpdecimal | 167.13 | **1.82×** | xRc2 |  |
-| c | div | WD | P-gen | x86_64 | thru | 103.64 | mpdecimal | 290.07 | **2.80×** | xRc2 |  |
-| c | div | XD | P-gen | x86_64 | thru | 96.37 | mpdecimal | 377.07 | **3.91×** | xRc2 |  |
-| c | div | ET | P-gen | x86_64 | thru | 29.93 | mpdecimal | 156.43 | **5.23×** | xRc2 |  |
-| c | div | PT | P-gen | x86_64 | thru | 10.39 | mpdecimal | 103.10 | **9.92×** | xRc2 |  |
+| c | div | CD | P-gen | x86_64 | thru | 78.30 | libbid | 80.72 | **1.03×** | xRc2 |  |
+| c | div | WD | P-gen | x86_64 | thru | 98.07 | libbid | 80.21 | **0.82×** | xRc2 |  |
+| c | div | XD | P-gen | x86_64 | thru | 86.69 | libbid | 81.28 | **0.94×** | xRc2 |  |
+| c | div | ET | P-gen | x86_64 | thru | 27.33 | libbid | 29.08 | **1.06×** | xRc2 |  |
+| c | div | PT | P-gen | x86_64 | thru | 9.82 | libbid | 29.57 | **3.01×** | xRc2 |  |
+| c | div | CD | P-gen | x86_64 | thru | 78.30 | decQuad | 137.28 | **1.75×** | xRc2 |  |
+| c | div | WD | P-gen | x86_64 | thru | 98.07 | decQuad | 236.66 | **2.41×** | xRc2 |  |
+| c | div | XD | P-gen | x86_64 | thru | 86.69 | decQuad | 371.96 | **4.29×** | xRc2 |  |
+| c | div | ET | P-gen | x86_64 | thru | 27.33 | decQuad | 98.98 | **3.62×** | xRc2 |  |
+| c | div | PT | P-gen | x86_64 | thru | 9.82 | decQuad | 81.77 | **8.33×** | xRc2 |  |
+| c | div | CD | P-gen | x86_64 | thru | 78.30 | mpdecimal | 154.50 | **1.97×** | xRc2 |  |
+| c | div | WD | P-gen | x86_64 | thru | 98.07 | mpdecimal | 273.44 | **2.79×** | xRc2 |  |
+| c | div | XD | P-gen | x86_64 | thru | 86.69 | mpdecimal | 350.09 | **4.04×** | xRc2 |  |
+| c | div | ET | P-gen | x86_64 | thru | 27.33 | mpdecimal | 150.31 | **5.50×** | xRc2 |  |
+| c | div | PT | P-gen | x86_64 | thru | 9.82 | mpdecimal | 101.45 | **10.33×** | xRc2 |  |
 
 <!-- END GENERATED div-rel-c-x86 -->
 
@@ -313,12 +313,12 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| c | fma | FN | FMA | x86_64 | thru | 154.12 | libbid | 160.41 | **1.04×** | xRc2 |  |
-| c | fma | FF | FMA | x86_64 | thru | 91.07 | libbid | 123.46 | **1.36×** | xRc2 |  |
-| c | fma | FN | FMA | x86_64 | thru | 154.12 | decQuad | 147.86 | **0.96×** | xRc2 |  |
-| c | fma | FF | FMA | x86_64 | thru | 91.07 | decQuad | 154.38 | **1.70×** | xRc2 |  |
-| c | fma | FN | FMA | x86_64 | thru | 154.12 | mpdecimal | 265.43 | **1.72×** | xRc2 |  |
-| c | fma | FF | FMA | x86_64 | thru | 91.07 | mpdecimal | 342.56 | **3.76×** | xRc2 |  |
+| c | fma | FN | FMA | x86_64 | thru | 150.73 | libbid | 156.29 | **1.04×** | xRc2 |  |
+| c | fma | FF | FMA | x86_64 | thru | 87.74 | libbid | 117.61 | **1.34×** | xRc2 |  |
+| c | fma | FN | FMA | x86_64 | thru | 150.73 | decQuad | 145.89 | **0.97×** | xRc2 |  |
+| c | fma | FF | FMA | x86_64 | thru | 87.74 | decQuad | 149.04 | **1.70×** | xRc2 |  |
+| c | fma | FN | FMA | x86_64 | thru | 150.73 | mpdecimal | 254.36 | **1.69×** | xRc2 |  |
+| c | fma | FF | FMA | x86_64 | thru | 87.74 | mpdecimal | 330.56 | **3.77×** | xRc2 |  |
 
 <!-- END GENERATED fma-rel-c-x86 -->
 
