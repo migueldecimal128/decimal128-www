@@ -12,7 +12,7 @@ heading: "System.Numerics.Decimal128 — .NET 11 Preview 7"
 
 > **Author stance:** independent, self-appointed decimal128 specialist. Not affiliated
 > with the .NET team. Findings are anchored to IEEE 754-2019 and GDAS (Cowlishaw) and
-> cross-checked with an independent conformant implementation (d128) plus libbid.
+> cross-checked with an independent conformant implementation (d128) plus Intel libbid.
 
 ---
 
@@ -26,6 +26,7 @@ heading: "System.Numerics.Decimal128 — .NET 11 Preview 7"
 - This document, Rosetta, and the benchmark harness are written with
   the assistance of Anthropic Claude AI, 
   but I take ownership and responsibility for the claims/content/results. 
+- I apologize in advance for any errors in my reporting. 
 - Reference materials include
   * [IEEE 754-2019 specification](https://www.google.com/search?q=ieee+754-2019+pdf)
   * [IBM Cowlishaw GDAS General Decimal Arithmetic Specification 1.70](https://speleotrove.com/decimal/decarith.pdf)
@@ -59,28 +60,33 @@ heading: "System.Numerics.Decimal128 — .NET 11 Preview 7"
   `CompareTo` order (5.5, fix in progress) / Performance ⚠️.
 
 ## 3. Scope & Methodology
-- **Version under test:** .NET 11 preview 7, SDK 11.0.100-preview.7.26366.102 as of 2026-07-14
+- **Version under test:** .NET 11 preview 7, SDK 11.0.100-preview.7.26366.102, daily build
+  2026-07-16
 - **Reference standards:** IEEE 754-2019 decimal128 + GDAS.
 - **Verification suite:** Rosetta bit-identity against industry reference
-  **dectest, fptest, and libbid** test vector suites. 
+  **Cowlishaw/IBM dectest, IBM fptest, and Intel libbid** test vector suites. 
 - **Bit-bridge caveat:** net11preview7 exposes no way to read its bits, 
   no bitwise-equality operator, and `ToString` does not preserve cohort. 
   Therefore, the bit-identity check reaches the encoding by reinterpreting the value as its
   BID128 bit pattern (`Unsafe.BitCast`) and comparing through the port's BID codec. This is
-  valid only because in-memory layout *is* the BID128 interchange
+  valid only because in-memory layout is the BID128 interchange
   encoding; that is an unsupported implementation detail, not an API contract. It also
   means cohort/quantum differences are caught, not just values. 
 - **Comparison cohort:** net11preview7 `System.Numerics.Decimal128`, Intel libbid release 4, decimal128-csharp, `System.Decimal` (96-bit BCL baseline, flagged
-  out-of-cohort on range).
+  out-of-cohort on range ... does not support range of values/operations).
 - **Benchmark harness:** op-benchmark .NET 11 arm, InProcess toolchain, per-op input
   categories.
-- **Fairness caveats:** bit-for-bit comparison of expected result values against only
-  tiesToEven vectors since net11preview7 only offers tiesToEven. 
+- **Fairness caveats:** bitwiseEQ comparison of expected result values against only
+  tiesToEven vectors ... since net11preview7 only offers tiesToEven. 
 - **Reproducibility:** everything needed to rerun, so the series is auditable RC-over-RC.
 
 ## 4. What They Got Right
-- **Correct results, verified** — the central, non-trivial achievement; walk through the
-  suite agreement (dectest / fptest / libbid).
+- **Correct results, verified** — the central, non-trivial achievement; bitwiseEQ match
+  of expected value with three industry-standard test vector suites. 
+  Cowlishaw/IBM decTest is part of the *decNumber* IEEE 754 decimal floating point reference implementation ... 8,574 tiesToEven cases pass, 0 fail. 
+  IBM FPtest was part of the FPgen effort to validate System Z hardware implementation of
+  decimal floating point ... 21,740 tiesToEven cases pass, 0 fail. 
+  Intel libbid ships with test vectors ... 4,691 tiesToEven cases pass, 0 fail. 
 - **tiesToEven as the default rounding-direction attribute, is the  correct, IEEE-consistent choice**
   Operators can't carry a rounding attribute; binding
   `+ − × ÷` to the standard default is clearly/exactly right. 
@@ -89,9 +95,8 @@ heading: "System.Numerics.Decimal128 — .NET 11 Preview 7"
 
 ## 5. IEEE 754 Non-Compliance
 
-The areas below are where preview 7 does **not** conform to IEEE 754-2019, each anchored to the
-clause it fails. Divergences the standard *permits*, or that are deliberate, are kept separate in
-section 6.
+The areas below are where net11preview7 does **not** conform to IEEE 754-2019, each anchored
+to the clause it fails. Divergences the standard *permits*, or that are deliberate, are kept separate in section 6.
 
 ### 5.1 Rounding 
 
@@ -125,7 +130,9 @@ never asked for. The second rounding is handed `2.5` and has no way back to the 
 
 **When it occurs.** This *cannot* happen
 to a value that fits in 34 digits — the operation would be exact and the rounding applied
-to the true value. It requires the exact result to overflow the format's precision. That is
+to the true value. Full-width values can be produced as a result of previous multiplication
+and division operations. It requires the exact result to overflow the format's precision.
+That is
 not exotic: it is simply what happens when you divide two full-precision decimals near a
 rounding boundary. (Non-representability is *necessary*; proximity to a boundary within one
 ULP is what makes it *occur* — so it's real but not constant.)
@@ -167,8 +174,8 @@ problem.
 - I would argue that flags are slightly more important for *decimal* floating point. 
 - The bigger issue is, it contributes to concerns about the spec-conformance of the
   implementation. For a new implementation, flags (against known test vectors)
-  provide an *independent verification channel* to confirm that results are being computed by
-  the correct path.
+  provide a somewhat *independent verification channel* to confirm that results
+  are being computed by the correct path.
 - **The absence of flags is a direct contributor to the confidence cost (section 9).**
   Had flags been present they would have restored some confidence about the rounding issue.
   However, the complete absence of flags plants another *seed of doubt*.
@@ -440,18 +447,10 @@ away.
 
 <!-- END GENERATED net11-div-abs-x86 -->
 
-- **7.4 Interpretation** — where the gap is algorithmic vs. JIT/runtime; call out
-  `System.Decimal`'s 96-bit range difference so it isn't read as like-for-like. And note the
-  tell: the SUT stores BID internally — verified here by decoding its bits — and the team has
-  said it is based on libbid (per public github comments), yet Decimal128 runs 3–30× slower than
-  libbid across these bands. The gap is therefore the managed reimplementation, not the BID
-  approach — their own reference is the fast one.
-- **7.5 The stakes** — a slow first release reinforces the myth that *software* decimal
-  floating point is inherently slow. It doesn't have to be. libbid and decimal128-csharp 
-  show the headroom; libbid is the very reference their implementation is based on. 
-- **7.6 Why this is a "Later"** — every number here is improvable in a future release without
-  breaking a single caller.
-- **7.7 Series baseline** — these are the numbers the next RC is measured against.
+- **7.4 Interpretation** - Intel libbid is written in C, the other 3 are implemented
+  in C#. System.Decimal is not equivalent. 96-bits vs 128-bits. 28 digits vs 34 digits. No
+  scaled exponent. No special values. We would expect System.Decimal to be very fast because
+  it is not offering equivalent functionality. 
 
 ## 8. Recommendations
 
@@ -462,36 +461,24 @@ away.
 - **Fix `ToString` to properly retain cohorts for round-trips:** no output conversion
   preserves the quantum, so `ToString` is not IEEE 754 clause 5.12-conformant. 
   Presumably this is in-the-works because nobody wants huge strings of digits. 
-- **Reserve the flag surface** so the verification channel and future semantics aren't
-  foreclosed (section 5.2).
-- Rationale: these are semantic and API contracts, plus disclosure — cheap now, breaking or
-  reputation-damaging after GA.
+- I trust that the implementation team has a long list of things they would like to
+  get into this release. 
 
 ### 8.2 Later — after GA (additive, non-breaking)
 - **Add fused rounding-direction operations:** alternate methods taking an explicit
   `roundingDirection`, rounding the exact result once. Use a true rounding-direction type,
   not `MidpointRounding` (section 5.1). Consider making RoundingDirection the receiver ...
   `RoundingDirection.add()`, `RoundingDirection.subtract()`
-- **Implement `fusedMultiplyAdd` (clause 5.4.1):** the required fused op (section 5.4). It almost certainly
-  shares the same *compute-exact-then-round-once* finalize as the fused rounding-direction
-  methods above, so the two are natural to build together.
-- **Add a quantum-preserving string conversion** (GDAS `to-scientific-string`) — a new format
-  specifier or method that round-trips the cohort (section 5.3). Closes the clause 5.12 gap;
-  non-breaking, so the familiar default can stay.
 - **Replace the naive division algorithm;** make scaling and trailing-zero stripping fast (section 7).
 - Broader performance tuning across op categories.
-- Full flag semantics behind the (Now-reserved) surface.
+- Full flag semantics, including the status-flag surface.
 - Rationale: purely additive; no reason to gate GA on them, safe to iterate across the series.
 
 ## 9. Conclusion
-- They got the math right — the foundation is sound. What remains is making rounding *fused*
-  before the composed pattern hardens into an assumed contract, being honest about the
-  conformance boundary, and not letting a slow first release define the ceiling for software
-  decimal.
-- Presumably ToString() behavior will be corrected. 
-- TotalOrder seems to be in-the-works. 
-
-**The confidence cost.** Reputational exposure (section 5.1) is the visible risk. The quieter
+They got the math right ... a solid start. 
+  
+**The confidence cost.** Reputational exposure (Rounding section 5.1) is the visible risk.
+The quieter
 risk is inferential: correctly-rounded single rounding is the foundation of the standard, not a
 fine point, so exposing directed rounding as a second pass over an already-rounded value raises a
 fair question about how completely Microsoft understands the problem space. 
