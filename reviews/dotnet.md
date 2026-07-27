@@ -13,8 +13,6 @@ candidate through GA.
 Each edition run through the same standards-anchored harness so the 
 type can be watched as it converges.
 
-*Columns are added as each release is reviewed, so the trend is visible at a glance.*
-
 ## The reviews
 
 ### .NET 11
