@@ -13,24 +13,6 @@ candidate through GA.
 Each edition run through the same standards-anchored harness so the 
 type can be watched as it converges.
 
-New here? The full method and motivation live on the
-[Reviews home](../reviews.html): an independent decimal128 specialist, unaffiliated
-with the .NET team, measuring against IEEE 754-2019 and GDAS with a conformant
-reference implementation (`d128`) and a Rosetta suite over `decTest` / `fptest` /
-`libbid`. Every edition below also restates that framing so it stands alone.
-
-## Scorecard
-
-Headline conformance measures, tracked edition to edition.
-
-| Measure | Preview 7 |
-|---------|-----------|
-| Numerical results bitwiseEQ vs. `decTest` / `fptest` / `libbid` | ✅ verified |
-| compliant rounding | ❌ `roundTiesToEven` only |
-| Status flags | ❌ none |
-| `ToString` preserves cohort | ❌ never uses scientific notation |
-| implements §5.10 `totalOrder` | ❌ (in progress toward RC1) |
-
 *Columns are added as each release is reviewed, so the trend is visible at a glance.*
 
 ## The reviews
