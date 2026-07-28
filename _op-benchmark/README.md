@@ -18,7 +18,7 @@ regenerating a report never runs a benchmark. Crossing that line is a defect.
 | | Stage A — update the store | Stage B — regenerate the reports |
 |---|---|---|
 | script | `./update_benchmark_stores.sh` | `./splice_benchmark_reports.sh` |
-| does | runs each port's `emit_<lang>.py` **serially** | runs `gen_bench.py --splice` (+ the net11 review) |
+| does | runs each port's `emit_<lang>.py` **serially** | runs `gen_bench.py --splice` |
 | writes | ONLY `results.<lang>.<arch>.jsonl` + `runs.<arch>.jsonl` | ONLY the `benchmark-*.md` / review `.md` pages |
 | needs | the port toolchains (+ a built C bench binary) | Python 3 and the store |
 | runs a benchmark? | yes | **never** |
@@ -45,9 +45,10 @@ cd _op-benchmark        # if not already here
 It rewrites every generated table from the current store (leaving hand-written prose
 untouched), then re-checks that every block is in sync — failing loudly on any `[DIFF]`.
 It auto-finds pages by their markers (the nine `../benchmark-vs-<port>.md` pages, plus
-`../benchmark-port-compare.md`, plus the `../reviews/dotnet/net11-preview7.md` review);
-pages without markers (e.g. `benchmark-key.md`) are skipped. It **does not run any
-benchmark.**
+`../benchmark-port-compare.md`); pages without markers (e.g. `benchmark-key.md`) are
+skipped. Pages under `../reviews/` are **never** spliced — review editions are
+point-in-time snapshots; refresh one deliberately by running its generator by hand
+(e.g. `gen_bench_net11_preview7.py --splice`). It **does not run any benchmark.**
 
 Then report what changed (`git status --short ../benchmark-*.md ../reviews`) so the
 human can review. **Do NOT commit or push as part of regenerating** — publishing is a

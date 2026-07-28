@@ -13,7 +13,11 @@
 #
 #  Pages handled:
 #    ../benchmark-*.md              (gen_bench.py)             — the per-port + compare reports
-#    ../reviews/dotnet/net11-preview7.md  (gen_bench_net11_preview7.py) — the .NET 11 review edition
+#
+#  Pages under ../reviews/ are NEVER spliced here: review editions (e.g.
+#  ../reviews/dotnet/net11-preview7.md) are point-in-time snapshots of the
+#  store as it stood when the review was written. To refresh one deliberately,
+#  run its generator by hand (gen_bench_net11_preview7.py --splice).
 #
 #  This edits working-tree .md files only. Committing/publishing is a separate,
 #  explicit human step.
@@ -21,8 +25,6 @@
 set -u
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$HERE"
-
-NET11_PAGE="../reviews/dotnet/net11-preview7.md"
 
 echo "===== splice: benchmark-*.md (gen_bench.py) ====="
 for f in ../benchmark-*.md; do
@@ -32,11 +34,6 @@ for f in ../benchmark-*.md; do
   fi
 done
 
-if [ -f "$NET11_PAGE" ] && grep -q 'BEGIN GENERATED' "$NET11_PAGE"; then
-  echo "===== splice: $NET11_PAGE (gen_bench_net11_preview7.py) ====="
-  python3 gen_bench_net11_preview7.py --splice "$NET11_PAGE"
-fi
-
 echo "===== verify (every block must be [OK]; any [DIFF] fails) ====="
 diffs=0
 for f in ../benchmark-*.md; do
@@ -45,10 +42,6 @@ for f in ../benchmark-*.md; do
     echo "$out" | grep '\[DIFF\]' && diffs=1
   fi
 done
-if [ -f "$NET11_PAGE" ] && grep -q 'BEGIN GENERATED' "$NET11_PAGE"; then
-  out="$(python3 gen_bench_net11_preview7.py --check "$NET11_PAGE" 2>&1)"
-  echo "$out" | grep '\[DIFF\]' && diffs=1
-fi
 
 if [ "$diffs" -eq 0 ]; then
   echo "all generated blocks in sync with the store [OK]"
