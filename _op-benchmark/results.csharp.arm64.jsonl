@@ -66,6 +66,8 @@
 {"lang": "csharp", "impl": "System.Numerics.Decimal128", "op": "div", "cat": "ET", "profile": "P-gen", "arch": "arm64", "mode": "thru", "ns": 208.38, "run": "Rcs11"}
 {"lang": "csharp", "impl": "System.Numerics.Decimal128", "op": "div", "cat": "PT", "profile": "P-gen", "arch": "arm64", "mode": "thru", "ns": 207.33, "run": "Rcs11"}
 {"lang": "csharp", "impl": "System.Numerics.Decimal128", "op": "div", "cat": "XD", "profile": "P-max", "arch": "arm64", "mode": "thru", "ns": 195.77, "run": "Rcs11"}
+{"lang": "csharp", "impl": "System.Numerics.Decimal128", "op": "fma", "cat": "FN", "profile": "FMA", "arch": "arm64", "mode": "thru", "ns": 1887.8, "run": "Rcs11"}
+{"lang": "csharp", "impl": "System.Numerics.Decimal128", "op": "fma", "cat": "FF", "profile": "FMA", "arch": "arm64", "mode": "thru", "ns": 2266.06, "run": "Rcs11"}
 {"lang": "csharp", "impl": "d128", "op": "add", "cat": "MIX", "profile": "P-fin", "arch": "arm64", "mode": "thru", "ns": 2.67, "run": "Rcs11"}
 {"lang": "csharp", "impl": "d128", "op": "add", "cat": "SQss", "profile": "P-gen", "arch": "arm64", "mode": "thru", "ns": 4.7, "run": "Rcs11"}
 {"lang": "csharp", "impl": "d128", "op": "add", "cat": "SQos", "profile": "P-gen", "arch": "arm64", "mode": "thru", "ns": 14.4, "run": "Rcs11"}
@@ -116,5 +118,5 @@
 {"lang": "csharp", "impl": "d128", "op": "div", "cat": "ET", "profile": "P-gen", "arch": "arm64", "mode": "thru", "ns": 10.12, "run": "Rcs11"}
 {"lang": "csharp", "impl": "d128", "op": "div", "cat": "PT", "profile": "P-gen", "arch": "arm64", "mode": "thru", "ns": 5.8, "run": "Rcs11"}
 {"lang": "csharp", "impl": "d128", "op": "div", "cat": "XD", "profile": "P-max", "arch": "arm64", "mode": "thru", "ns": 28.86, "run": "Rcs11"}
-{"lang": "csharp", "impl": "d128", "op": "fma", "cat": "FN", "profile": "FMA", "arch": "arm64", "mode": "thru", "ns": 106.08, "run": "Rcs11"}
-{"lang": "csharp", "impl": "d128", "op": "fma", "cat": "FF", "profile": "FMA", "arch": "arm64", "mode": "thru", "ns": 82.38, "run": "Rcs11"}
+{"lang": "csharp", "impl": "d128", "op": "fma", "cat": "FN", "profile": "FMA", "arch": "arm64", "mode": "thru", "ns": 98.0, "run": "Rcs11"}
+{"lang": "csharp", "impl": "d128", "op": "fma", "cat": "FF", "profile": "FMA", "arch": "arm64", "mode": "thru", "ns": 79.97, "run": "Rcs11"}
