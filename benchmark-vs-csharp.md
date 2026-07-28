@@ -31,20 +31,20 @@ The headline: one realistic 64-bit financial operation mix — a `MIX` add/sub s
 
 | port | op | cat | profile | arch | mode | ns | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| csharp | add | MIX | P-fin | arm64 | thru | 2.70 | System.Decimal | 2.79 | **1.03×** | Rcs11 | compact idiom peer |
-| csharp | sub | MIX | P-fin | arm64 | thru | 17.60 | System.Decimal | 2.94 | **0.17×** | Rcs11 | compact idiom peer |
-| csharp | div | CD | P-fin | arm64 | thru | 24.25 | System.Decimal | 11.91 | **0.49×** | Rcs11 | compact idiom peer |
-| csharp | div | WD | P-fin | arm64 | thru | 42.44 | System.Decimal | 26.87 | **0.63×** | Rcs11 | compact idiom peer |
-| csharp | div | ET | P-fin | arm64 | thru | 9.15 | System.Decimal | 4.94 | **0.54×** | Rcs11 | compact idiom peer |
-| csharp | div | PT | P-fin | arm64 | thru | 4.66 | System.Decimal | 11.96 | **2.57×** | Rcs11 | compact idiom peer |
-| csharp | add | MIX | P-fin | arm64 | thru | 2.70 | Decimal128 (.NET 11) | 9.59 | **3.55×** | Rcs11 |  |
-| csharp | sub | MIX | P-fin | arm64 | thru | 17.60 | Decimal128 (.NET 11) | 10.36 | **0.59×** | Rcs11 |  |
-| csharp | mul | CP | P-fin | arm64 | thru | 1.64 | Decimal128 (.NET 11) | 9.64 | **5.88×** | Rcs11 |  |
-| csharp | mul | WP | P-fin | arm64 | thru | 24.09 | Decimal128 (.NET 11) | 28.31 | **1.18×** | Rcs11 |  |
-| csharp | div | CD | P-fin | arm64 | thru | 24.25 | Decimal128 (.NET 11) | 77.37 | **3.19×** | Rcs11 |  |
-| csharp | div | WD | P-fin | arm64 | thru | 42.44 | Decimal128 (.NET 11) | 56.53 | **1.33×** | Rcs11 |  |
-| csharp | div | ET | P-fin | arm64 | thru | 9.15 | Decimal128 (.NET 11) | 160.47 | **17.54×** | Rcs11 |  |
-| csharp | div | PT | P-fin | arm64 | thru | 4.66 | Decimal128 (.NET 11) | 166.08 | **35.64×** | Rcs11 |  |
+| csharp | add | MIX | P-fin | arm64 | thru | 2.70 | System.Decimal | 2.80 | **1.04×** | Rcs11 | compact idiom peer |
+| csharp | sub | MIX | P-fin | arm64 | thru | 3.49 | System.Decimal | 2.95 | **0.85×** | Rcs11 | compact idiom peer |
+| csharp | div | CD | P-fin | arm64 | thru | 24.10 | System.Decimal | 11.66 | **0.48×** | Rcs11 | compact idiom peer |
+| csharp | div | WD | P-fin | arm64 | thru | 44.72 | System.Decimal | 27.96 | **0.63×** | Rcs11 | compact idiom peer |
+| csharp | div | ET | P-fin | arm64 | thru | 9.08 | System.Decimal | 5.01 | **0.55×** | Rcs11 | compact idiom peer |
+| csharp | div | PT | P-fin | arm64 | thru | 4.61 | System.Decimal | 12.16 | **2.64×** | Rcs11 | compact idiom peer |
+| csharp | add | MIX | P-fin | arm64 | thru | 2.70 | Decimal128 (.NET 11) | 9.63 | **3.57×** | Rcs11 |  |
+| csharp | sub | MIX | P-fin | arm64 | thru | 3.49 | Decimal128 (.NET 11) | 10.38 | **2.97×** | Rcs11 |  |
+| csharp | mul | CP | P-fin | arm64 | thru | 1.70 | Decimal128 (.NET 11) | 9.70 | **5.71×** | Rcs11 |  |
+| csharp | mul | WP | P-fin | arm64 | thru | 23.64 | Decimal128 (.NET 11) | 28.44 | **1.20×** | Rcs11 |  |
+| csharp | div | CD | P-fin | arm64 | thru | 24.10 | Decimal128 (.NET 11) | 77.69 | **3.22×** | Rcs11 |  |
+| csharp | div | WD | P-fin | arm64 | thru | 44.72 | Decimal128 (.NET 11) | 59.12 | **1.32×** | Rcs11 |  |
+| csharp | div | ET | P-fin | arm64 | thru | 9.08 | Decimal128 (.NET 11) | 160.34 | **17.66×** | Rcs11 |  |
+| csharp | div | PT | P-fin | arm64 | thru | 4.61 | Decimal128 (.NET 11) | 166.05 | **36.02×** | Rcs11 |  |
 
 <!-- END GENERATED pfin-rel-csharp -->
 
@@ -54,20 +54,20 @@ The headline: one realistic 64-bit financial operation mix — a `MIX` add/sub s
 
 | port | op | cat | profile | arch | mode | ns | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| csharp | add | MIX | P-fin | x86_64 | thru | 7.94 | System.Decimal | 10.85 | **1.37×** | xRcs11 | compact idiom peer |
-| csharp | sub | MIX | P-fin | x86_64 | thru | 12.99 | System.Decimal | 13.54 | **1.04×** | xRcs11 | compact idiom peer |
-| csharp | div | CD | P-fin | x86_64 | thru | 91.07 | System.Decimal | 61.30 | **0.67×** | xRcs11 | compact idiom peer |
-| csharp | div | WD | P-fin | x86_64 | thru | 125.38 | System.Decimal | 111.18 | **0.89×** | xRcs11 | compact idiom peer |
-| csharp | div | ET | P-fin | x86_64 | thru | 23.59 | System.Decimal | 15.46 | **0.66×** | xRcs11 | compact idiom peer |
-| csharp | div | PT | P-fin | x86_64 | thru | 11.67 | System.Decimal | 67.63 | **5.80×** | xRcs11 | compact idiom peer |
-| csharp | add | MIX | P-fin | x86_64 | thru | 7.94 | Decimal128 (.NET 11) | 36.59 | **4.61×** | xRcs11 |  |
-| csharp | sub | MIX | P-fin | x86_64 | thru | 12.99 | Decimal128 (.NET 11) | 41.82 | **3.22×** | xRcs11 |  |
-| csharp | mul | CP | P-fin | x86_64 | thru | 5.49 | Decimal128 (.NET 11) | 43.29 | **7.89×** | xRcs11 |  |
-| csharp | mul | WP | P-fin | x86_64 | thru | 56.17 | Decimal128 (.NET 11) | 138.46 | **2.47×** | xRcs11 |  |
-| csharp | div | CD | P-fin | x86_64 | thru | 91.07 | Decimal128 (.NET 11) | 434.48 | **4.77×** | xRcs11 |  |
-| csharp | div | WD | P-fin | x86_64 | thru | 125.38 | Decimal128 (.NET 11) | 481.02 | **3.84×** | xRcs11 |  |
-| csharp | div | ET | P-fin | x86_64 | thru | 23.59 | Decimal128 (.NET 11) | 620.08 | **26.29×** | xRcs11 |  |
-| csharp | div | PT | P-fin | x86_64 | thru | 11.67 | Decimal128 (.NET 11) | 630.77 | **54.05×** | xRcs11 |  |
+| csharp | add | MIX | P-fin | x86_64 | thru | 8.59 | System.Decimal | 8.83 | **1.03×** | xRcs11 | compact idiom peer |
+| csharp | sub | MIX | P-fin | x86_64 | thru | 12.80 | System.Decimal | 10.44 | **0.82×** | xRcs11 | compact idiom peer |
+| csharp | div | CD | P-fin | x86_64 | thru | 83.96 | System.Decimal | 52.63 | **0.63×** | xRcs11 | compact idiom peer |
+| csharp | div | WD | P-fin | x86_64 | thru | 108.30 | System.Decimal | 99.60 | **0.92×** | xRcs11 | compact idiom peer |
+| csharp | div | ET | P-fin | x86_64 | thru | 23.88 | System.Decimal | 15.94 | **0.67×** | xRcs11 | compact idiom peer |
+| csharp | div | PT | P-fin | x86_64 | thru | 11.06 | System.Decimal | 58.55 | **5.29×** | xRcs11 | compact idiom peer |
+| csharp | add | MIX | P-fin | x86_64 | thru | 8.59 | Decimal128 (.NET 11) | 23.58 | **2.75×** | xRcs11 |  |
+| csharp | sub | MIX | P-fin | x86_64 | thru | 12.80 | Decimal128 (.NET 11) | 27.95 | **2.18×** | xRcs11 |  |
+| csharp | mul | CP | P-fin | x86_64 | thru | 5.29 | Decimal128 (.NET 11) | 35.11 | **6.64×** | xRcs11 |  |
+| csharp | mul | WP | P-fin | x86_64 | thru | 47.09 | Decimal128 (.NET 11) | 97.07 | **2.06×** | xRcs11 |  |
+| csharp | div | CD | P-fin | x86_64 | thru | 83.96 | Decimal128 (.NET 11) | 194.07 | **2.31×** | xRcs11 |  |
+| csharp | div | WD | P-fin | x86_64 | thru | 108.30 | Decimal128 (.NET 11) | 159.85 | **1.48×** | xRcs11 |  |
+| csharp | div | ET | P-fin | x86_64 | thru | 23.88 | Decimal128 (.NET 11) | 377.61 | **15.81×** | xRcs11 |  |
+| csharp | div | PT | P-fin | x86_64 | thru | 11.06 | Decimal128 (.NET 11) | 390.20 | **35.28×** | xRcs11 |  |
 
 <!-- END GENERATED pfin-rel-csharp-x86 -->
 
@@ -81,14 +81,14 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| csharp | add | SQ | P-gen | arm64 | thru | 10.20 | System.Decimal | 2.54 | **0.25×** | Rcs11 | compact idiom peer |
-| csharp | add | NQ | P-gen | arm64 | thru | 5.58 | System.Decimal | 4.08 | **0.73×** | Rcs11 | compact idiom peer |
-| csharp | add | MQ | P-gen | arm64 | thru | 16.33 | System.Decimal | 4.01 | **0.25×** | Rcs11 | compact idiom peer |
-| csharp | add | SQ | P-gen | arm64 | thru | 10.20 | Decimal128 (.NET 11) | 13.10 | **1.28×** | Rcs11 |  |
-| csharp | add | NQ | P-gen | arm64 | thru | 5.58 | Decimal128 (.NET 11) | 14.50 | **2.60×** | Rcs11 |  |
-| csharp | add | MQ | P-gen | arm64 | thru | 16.33 | Decimal128 (.NET 11) | 14.17 | **0.87×** | Rcs11 |  |
-| csharp | add | OQ | P-gen | arm64 | thru | 40.62 | Decimal128 (.NET 11) | 99.53 | **2.45×** | Rcs11 |  |
-| csharp | add | FQ | P-gen | arm64 | thru | 33.18 | Decimal128 (.NET 11) | 853.77 | **25.73×** | Rcs11 |  |
+| csharp | add | SQ | P-gen | arm64 | thru | 10.69 | System.Decimal | 2.49 | **0.23×** | Rcs11 | compact idiom peer |
+| csharp | add | NQ | P-gen | arm64 | thru | 5.46 | System.Decimal | 4.06 | **0.74×** | Rcs11 | compact idiom peer |
+| csharp | add | MQ | P-gen | arm64 | thru | 15.70 | System.Decimal | 3.93 | **0.25×** | Rcs11 | compact idiom peer |
+| csharp | add | SQ | P-gen | arm64 | thru | 10.69 | Decimal128 (.NET 11) | 13.32 | **1.25×** | Rcs11 |  |
+| csharp | add | NQ | P-gen | arm64 | thru | 5.46 | Decimal128 (.NET 11) | 14.55 | **2.66×** | Rcs11 |  |
+| csharp | add | MQ | P-gen | arm64 | thru | 15.70 | Decimal128 (.NET 11) | 14.45 | **0.92×** | Rcs11 |  |
+| csharp | add | OQ | P-gen | arm64 | thru | 40.82 | Decimal128 (.NET 11) | 98.19 | **2.41×** | Rcs11 |  |
+| csharp | add | FQ | P-gen | arm64 | thru | 32.79 | Decimal128 (.NET 11) | 804.95 | **24.55×** | Rcs11 |  |
 
 <!-- END GENERATED add-rel-csharp -->
 
@@ -98,14 +98,14 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| csharp | add | SQ | P-gen | x86_64 | thru | 20.90 | System.Decimal | 11.67 | **0.56×** | xRcs11 | compact idiom peer |
-| csharp | add | NQ | P-gen | x86_64 | thru | 17.05 | System.Decimal | 16.09 | **0.94×** | xRcs11 | compact idiom peer |
-| csharp | add | MQ | P-gen | x86_64 | thru | 41.60 | System.Decimal | 17.99 | **0.43×** | xRcs11 | compact idiom peer |
-| csharp | add | SQ | P-gen | x86_64 | thru | 20.90 | Decimal128 (.NET 11) | 62.54 | **2.99×** | xRcs11 |  |
-| csharp | add | NQ | P-gen | x86_64 | thru | 17.05 | Decimal128 (.NET 11) | 64.76 | **3.80×** | xRcs11 |  |
-| csharp | add | MQ | P-gen | x86_64 | thru | 41.60 | Decimal128 (.NET 11) | 65.55 | **1.58×** | xRcs11 |  |
-| csharp | add | OQ | P-gen | x86_64 | thru | 84.43 | Decimal128 (.NET 11) | 359.83 | **4.26×** | xRcs11 |  |
-| csharp | add | FQ | P-gen | x86_64 | thru | 63.64 | Decimal128 (.NET 11) | 3093.38 | **48.61×** | xRcs11 |  |
+| csharp | add | SQ | P-gen | x86_64 | thru | 22.69 | System.Decimal | 11.31 | **0.50×** | xRcs11 | compact idiom peer |
+| csharp | add | NQ | P-gen | x86_64 | thru | 17.79 | System.Decimal | 15.62 | **0.88×** | xRcs11 | compact idiom peer |
+| csharp | add | MQ | P-gen | x86_64 | thru | 43.75 | System.Decimal | 16.99 | **0.39×** | xRcs11 | compact idiom peer |
+| csharp | add | SQ | P-gen | x86_64 | thru | 22.69 | Decimal128 (.NET 11) | 51.73 | **2.28×** | xRcs11 |  |
+| csharp | add | NQ | P-gen | x86_64 | thru | 17.79 | Decimal128 (.NET 11) | 57.04 | **3.21×** | xRcs11 |  |
+| csharp | add | MQ | P-gen | x86_64 | thru | 43.75 | Decimal128 (.NET 11) | 57.05 | **1.30×** | xRcs11 |  |
+| csharp | add | OQ | P-gen | x86_64 | thru | 82.48 | Decimal128 (.NET 11) | 329.80 | **4.00×** | xRcs11 |  |
+| csharp | add | FQ | P-gen | x86_64 | thru | 62.87 | Decimal128 (.NET 11) | 2310.54 | **36.75×** | xRcs11 |  |
 
 <!-- END GENERATED add-rel-csharp-x86 -->
 
@@ -119,14 +119,14 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| csharp | sub | SQ | P-gen | arm64 | thru | 9.38 | System.Decimal | 2.84 | **0.30×** | Rcs11 | compact idiom peer |
-| csharp | sub | NQ | P-gen | arm64 | thru | 6.15 | System.Decimal | 4.16 | **0.68×** | Rcs11 | compact idiom peer |
-| csharp | sub | MQ | P-gen | arm64 | thru | 15.05 | System.Decimal | 4.00 | **0.27×** | Rcs11 | compact idiom peer |
-| csharp | sub | SQ | P-gen | arm64 | thru | 9.38 | Decimal128 (.NET 11) | 13.34 | **1.42×** | Rcs11 |  |
-| csharp | sub | NQ | P-gen | arm64 | thru | 6.15 | Decimal128 (.NET 11) | 14.16 | **2.30×** | Rcs11 |  |
-| csharp | sub | MQ | P-gen | arm64 | thru | 15.05 | Decimal128 (.NET 11) | 14.25 | **0.95×** | Rcs11 |  |
-| csharp | sub | OQ | P-gen | arm64 | thru | 39.89 | Decimal128 (.NET 11) | 101.83 | **2.55×** | Rcs11 |  |
-| csharp | sub | FQ | P-gen | arm64 | thru | 33.67 | Decimal128 (.NET 11) | 822.16 | **24.42×** | Rcs11 |  |
+| csharp | sub | SQ | P-gen | arm64 | thru | 9.04 | System.Decimal | 2.51 | **0.28×** | Rcs11 | compact idiom peer |
+| csharp | sub | NQ | P-gen | arm64 | thru | 6.20 | System.Decimal | 4.11 | **0.66×** | Rcs11 | compact idiom peer |
+| csharp | sub | MQ | P-gen | arm64 | thru | 14.29 | System.Decimal | 4.01 | **0.28×** | Rcs11 | compact idiom peer |
+| csharp | sub | SQ | P-gen | arm64 | thru | 9.04 | Decimal128 (.NET 11) | 13.31 | **1.47×** | Rcs11 |  |
+| csharp | sub | NQ | P-gen | arm64 | thru | 6.20 | Decimal128 (.NET 11) | 14.29 | **2.30×** | Rcs11 |  |
+| csharp | sub | MQ | P-gen | arm64 | thru | 14.29 | Decimal128 (.NET 11) | 14.33 | **1.00×** | Rcs11 |  |
+| csharp | sub | OQ | P-gen | arm64 | thru | 40.04 | Decimal128 (.NET 11) | 95.25 | **2.38×** | Rcs11 |  |
+| csharp | sub | FQ | P-gen | arm64 | thru | 32.96 | Decimal128 (.NET 11) | 806.63 | **24.47×** | Rcs11 |  |
 
 <!-- END GENERATED sub-rel-csharp -->
 
@@ -136,14 +136,14 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| csharp | sub | SQ | P-gen | x86_64 | thru | 19.44 | System.Decimal | 11.35 | **0.58×** | xRcs11 | compact idiom peer |
-| csharp | sub | NQ | P-gen | x86_64 | thru | 16.24 | System.Decimal | 15.90 | **0.98×** | xRcs11 | compact idiom peer |
-| csharp | sub | MQ | P-gen | x86_64 | thru | 40.31 | System.Decimal | 15.40 | **0.38×** | xRcs11 | compact idiom peer |
-| csharp | sub | SQ | P-gen | x86_64 | thru | 19.44 | Decimal128 (.NET 11) | 64.93 | **3.34×** | xRcs11 |  |
-| csharp | sub | NQ | P-gen | x86_64 | thru | 16.24 | Decimal128 (.NET 11) | 63.90 | **3.93×** | xRcs11 |  |
-| csharp | sub | MQ | P-gen | x86_64 | thru | 40.31 | Decimal128 (.NET 11) | 66.83 | **1.66×** | xRcs11 |  |
-| csharp | sub | OQ | P-gen | x86_64 | thru | 83.00 | Decimal128 (.NET 11) | 359.89 | **4.34×** | xRcs11 |  |
-| csharp | sub | FQ | P-gen | x86_64 | thru | 63.84 | Decimal128 (.NET 11) | 3062.27 | **47.97×** | xRcs11 |  |
+| csharp | sub | SQ | P-gen | x86_64 | thru | 18.69 | System.Decimal | 11.73 | **0.63×** | xRcs11 | compact idiom peer |
+| csharp | sub | NQ | P-gen | x86_64 | thru | 17.16 | System.Decimal | 15.68 | **0.91×** | xRcs11 | compact idiom peer |
+| csharp | sub | MQ | P-gen | x86_64 | thru | 40.45 | System.Decimal | 15.30 | **0.38×** | xRcs11 | compact idiom peer |
+| csharp | sub | SQ | P-gen | x86_64 | thru | 18.69 | Decimal128 (.NET 11) | 52.33 | **2.80×** | xRcs11 |  |
+| csharp | sub | NQ | P-gen | x86_64 | thru | 17.16 | Decimal128 (.NET 11) | 57.19 | **3.33×** | xRcs11 |  |
+| csharp | sub | MQ | P-gen | x86_64 | thru | 40.45 | Decimal128 (.NET 11) | 57.79 | **1.43×** | xRcs11 |  |
+| csharp | sub | OQ | P-gen | x86_64 | thru | 82.35 | Decimal128 (.NET 11) | 303.11 | **3.68×** | xRcs11 |  |
+| csharp | sub | FQ | P-gen | x86_64 | thru | 63.06 | Decimal128 (.NET 11) | 2294.36 | **36.38×** | xRcs11 |  |
 
 <!-- END GENERATED sub-rel-csharp-x86 -->
 
@@ -157,9 +157,9 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| csharp | mul | CP | P-gen | arm64 | thru | 2.11 | Decimal128 (.NET 11) | 9.09 | **4.31×** | Rcs11 |  |
-| csharp | mul | WP | P-gen | arm64 | thru | 22.27 | Decimal128 (.NET 11) | 30.48 | **1.37×** | Rcs11 |  |
-| csharp | mul | XP | P-gen | arm64 | thru | 49.99 | Decimal128 (.NET 11) | 792.86 | **15.86×** | Rcs11 |  |
+| csharp | mul | CP | P-gen | arm64 | thru | 2.15 | Decimal128 (.NET 11) | 9.22 | **4.29×** | Rcs11 |  |
+| csharp | mul | WP | P-gen | arm64 | thru | 22.26 | Decimal128 (.NET 11) | 31.85 | **1.43×** | Rcs11 |  |
+| csharp | mul | XP | P-gen | arm64 | thru | 49.19 | Decimal128 (.NET 11) | 805.25 | **16.37×** | Rcs11 |  |
 
 <!-- END GENERATED mul-rel-csharp -->
 
@@ -169,9 +169,9 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| csharp | mul | CP | P-gen | x86_64 | thru | 7.30 | Decimal128 (.NET 11) | 38.28 | **5.24×** | xRcs11 |  |
-| csharp | mul | WP | P-gen | x86_64 | thru | 49.87 | Decimal128 (.NET 11) | 141.35 | **2.83×** | xRcs11 |  |
-| csharp | mul | XP | P-gen | x86_64 | thru | 84.32 | Decimal128 (.NET 11) | 2984.92 | **35.40×** | xRcs11 |  |
+| csharp | mul | CP | P-gen | x86_64 | thru | 7.47 | Decimal128 (.NET 11) | 34.23 | **4.58×** | xRcs11 |  |
+| csharp | mul | WP | P-gen | x86_64 | thru | 49.13 | Decimal128 (.NET 11) | 101.26 | **2.06×** | xRcs11 |  |
+| csharp | mul | XP | P-gen | x86_64 | thru | 83.41 | Decimal128 (.NET 11) | 2220.68 | **26.62×** | xRcs11 |  |
 
 <!-- END GENERATED mul-rel-csharp-x86 -->
 
@@ -185,11 +185,11 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| csharp | div | CD | P-gen | arm64 | thru | 27.65 | Decimal128 (.NET 11) | 70.76 | **2.56×** | Rcs11 |  |
-| csharp | div | WD | P-gen | arm64 | thru | 46.43 | Decimal128 (.NET 11) | 57.85 | **1.25×** | Rcs11 |  |
-| csharp | div | XD | P-gen | arm64 | thru | 45.98 | Decimal128 (.NET 11) | 110.00 | **2.39×** | Rcs11 |  |
-| csharp | div | ET | P-gen | arm64 | thru | 9.60 | Decimal128 (.NET 11) | 143.94 | **14.99×** | Rcs11 |  |
-| csharp | div | PT | P-gen | arm64 | thru | 4.76 | Decimal128 (.NET 11) | 142.65 | **29.97×** | Rcs11 |  |
+| csharp | div | CD | P-gen | arm64 | thru | 27.18 | Decimal128 (.NET 11) | 76.87 | **2.83×** | Rcs11 |  |
+| csharp | div | WD | P-gen | arm64 | thru | 42.85 | Decimal128 (.NET 11) | 67.95 | **1.59×** | Rcs11 |  |
+| csharp | div | XD | P-gen | arm64 | thru | 49.00 | Decimal128 (.NET 11) | 118.33 | **2.41×** | Rcs11 |  |
+| csharp | div | ET | P-gen | arm64 | thru | 9.61 | Decimal128 (.NET 11) | 143.12 | **14.89×** | Rcs11 |  |
+| csharp | div | PT | P-gen | arm64 | thru | 4.67 | Decimal128 (.NET 11) | 142.50 | **30.51×** | Rcs11 |  |
 
 <!-- END GENERATED div-rel-csharp -->
 
@@ -199,11 +199,11 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| csharp | div | CD | P-gen | x86_64 | thru | 87.46 | Decimal128 (.NET 11) | 380.52 | **4.35×** | xRcs11 |  |
-| csharp | div | WD | P-gen | x86_64 | thru | 110.23 | Decimal128 (.NET 11) | 453.55 | **4.11×** | xRcs11 |  |
-| csharp | div | XD | P-gen | x86_64 | thru | 116.72 | Decimal128 (.NET 11) | 1205.03 | **10.32×** | xRcs11 |  |
-| csharp | div | ET | P-gen | x86_64 | thru | 34.14 | Decimal128 (.NET 11) | 522.77 | **15.31×** | xRcs11 |  |
-| csharp | div | PT | P-gen | x86_64 | thru | 11.64 | Decimal128 (.NET 11) | 525.07 | **45.11×** | xRcs11 |  |
+| csharp | div | CD | P-gen | x86_64 | thru | 86.87 | Decimal128 (.NET 11) | 226.16 | **2.60×** | xRcs11 |  |
+| csharp | div | WD | P-gen | x86_64 | thru | 110.27 | Decimal128 (.NET 11) | 177.83 | **1.61×** | xRcs11 |  |
+| csharp | div | XD | P-gen | x86_64 | thru | 114.46 | Decimal128 (.NET 11) | 296.64 | **2.59×** | xRcs11 |  |
+| csharp | div | ET | P-gen | x86_64 | thru | 34.92 | Decimal128 (.NET 11) | 470.04 | **13.46×** | xRcs11 |  |
+| csharp | div | PT | P-gen | x86_64 | thru | 11.20 | Decimal128 (.NET 11) | 459.91 | **41.06×** | xRcs11 |  |
 
 <!-- END GENERATED div-rel-csharp-x86 -->
 
@@ -217,8 +217,8 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| csharp | fma | FN | FMA | arm64 | thru | 105.25 | - | - | - | Rcs11 |  |
-| csharp | fma | FF | FMA | arm64 | thru | 83.32 | - | - | - | Rcs11 |  |
+| csharp | fma | FN | FMA | arm64 | thru | 102.36 | - | - | - | Rcs11 |  |
+| csharp | fma | FF | FMA | arm64 | thru | 82.87 | - | - | - | Rcs11 |  |
 
 <!-- END GENERATED fma-rel-csharp -->
 
@@ -228,8 +228,8 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| csharp | fma | FN | FMA | x86_64 | thru | 187.32 | - | - | - | xRcs11 |  |
-| csharp | fma | FF | FMA | x86_64 | thru | 140.98 | - | - | - | xRcs11 |  |
+| csharp | fma | FN | FMA | x86_64 | thru | 188.24 | - | - | - | xRcs11 |  |
+| csharp | fma | FF | FMA | x86_64 | thru | 143.50 | - | - | - | xRcs11 |  |
 
 <!-- END GENERATED fma-rel-csharp-x86 -->
 
