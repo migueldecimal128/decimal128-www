@@ -14,7 +14,10 @@ d128 rung per the Rprof methodology: add/sub via the flag-free `_tte` rung, mul/
 plain `_ctx` arm (no per-band _tte exists for mul/div), FMA via `fma_{FN,FF}_tte`.
 Peers (libbid/decq/mpd) via the plain per-band benchmark.
 
-Usage: emit_c.py <bench_binary> [--run-id Rc2] [--min-time 0.05s]
+Usage: emit_c.py <bench_binary> [--run-id Rc2] [--min-time 0.05s] [--no-build]
+
+Rebuilds the binary from its CMake build tree first (walks up to CMakeCache.txt);
+--no-build measures the binary as-is.
 """
 # CONTRACT (store-only stage): this emitter writes ONLY the JSONL store
 # (results.*.jsonl / runs.*.jsonl). It never writes a report page (*.md) and
@@ -155,6 +158,28 @@ def reshape(j, profile, run):
         yield dict(lang="c", impl=impl, op=op, cat=cat, profile=profile,
                    arch=ARCH, mode="thru", ns=ns, run=run)
 
+def build_bench(binary):
+    """Rebuild the bench binary from its CMake build tree before measuring —
+    the same build-before-bench contract every other emit has implicitly
+    (swift build / cargo build / gradle happen inside their emits). Locates the
+    build dir by walking up from the binary to CMakeCache.txt; a binary outside
+    any build tree (or --no-build) is measured as-is with a loud warning, since
+    a stale binary silently measures the WRONG code (the 2026-07-24 stale-LTO
+    incident, and any harness-arm change like the ss/os split)."""
+    d = os.path.dirname(os.path.abspath(binary))
+    for _ in range(4):
+        if os.path.exists(os.path.join(d, "CMakeCache.txt")):
+            print(f"building bench binary ({d}) ...", flush=True)
+            r = subprocess.run(["cmake", "--build", d, "--target", "bench_libbid_vs_d128",
+                                "-j", str(os.cpu_count() or 4)],
+                               stdout=subprocess.DEVNULL)
+            if r.returncode != 0:
+                sys.exit("error: cmake build of bench_libbid_vs_d128 failed")
+            return
+        d = os.path.dirname(d)
+    print("WARNING: no CMakeCache.txt near binary — skipping rebuild, measuring as-is", flush=True)
+
+
 def main():
     if len(sys.argv) < 2:
         print(__doc__); sys.exit(1)
@@ -165,6 +190,8 @@ def main():
     for i, x in enumerate(a):
         if x == "--run-id": run = a[i+1]
         if x == "--min-time": min_time = a[i+1]
+    if "--no-build" not in a:
+        build_bench(binary)
 
     recs, ctx = {}, None
     KEY = lambda r: (r["lang"], r["impl"], r["op"], r["cat"], r["profile"], r["mode"], r["arch"])

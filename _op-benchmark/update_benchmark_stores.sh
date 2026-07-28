@@ -79,7 +79,9 @@ else
 fi
 
 if printf '%s\n' "${PORTS[@]}" | grep -qx c; then
-  [ -x "$CBIN" ] || { echo "C bench binary not found/executable: $CBIN"; echo "build it first (ThinLTO), or set CBIN=..."; exit 2; }
+  # emit_c.py rebuilds CBIN from its CMake tree before benching; it only needs
+  # the build dir configured once (ThinLTO). A missing path here means no tree.
+  [ -e "$CBIN" ] || { echo "C bench binary path not found: $CBIN"; echo "configure the build dir once (ThinLTO), or set CBIN=..."; exit 2; }
 fi
 
 echo "===== update_benchmark_stores  arch=$ARCH  ports: ${PORTS[*]}  ($(date)) ====="

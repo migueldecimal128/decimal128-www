@@ -64,8 +64,10 @@ separate, explicit step.
 
 This runs the ports **serially** (concurrent benches contaminate ns/op) and writes only
 this box's arch store files. It ends by reminding you that reports were **not**
-regenerated — run Stage B separately when you want to publish. (The C arm needs a
-pre-built bench binary; set `CBIN=...` or build it first — ThinLTO, see the C port.)
+regenerated — run Stage B separately when you want to publish. (The C arm rebuilds its
+bench binary from the CMake tree automatically — `emit_c.py` walks up from `CBIN` to
+`CMakeCache.txt` and runs `cmake --build` first; the build dir must exist/be configured
+once — ThinLTO, see the C port. `--no-build` skips.)
 
 The rest of this file is reference.
 
