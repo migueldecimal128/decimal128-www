@@ -22,6 +22,23 @@
 #                                                 # (surgical single-profile re-run)
 # =============================================================================
 set -u
+
+# Hold a power assertion for the whole sweep. An unattended run on a laptop can
+# otherwise idle-sleep mid-benchmark, and the cost is not just wall time: the
+# throttled window around sleep/wake inflates whatever is running. Seen
+# 2026-07-28 -- a go run slept 292s on battery and came back with three control
+# rows uniformly 1.76x their true value, while every other port that day sat
+# within normal drift.
+#
+# Caveat: this stops IDLE sleep. It cannot stop lid-close (clamshell) sleep --
+# leave the lid open for an unattended sweep.
+#
+# Re-exec self under caffeinate once; D128_CAFFEINATED makes that idempotent.
+if [ -z "${D128_CAFFEINATED:-}" ] && command -v caffeinate >/dev/null 2>&1; then
+  export D128_CAFFEINATED=1
+  exec caffeinate -dimsu "$0" "$@"
+fi
+
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$HERE"
 
