@@ -53,7 +53,7 @@ def _merge_store(path, recs, KEY):
 PROFILES = ["P-gen", "P-fin", "P-max", "FMA"]   # FMA is its own SWEPT_PROFILE (FN/FF regimes)
 IMPL = {"d128": "d128", "libbid": "libbid", "decq": "libdecquad", "mpd": "libmpdecimal"}
 BAND_RE = re.compile(r"^BM_(d128|libbid|decq|mpd)_(add|sub|mul|div)_"
-                     r"(SQ|NQ|MQ|OQ|FQ|MIX|CP|WP|XP|CD|WD|XD|ET|PT)(_tte|_rnd)?$")
+                     r"((?:SQ|NQ|MQ|OQ|FQ)_(?:ss|os)|MIX|CP|WP|XP|CD|WD|XD|ET|PT)(_tte|_rnd)?$")
 # FMA now carries peers: d128 via the flag-free _tte rung, libbid/decq/mpd via their
 # native fused multiply-add (__bid128_fma / decQuadFMA / mpd_qfma), plain (no suffix).
 FMA_RE  = re.compile(r"^BM_(d128|libbid|decq|mpd)_fma_(FN|FF)(_tte)?$")
@@ -141,7 +141,8 @@ def reshape(j, profile, run):
         m = BAND_RE.match(name)
         if not m:
             continue
-        raw_impl, op, cat, suffix = m.groups()
+        raw_impl, op, band, suffix = m.groups()
+        cat = band.replace("_", "")   # store cat: "SQ_ss" -> "SQss"
         impl = IMPL[raw_impl]
         if impl == "d128":
             # add/sub: flag-free _tte rung; mul/div: plain _ctx arm
@@ -179,7 +180,7 @@ def main():
     # rewrite results.c.jsonl (C arm fully emit-owned)
     KO = ["lang","impl","op","cat","profile","arch","mode","ns","run"]
     opo = {"add":0,"sub":1,"mul":2,"div":3,"fma":4}
-    cato = {c:i for i,c in enumerate(["SQ","NQ","MQ","OQ","FQ","CP","WP","XP","CD","WD","XD","ET","PT","FN","FF","MIX"])}
+    cato = {c:i for i,c in enumerate(["SQss","SQos","NQss","NQos","MQss","MQos","OQss","OQos","FQss","FQos","CP","WP","XP","CD","WD","XD","ET","PT","FN","FF","MIX"])}
     pro = {"P-fin":0,"P-gen":1,"P-max":2,"FMA":3}
     merged = _merge_store(os.path.join(HERE, f"results.c.{ARCH}.jsonl"), recs, KEY)
     rows = sorted(merged.values(), key=lambda r:(r["impl"],opo[r["op"]],pro[r["profile"]],cato[r["cat"]]))
@@ -210,7 +211,7 @@ def upsert_run(run, ctx, toolchain):
                      "FMA peers via native fused multiply-add (__bid128_fma / decQuadFMA / mpd_qfma)",
            "ports": "decimal128-c", "notes": "Phase-2 C reference emit (emit_c.py); SWEPT_PROFILE "
                      "P-gen/P-fin/P-max/FMA. FMA now carries libbid/decQuad/mpd peer arms (one-rounding "
-                     "fused). Fresh emit — supersedes transcribed C rows."}
+                     "fused). Fresh emit — supersedes transcribed C rows. Add/sub bands sign-split ss/os as of 2026-07-28 (AddSubSignSplitWorkOrder; corpus regen by swift CorpusGen) — prior blended add/sub rows non-comparable."}
     runs.append(rec)
     with open(p, "w") as f:
         for r in runs:

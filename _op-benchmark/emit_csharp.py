@@ -68,7 +68,7 @@ def _merge_store(path, recs, KEY):
     return store
 PROFILES = ["P-gen", "P-fin", "P-max", "FMA"]
 OP = {"Add": "add", "Sub": "sub", "Mul": "mul", "Div": "div", "Fma": "fma"}
-METH = re.compile(r"^(SysDec_|SysD128_)?(Add|Sub|Mul|Div|Fma)_([A-Z]+)$")
+METH = re.compile(r"^(SysDec_|SysD128_)?(Add|Sub|Mul|Div|Fma)_([A-Z]+(?:_(?:ss|os))?)$")
 IMPL_OF = {"SysDec_": "System.Decimal", "SysD128_": "System.Numerics.Decimal128"}
 
 def main():
@@ -120,6 +120,7 @@ def main():
             if not m:
                 continue
             prefix, opw, band = m.groups()
+            band = band.replace("_", "")   # store cat: "SQ_ss" -> "SQss"
             impl = IMPL_OF.get(prefix, "d128")
             op = OP[opw]
             profile = "FMA" if op == "fma" else prof
@@ -132,7 +133,7 @@ def main():
 
     KO = ["lang","impl","op","cat","profile","arch","mode","ns","run"]
     opo = {"add":0,"sub":1,"mul":2,"div":3,"fma":4}
-    cato = {c:i for i,c in enumerate(["SQ","NQ","MQ","OQ","FQ","CP","WP","XP","CD","WD","XD","ET","PT","FN","FF","MIX"])}
+    cato = {c:i for i,c in enumerate(["SQss","SQos","NQss","NQos","MQss","MQos","OQss","OQos","FQss","FQos","CP","WP","XP","CD","WD","XD","ET","PT","FN","FF","MIX"])}
     pro = {"P-fin":0,"P-gen":1,"P-max":2,"FMA":3}
     merged = _merge_store(os.path.join(HERE, f"results.csharp.{ARCH}.jsonl"), recs, KEY)
     rows = sorted(merged.values(), key=lambda r:(r["impl"],opo[r["op"]],pro[r["profile"]],cato[r["cat"]]))
@@ -158,7 +159,7 @@ def main():
                                  "overflow its ~7.9e28 ceiling)",
                  "ports": "decimal128-csharp",
                  "notes": f"csharp emit (emit_csharp.py); P-gen/P-fin/P-max/FMA. "
-                          f".NET 11 runtime, SDK {sdk_ver}."})
+                          f".NET 11 runtime, SDK {sdk_ver}. Add/sub bands sign-split ss/os as of 2026-07-28 (AddSubSignSplitWorkOrder; corpus regen by swift CorpusGen) — prior blended add/sub rows non-comparable."})
     with open(p, "w") as f:
         for r in runs: f.write(json.dumps(r, ensure_ascii=False) + "\n")
     print(f"upserted run '{run}'")

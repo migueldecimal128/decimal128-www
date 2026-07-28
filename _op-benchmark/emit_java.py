@@ -109,7 +109,7 @@ def main():
 
     KO = ["lang","impl","op","cat","profile","arch","mode","ns","run"]
     opo = {"add":0,"sub":1,"mul":2,"div":3,"fma":4}
-    cato = {c:i for i,c in enumerate(["SQ","NQ","MQ","OQ","FQ","CP","WP","XP","CD","WD","XD","ET","PT","FN","FF","MIX"])}
+    cato = {c:i for i,c in enumerate(["SQss","SQos","NQss","NQos","MQss","MQos","OQss","OQos","FQss","FQos","CP","WP","XP","CD","WD","XD","ET","PT","FN","FF","MIX"])}
     pro = {"P-fin":0,"P-gen":1,"P-max":2,"FMA":3}
     modo = {"thru‡":0,"ea":1,"thru":2}
     merged = _merge_store(os.path.join(HERE, f"results.java.{ARCH}.jsonl"), recs, KEY)
@@ -130,7 +130,7 @@ def main():
                            "TWO d128 records/cell: thru‡ (escape-forced 32B/op reified headline) + ea "
                            "(EA-elided 0-alloc lower bound). SWEPT_JSONL emit.",
                  "alternatives": "java.math.BigDecimal (MathContext.DECIMAL128; arbitrary precision ⇒ every band)",
-                 "ports": "decimal128-java", "notes": "Phase-3 java emit (emit_java.py); P-gen/P-fin/P-max/FMA."})
+                 "ports": "decimal128-java", "notes": "Phase-3 java emit (emit_java.py); P-gen/P-fin/P-max/FMA. Add/sub bands sign-split ss/os as of 2026-07-28 (AddSubSignSplitWorkOrder; corpus regen by swift CorpusGen) — prior blended add/sub rows non-comparable."})
     with open(p, "w") as f:
         for r in runs: f.write(json.dumps(r, ensure_ascii=False) + "\n")
     print(f"upserted run '{run}'")

@@ -40,7 +40,8 @@ LANGS    = {"c","swift","java","kotlin","rust","go","csharp","zig","python"}
 IMPLS    = {"d128","libbid","libdecquad","libmpdecimal","rust_decimal",
             "System.Decimal","System.Numerics.Decimal128","Foundation.Decimal","BigDecimal","decimal.Decimal"}
 OPS      = {"add","sub","mul","div","fma","toString","quantize"}
-CATS     = {"SQ","NQ","MQ","OQ","FQ","CP","WP","XP","CD","WD","XD","PT","ET","FN","FF","MIX"}
+CATS     = {"SQss","SQos","NQss","NQos","MQss","MQos","OQss","OQos","FQss","FQos",
+            "CP","WP","XP","CD","WD","XD","PT","ET","FN","FF","MIX"}
 PROFILES = {"P-fin","P-gen","P-max","FMA"}
 ARCHES   = {"arm64","x86_64"}
 MODES    = {"thru","thru*","thru‡","tte","ea"}
@@ -329,14 +330,14 @@ _REL_EXTRA = [("c","libdecquad"),("c","libmpdecimal")]
 _REL_EXTRA_NONFMA = _REL_EXTRA + [("csharp","System.Numerics.Decimal128")]
 SPECS = {
   # 4.1 Add — add-only matrices + relational
-  "add-pgen": dict(kind="matrix", profile="P-gen", ops=["add"], cats=["SQ","NQ","MQ","OQ","FQ"], ports=ALL_PORTS),
-  "add-pmax": dict(kind="matrix", profile="P-max", ops=["add"], cats=["SQ","OQ","FQ"], ports=ALL_PORTS),
-  "add-rel":  dict(kind="relational", profile="P-gen", ops=["add"], cats=["SQ","NQ","MQ","OQ","FQ"],
+  "add-pgen": dict(kind="matrix", profile="P-gen", ops=["add"], cats=["SQss","SQos","NQss","NQos","MQss","MQos","OQss","OQos","FQss","FQos"], ports=ALL_PORTS),
+  "add-pmax": dict(kind="matrix", profile="P-max", ops=["add"], cats=["SQss","SQos","OQss","OQos","FQss","FQos"], ports=ALL_PORTS),
+  "add-rel":  dict(kind="relational", profile="P-gen", ops=["add"], cats=["SQss","SQos","NQss","NQos","MQss","MQos","OQss","OQos","FQss","FQos"],
                    ports=_REL_PORTS, extra=_REL_EXTRA_NONFMA),
   # 4.2 Subtract — sub-only matrices + relational
-  "sub-pgen": dict(kind="matrix", profile="P-gen", ops=["sub"], cats=["SQ","NQ","MQ","OQ","FQ"], ports=ALL_PORTS),
-  "sub-pmax": dict(kind="matrix", profile="P-max", ops=["sub"], cats=["SQ","OQ","FQ"], ports=ALL_PORTS),
-  "sub-rel":  dict(kind="relational", profile="P-gen", ops=["sub"], cats=["SQ","NQ","MQ","OQ","FQ"],
+  "sub-pgen": dict(kind="matrix", profile="P-gen", ops=["sub"], cats=["SQss","SQos","NQss","NQos","MQss","MQos","OQss","OQos","FQss","FQos"], ports=ALL_PORTS),
+  "sub-pmax": dict(kind="matrix", profile="P-max", ops=["sub"], cats=["SQss","SQos","OQss","OQos","FQss","FQos"], ports=ALL_PORTS),
+  "sub-rel":  dict(kind="relational", profile="P-gen", ops=["sub"], cats=["SQss","SQos","NQss","NQos","MQss","MQos","OQss","OQos","FQss","FQos"],
                    ports=_REL_PORTS, extra=_REL_EXTRA_NONFMA),
   # 4.3 Multiply — CP·WP·XP matrices + relational. (No P-fin idiom-peer group: the
   # swept CP band's products overflow rust_decimal's 28 digits ⇒ no swept mul peer.)
