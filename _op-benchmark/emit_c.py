@@ -58,6 +58,50 @@ BAND_RE = re.compile(r"^BM_(d128|libbid|decq|mpd)_(add|sub|mul|div)_"
 # native fused multiply-add (__bid128_fma / decQuadFMA / mpd_qfma), plain (no suffix).
 FMA_RE  = re.compile(r"^BM_(d128|libbid|decq|mpd)_fma_(FN|FF)(_tte)?$")
 
+def _os_desc():
+    rel = platform.mac_ver()[0]
+    return f"macOS {rel} [Darwin {platform.release()}]" if rel else platform.platform()
+
+
+def _tool_version(cmd, cwd=None):
+    """First line of a toolchain version probe. Provenance only — returns
+    "unknown" rather than failing the run if the probe errors."""
+    try:
+        r = subprocess.run(cmd, capture_output=True, text=True, timeout=120, cwd=cwd)
+        out = ((r.stdout or "") + (r.stderr or "")).strip()
+        return out.splitlines()[0].strip() if r.returncode == 0 and out else "unknown"
+    except Exception:
+        return "unknown"
+
+
+def _c_build_flags(binary):
+    """How the bench binary was actually configured, read from the CMakeCache
+    beside it (walking up from the binary; typically <build>/benchmark/<bin>).
+
+    Recorded because the flags silently decide what the numbers mean: the root
+    CMakeLists appends -flto only to CMAKE_C/CXX_FLAGS_RELEASE, so a build with
+    an empty CMAKE_BUILD_TYPE gets NO LTO and understates d128 by ~1.5x. A run
+    record carrying the flags makes that visible instead of invisible."""
+    d = os.path.dirname(os.path.abspath(binary))
+    for _ in range(4):
+        cache = os.path.join(d, "CMakeCache.txt")
+        if os.path.exists(cache):
+            want = {"CMAKE_BUILD_TYPE": None, "CMAKE_C_FLAGS": None, "DECIMAL128C_NO_LTO": None}
+            for ln in open(cache, errors="replace"):
+                k = ln.split(":", 1)[0]
+                if k in want and want[k] is None and "=" in ln:
+                    want[k] = ln.split("=", 1)[1].strip()
+            bt = want["CMAKE_BUILD_TYPE"] or "(none)"
+            cf = want["CMAKE_C_FLAGS"] or ""
+            lto = ("thin-LTO" if "-flto=thin" in cf else
+                   "full-LTO" if "-flto" in cf else
+                   "LTO via Release" if bt.lower() == "release" and want["DECIMAL128C_NO_LTO"] != "ON"
+                   else "NO LTO")
+            return f"build: CMAKE_BUILD_TYPE={bt}, C_FLAGS='{cf}' [{lto}]"
+        d = os.path.dirname(d)
+    return "build: CMakeCache not found"
+
+
 def run_bench(binary, profile, min_time, out):
     env = dict(os.environ, SWEPT_PROFILE=profile)
     subprocess.run([binary, f"--benchmark_min_time={min_time}",
@@ -145,17 +189,19 @@ def main():
     print(f"rewrote results.c.{ARCH}.jsonl ({len(rows)} records)")
 
     # mint / update the run in runs.jsonl
-    upsert_run(run, ctx)
+    upsert_run(run, ctx, f"{_os_desc()}; {_tool_version(['cc', '--version'])}; "
+                         f"{_c_build_flags(binary)}.")
     by = collections.Counter((r["impl"],r["profile"]) for r in recs.values())
     for k in sorted(by): print(f"   {k}: {by[k]}")
 
-def upsert_run(run, ctx):
+def upsert_run(run, ctx, toolchain):
     p = os.path.join(HERE, f"runs.{ARCH}.jsonl")
     lines = [l for l in open(p).read().splitlines() if l.strip()]
     runs = [json.loads(l) for l in lines]
     runs = [r for r in runs if r["run"] != run]
     rec = {"run": run, "date": (ctx or {}).get("date","")[:10],
            "machine": f"{(ctx or {}).get('host_name','?')} ({(ctx or {}).get('num_cpus','?')} cpus)",
+           "os_toolchain": toolchain,
            "engine": "Google Benchmark (bench_main.cpp), in-process; d128 add/sub _tte rung, "
                      "mul/div _ctx arm, FMA _tte; 15-rep MEDIAN aggregate "
                      "(--benchmark_repetitions=15 --benchmark_report_aggregates_only), "

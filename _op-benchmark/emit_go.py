@@ -47,6 +47,28 @@ def _merge_store(path, recs, KEY):
 PROFILES = ["P-gen", "P-fin", "P-max", "FMA"]
 LINE_RE = re.compile(r"BenchmarkSwept/(add|sub|mul|div|fma)/(\w+)-\d+\s+\d+\s+([\d.]+)\s+ns/op")
 
+def _os_desc():
+    rel = platform.mac_ver()[0]
+    return f"macOS {rel} [Darwin {platform.release()}]" if rel else platform.platform()
+
+
+def _tool_version(cmd, cwd=None):
+    """First line of a toolchain version probe (e.g. `go version`).
+
+    Provenance only: returns "unknown" rather than failing the run if the probe
+    errors. Pinning the exact build matters because a compiler or runtime bump
+    can move a number severalfold with no source change (a .NET preview bump
+    once moved a peer's divide 4x while the port held flat) — a run record that
+    names only the major version cannot tell those pictures apart.
+    """
+    try:
+        r = subprocess.run(cmd, capture_output=True, text=True, timeout=120, cwd=cwd)
+        out = ((r.stdout or "") + (r.stderr or "")).strip()
+        return out.splitlines()[0].strip() if r.returncode == 0 and out else "unknown"
+    except Exception:
+        return "unknown"
+
+
 def main():
     crate = os.path.expanduser("~/decimal128/go")
     run = "Rgosw2"; benchtime = "1s"
@@ -88,7 +110,9 @@ def main():
     p = os.path.join(HERE, f"runs.{ARCH}.jsonl")
     runs = [json.loads(l) for l in open(p).read().splitlines() if l.strip()]
     runs = [r for r in runs if r["run"] != run]
+    toolchain = f"{_os_desc()}; {_tool_version(['go', 'version'])}."
     runs.append({"run": run, "date": "", "machine": MACHINE,
+                 "os_toolchain": toolchain,
                  "engine": "swept_bench_test.go (testing.B; auto-scaling `for b.Loop()` mean over "
                            "the 4096-pair swept corpus, _tte Add/Sub/Mul/Quo); "
                            "go test -bench=^BenchmarkSwept$ -benchtime=1s",

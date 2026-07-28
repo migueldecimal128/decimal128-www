@@ -34,6 +34,26 @@ MACHINE = (f"Intel Core i9-9880H ({os.cpu_count()} cpus), x86_64"
            if ARCH == "x86_64" else "Apple M3 Pro (12 cores), arm64")
 
 
+def _dotnet_version(dotnet):
+    """The exact SDK build behind this run, e.g. 11.0.100-preview.7.26376.106.
+
+    Worth pinning: between preview.7.26366.102 and preview.7.26376.106 the
+    System.Numerics.Decimal128 peer's divide got up to 4x faster while d128 and
+    System.Decimal held flat. A run record that says only ".NET 11" cannot tell
+    those two pictures apart."""
+    try:
+        r = subprocess.run([dotnet, "--version"], capture_output=True, text=True, timeout=60)
+        v = (r.stdout or "").strip()
+        return v if r.returncode == 0 and v else "unknown"
+    except Exception:
+        return "unknown"
+
+
+def _os_desc():
+    rel = platform.mac_ver()[0]
+    return f"macOS {rel} [Darwin {platform.release()}]" if rel else platform.platform()
+
+
 def _merge_store(path, recs, KEY):
     """Fold this run's recs into the on-disk store, upsert by KEY so other-arch
     and unmeasured rows survive (no clobber). Returns the merged dict."""
@@ -72,6 +92,8 @@ def main():
                  "  then:     ln -snf 11.0-preview $HOME/dotnet/current\n"
                  "  or point DOTNET11 at a net11 SDK dotnet binary.")
     dotnet_root = os.path.dirname(dotnet)
+    sdk_ver = _dotnet_version(dotnet)
+    print(f"using .NET SDK {sdk_ver} ({dotnet})", flush=True)
 
     recs = {}
     KEY = lambda r: (r["lang"], r["impl"], r["op"], r["cat"], r["profile"], r["mode"], r["arch"])
@@ -123,6 +145,7 @@ def main():
     runs = [json.loads(l) for l in open(p).read().splitlines() if l.strip()]
     runs = [r for r in runs if r["run"] != run]
     runs.append({"run": run, "date": "", "machine": MACHINE,
+                 "os_toolchain": f"{_os_desc()}; .NET SDK {sdk_ver}.",
                  "engine": "SweptBench.cs (BenchmarkDotNet InProcess Throughput, warmup 4 / iter 15 / launch 1; "
                            "_tte Add/Sub/Mul/Quo), executed on the .NET 11 runtime (System.Numerics.Decimal128 is "
                            "net11-only; port compiled net10.0, JIT'd by net11 — InProcess toolchain as BDN 0.15.8 "
@@ -134,7 +157,8 @@ def main():
                                  "System.Decimal (96-bit/28-digit idiom peer; compact bands only — wide bands "
                                  "overflow its ~7.9e28 ceiling)",
                  "ports": "decimal128-csharp",
-                 "notes": "csharp emit (emit_csharp.py); P-gen/P-fin/P-max/FMA. .NET 11 runtime."})
+                 "notes": f"csharp emit (emit_csharp.py); P-gen/P-fin/P-max/FMA. "
+                          f".NET 11 runtime, SDK {sdk_ver}."})
     with open(p, "w") as f:
         for r in runs: f.write(json.dumps(r, ensure_ascii=False) + "\n")
     print(f"upserted run '{run}'")

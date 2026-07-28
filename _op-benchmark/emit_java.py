@@ -42,6 +42,46 @@ def _merge_store(path, recs, KEY):
     return store
 PROFILES = ["P-gen", "P-fin", "P-max", "FMA"]
 
+def _os_desc():
+    rel = platform.mac_ver()[0]
+    return f"macOS {rel} [Darwin {platform.release()}]" if rel else platform.platform()
+
+
+def _tool_version(cmd, cwd=None):
+    """First line of a toolchain version probe (e.g. `go version`).
+
+    Provenance only: returns "unknown" rather than failing the run if the probe
+    errors. Pinning the exact build matters because a compiler or runtime bump
+    can move a number severalfold with no source change (a .NET preview bump
+    once moved a peer's divide 4x while the port held flat) — a run record that
+    names only the major version cannot tell those pictures apart.
+    """
+    try:
+        r = subprocess.run(cmd, capture_output=True, text=True, timeout=120, cwd=cwd)
+        out = ((r.stdout or "") + (r.stderr or "")).strip()
+        return out.splitlines()[0].strip() if r.returncode == 0 and out else "unknown"
+    except Exception:
+        return "unknown"
+
+
+def _gradle_toolchain(repo):
+    """Gradle + the JVM that actually ran the benchmark (authoritative over PATH `java`,
+    which gradle need not be using). "unknown" if the probe fails."""
+    try:
+        r = subprocess.run(["./gradlew", "-version", "--console=plain"],
+                           cwd=repo, capture_output=True, text=True, timeout=300)
+        gradle = jvm = None
+        for ln in ((r.stdout or "") + (r.stderr or "")).splitlines():
+            ln = ln.strip()
+            if ln.startswith("Gradle ") and gradle is None:
+                gradle = ln
+            elif ln.startswith(("Launcher JVM:", "JVM:")) and jvm is None:
+                jvm = "JVM " + ln.split(":", 1)[1].strip()
+        return "; ".join(x for x in (gradle, jvm) if x) or "unknown"
+    except Exception:
+        return "unknown"
+
+
 def main():
     repo = os.path.expanduser("~/decimal128/java")
     run = "Rjasw2"
@@ -82,7 +122,9 @@ def main():
     p = os.path.join(HERE, f"runs.{ARCH}.jsonl")
     runs = [json.loads(l) for l in open(p).read().splitlines() if l.strip()]
     runs = [r for r in runs if r["run"] != run]
+    toolchain = f"{_os_desc()}; {_gradle_toolchain(repo)}."
     runs.append({"run": run, "date": "", "machine": MACHINE,
+                 "os_toolchain": toolchain,
                  "engine": "benchmark/.../swept/SweptBench.java (manual std-clock, ~300ms OSR warmup + "
                            "min-over-7; _tte add/subtract/multiply/divide); Verify.VERIFY_ENABLED=false. "
                            "TWO d128 records/cell: thru‡ (escape-forced 32B/op reified headline) + ea "
