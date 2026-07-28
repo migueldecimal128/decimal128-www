@@ -30,14 +30,14 @@ The headline: one realistic 64-bit financial operation mix — a `MIX` add/sub s
 
 | port | op | cat | profile | arch | mode | ns | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| kotlin | add | MIX | P-fin | arm64 | thru‡ | 5.34 | BigDecimal | 20.19 | **3.78×** | Rkosw2 | compact idiom peer |
-| kotlin | sub | MIX | P-fin | arm64 | thru‡ | 6.31 | BigDecimal | 24.86 | **3.94×** | Rkosw2 | compact idiom peer |
-| kotlin | mul | CP | P-fin | arm64 | thru‡ | 5.45 | BigDecimal | 12.46 | **2.29×** | Rkosw2 | compact idiom peer |
-| kotlin | mul | WP | P-fin | arm64 | thru‡ | 26.51 | BigDecimal | 64.76 | **2.44×** | Rkosw2 | compact idiom peer |
-| kotlin | div | CD | P-fin | arm64 | thru‡ | 38.40 | BigDecimal | 140.29 | **3.65×** | Rkosw2 | compact idiom peer |
-| kotlin | div | WD | P-fin | arm64 | thru‡ | 50.04 | BigDecimal | 100.50 | **2.01×** | Rkosw2 | compact idiom peer |
-| kotlin | div | ET | P-fin | arm64 | thru‡ | 18.70 | BigDecimal | 507.95 | **27.16×** | Rkosw2 | compact idiom peer |
-| kotlin | div | PT | P-fin | arm64 | thru‡ | 15.06 | BigDecimal | 485.55 | **32.24×** | Rkosw2 | compact idiom peer |
+| kotlin | add | MIX | P-fin | arm64 | thru‡ | 4.91 | BigDecimal | 19.28 | **3.93×** | Rkosw2 | compact idiom peer |
+| kotlin | sub | MIX | P-fin | arm64 | thru‡ | 6.34 | BigDecimal | 24.91 | **3.93×** | Rkosw2 | compact idiom peer |
+| kotlin | mul | CP | P-fin | arm64 | thru‡ | 5.29 | BigDecimal | 12.49 | **2.36×** | Rkosw2 | compact idiom peer |
+| kotlin | mul | WP | P-fin | arm64 | thru‡ | 30.19 | BigDecimal | 65.50 | **2.17×** | Rkosw2 | compact idiom peer |
+| kotlin | div | CD | P-fin | arm64 | thru‡ | 40.56 | BigDecimal | 139.88 | **3.45×** | Rkosw2 | compact idiom peer |
+| kotlin | div | WD | P-fin | arm64 | thru‡ | 51.73 | BigDecimal | 101.79 | **1.97×** | Rkosw2 | compact idiom peer |
+| kotlin | div | ET | P-fin | arm64 | thru‡ | 18.05 | BigDecimal | 502.96 | **27.86×** | Rkosw2 | compact idiom peer |
+| kotlin | div | PT | P-fin | arm64 | thru‡ | 15.21 | BigDecimal | 482.55 | **31.73×** | Rkosw2 | compact idiom peer |
 
 <!-- END GENERATED pfin-rel-kotlin -->
 
@@ -47,14 +47,14 @@ The headline: one realistic 64-bit financial operation mix — a `MIX` add/sub s
 
 | port | op | cat | profile | arch | mode | ns | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| kotlin | add | MIX | P-fin | x86_64 | thru‡ | 22.78 | BigDecimal | 64.24 | **2.82×** | xRkosw2 | compact idiom peer |
-| kotlin | sub | MIX | P-fin | x86_64 | thru‡ | 19.03 | BigDecimal | 75.57 | **3.97×** | xRkosw2 | compact idiom peer |
-| kotlin | mul | CP | P-fin | x86_64 | thru‡ | 13.89 | BigDecimal | 43.33 | **3.12×** | xRkosw2 | compact idiom peer |
-| kotlin | mul | WP | P-fin | x86_64 | thru‡ | 48.71 | BigDecimal | 164.34 | **3.37×** | xRkosw2 | compact idiom peer |
-| kotlin | div | CD | P-fin | x86_64 | thru‡ | 109.38 | BigDecimal | 435.62 | **3.98×** | xRkosw2 | compact idiom peer |
-| kotlin | div | WD | P-fin | x86_64 | thru‡ | 132.79 | BigDecimal | 235.28 | **1.77×** | xRkosw2 | compact idiom peer |
-| kotlin | div | ET | P-fin | x86_64 | thru‡ | 52.49 | BigDecimal | 1451.36 | **27.65×** | xRkosw2 | compact idiom peer |
-| kotlin | div | PT | P-fin | x86_64 | thru‡ | 27.66 | BigDecimal | 1412.66 | **51.07×** | xRkosw2 | compact idiom peer |
+| kotlin | add | MIX | P-fin | x86_64 | thru‡ | 13.42 | BigDecimal | 50.69 | **3.78×** | xRkosw2 | compact idiom peer |
+| kotlin | sub | MIX | P-fin | x86_64 | thru‡ | 17.31 | BigDecimal | 63.14 | **3.65×** | xRkosw2 | compact idiom peer |
+| kotlin | mul | CP | P-fin | x86_64 | thru‡ | 12.42 | BigDecimal | 42.58 | **3.43×** | xRkosw2 | compact idiom peer |
+| kotlin | mul | WP | P-fin | x86_64 | thru‡ | 50.20 | BigDecimal | 157.99 | **3.15×** | xRkosw2 | compact idiom peer |
+| kotlin | div | CD | P-fin | x86_64 | thru‡ | 103.64 | BigDecimal | 405.19 | **3.91×** | xRkosw2 | compact idiom peer |
+| kotlin | div | WD | P-fin | x86_64 | thru‡ | 127.25 | BigDecimal | 217.09 | **1.71×** | xRkosw2 | compact idiom peer |
+| kotlin | div | ET | P-fin | x86_64 | thru‡ | 51.94 | BigDecimal | 1395.56 | **26.87×** | xRkosw2 | compact idiom peer |
+| kotlin | div | PT | P-fin | x86_64 | thru‡ | 26.92 | BigDecimal | 1343.69 | **49.91×** | xRkosw2 | compact idiom peer |
 
 <!-- END GENERATED pfin-rel-kotlin-x86 -->
 
@@ -68,11 +68,11 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| kotlin | add | SQ | P-gen | arm64 | thru‡ | 5.95 | BigDecimal | 19.25 | **3.24×** | Rkosw2 | compact idiom peer |
-| kotlin | add | NQ | P-gen | arm64 | thru‡ | 7.51 | BigDecimal | 30.48 | **4.06×** | Rkosw2 | compact idiom peer |
-| kotlin | add | MQ | P-gen | arm64 | thru‡ | 16.99 | BigDecimal | 31.30 | **1.84×** | Rkosw2 | compact idiom peer |
-| kotlin | add | OQ | P-gen | arm64 | thru‡ | 30.24 | BigDecimal | 75.47 | **2.50×** | Rkosw2 | compact idiom peer |
-| kotlin | add | FQ | P-gen | arm64 | thru‡ | 19.29 | BigDecimal | 89.28 | **4.63×** | Rkosw2 | compact idiom peer |
+| kotlin | add | SQ | P-gen | arm64 | thru‡ | 4.89 | BigDecimal | 19.34 | **3.96×** | Rkosw2 | compact idiom peer |
+| kotlin | add | NQ | P-gen | arm64 | thru‡ | 9.12 | BigDecimal | 30.48 | **3.34×** | Rkosw2 | compact idiom peer |
+| kotlin | add | MQ | P-gen | arm64 | thru‡ | 19.04 | BigDecimal | 30.73 | **1.61×** | Rkosw2 | compact idiom peer |
+| kotlin | add | OQ | P-gen | arm64 | thru‡ | 39.51 | BigDecimal | 77.47 | **1.96×** | Rkosw2 | compact idiom peer |
+| kotlin | add | FQ | P-gen | arm64 | thru‡ | 21.35 | BigDecimal | 89.85 | **4.21×** | Rkosw2 | compact idiom peer |
 
 <!-- END GENERATED add-rel-kotlin -->
 
@@ -82,11 +82,11 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| kotlin | add | SQ | P-gen | x86_64 | thru‡ | 17.29 | BigDecimal | 55.77 | **3.23×** | xRkosw2 | compact idiom peer |
-| kotlin | add | NQ | P-gen | x86_64 | thru‡ | 24.21 | BigDecimal | 85.32 | **3.52×** | xRkosw2 | compact idiom peer |
-| kotlin | add | MQ | P-gen | x86_64 | thru‡ | 35.78 | BigDecimal | 85.60 | **2.39×** | xRkosw2 | compact idiom peer |
-| kotlin | add | OQ | P-gen | x86_64 | thru‡ | 63.53 | BigDecimal | 167.13 | **2.63×** | xRkosw2 | compact idiom peer |
-| kotlin | add | FQ | P-gen | x86_64 | thru‡ | 45.87 | BigDecimal | 195.66 | **4.27×** | xRkosw2 | compact idiom peer |
+| kotlin | add | SQ | P-gen | x86_64 | thru‡ | 14.74 | BigDecimal | 55.84 | **3.79×** | xRkosw2 | compact idiom peer |
+| kotlin | add | NQ | P-gen | x86_64 | thru‡ | 20.87 | BigDecimal | 84.19 | **4.03×** | xRkosw2 | compact idiom peer |
+| kotlin | add | MQ | P-gen | x86_64 | thru‡ | 36.52 | BigDecimal | 89.55 | **2.45×** | xRkosw2 | compact idiom peer |
+| kotlin | add | OQ | P-gen | x86_64 | thru‡ | 63.47 | BigDecimal | 173.27 | **2.73×** | xRkosw2 | compact idiom peer |
+| kotlin | add | FQ | P-gen | x86_64 | thru‡ | 44.70 | BigDecimal | 196.28 | **4.39×** | xRkosw2 | compact idiom peer |
 
 <!-- END GENERATED add-rel-kotlin-x86 -->
 
@@ -100,11 +100,11 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| kotlin | sub | SQ | P-gen | arm64 | thru‡ | 5.00 | BigDecimal | 23.36 | **4.67×** | Rkosw2 | compact idiom peer |
-| kotlin | sub | NQ | P-gen | arm64 | thru‡ | 7.72 | BigDecimal | 34.64 | **4.49×** | Rkosw2 | compact idiom peer |
-| kotlin | sub | MQ | P-gen | arm64 | thru‡ | 17.13 | BigDecimal | 34.69 | **2.03×** | Rkosw2 | compact idiom peer |
-| kotlin | sub | OQ | P-gen | arm64 | thru‡ | 31.01 | BigDecimal | 83.45 | **2.69×** | Rkosw2 | compact idiom peer |
-| kotlin | sub | FQ | P-gen | arm64 | thru‡ | 17.72 | BigDecimal | 95.69 | **5.40×** | Rkosw2 | compact idiom peer |
+| kotlin | sub | SQ | P-gen | arm64 | thru‡ | 5.00 | BigDecimal | 23.35 | **4.67×** | Rkosw2 | compact idiom peer |
+| kotlin | sub | NQ | P-gen | arm64 | thru‡ | 8.57 | BigDecimal | 34.67 | **4.05×** | Rkosw2 | compact idiom peer |
+| kotlin | sub | MQ | P-gen | arm64 | thru‡ | 18.34 | BigDecimal | 34.83 | **1.90×** | Rkosw2 | compact idiom peer |
+| kotlin | sub | OQ | P-gen | arm64 | thru‡ | 39.10 | BigDecimal | 84.69 | **2.17×** | Rkosw2 | compact idiom peer |
+| kotlin | sub | FQ | P-gen | arm64 | thru‡ | 18.87 | BigDecimal | 96.17 | **5.10×** | Rkosw2 | compact idiom peer |
 
 <!-- END GENERATED sub-rel-kotlin -->
 
@@ -114,11 +114,11 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| kotlin | sub | SQ | P-gen | x86_64 | thru‡ | 13.61 | BigDecimal | 62.79 | **4.61×** | xRkosw2 | compact idiom peer |
-| kotlin | sub | NQ | P-gen | x86_64 | thru‡ | 24.99 | BigDecimal | 92.20 | **3.69×** | xRkosw2 | compact idiom peer |
-| kotlin | sub | MQ | P-gen | x86_64 | thru‡ | 36.80 | BigDecimal | 94.55 | **2.57×** | xRkosw2 | compact idiom peer |
-| kotlin | sub | OQ | P-gen | x86_64 | thru‡ | 64.91 | BigDecimal | 176.46 | **2.72×** | xRkosw2 | compact idiom peer |
-| kotlin | sub | FQ | P-gen | x86_64 | thru‡ | 46.20 | BigDecimal | 203.22 | **4.40×** | xRkosw2 | compact idiom peer |
+| kotlin | sub | SQ | P-gen | x86_64 | thru‡ | 14.81 | BigDecimal | 66.73 | **4.51×** | xRkosw2 | compact idiom peer |
+| kotlin | sub | NQ | P-gen | x86_64 | thru‡ | 20.88 | BigDecimal | 90.22 | **4.32×** | xRkosw2 | compact idiom peer |
+| kotlin | sub | MQ | P-gen | x86_64 | thru‡ | 37.05 | BigDecimal | 95.44 | **2.58×** | xRkosw2 | compact idiom peer |
+| kotlin | sub | OQ | P-gen | x86_64 | thru‡ | 79.62 | BigDecimal | 186.95 | **2.35×** | xRkosw2 | compact idiom peer |
+| kotlin | sub | FQ | P-gen | x86_64 | thru‡ | 43.93 | BigDecimal | 206.24 | **4.69×** | xRkosw2 | compact idiom peer |
 
 <!-- END GENERATED sub-rel-kotlin-x86 -->
 
@@ -132,9 +132,9 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| kotlin | mul | CP | P-gen | arm64 | thru‡ | 5.52 | BigDecimal | 12.06 | **2.18×** | Rkosw2 | compact idiom peer |
-| kotlin | mul | WP | P-gen | arm64 | thru‡ | 29.05 | BigDecimal | 55.58 | **1.91×** | Rkosw2 | compact idiom peer |
-| kotlin | mul | XP | P-gen | arm64 | thru‡ | 51.99 | BigDecimal | 161.72 | **3.11×** | Rkosw2 | compact idiom peer |
+| kotlin | mul | CP | P-gen | arm64 | thru‡ | 5.77 | BigDecimal | 12.04 | **2.09×** | Rkosw2 | compact idiom peer |
+| kotlin | mul | WP | P-gen | arm64 | thru‡ | 27.24 | BigDecimal | 55.00 | **2.02×** | Rkosw2 | compact idiom peer |
+| kotlin | mul | XP | P-gen | arm64 | thru‡ | 54.73 | BigDecimal | 161.64 | **2.95×** | Rkosw2 | compact idiom peer |
 
 <!-- END GENERATED mul-rel-kotlin -->
 
@@ -144,9 +144,9 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| kotlin | mul | CP | P-gen | x86_64 | thru‡ | 14.17 | BigDecimal | 41.57 | **2.93×** | xRkosw2 | compact idiom peer |
-| kotlin | mul | WP | P-gen | x86_64 | thru‡ | 46.58 | BigDecimal | 152.00 | **3.26×** | xRkosw2 | compact idiom peer |
-| kotlin | mul | XP | P-gen | x86_64 | thru‡ | 71.14 | BigDecimal | 273.84 | **3.85×** | xRkosw2 | compact idiom peer |
+| kotlin | mul | CP | P-gen | x86_64 | thru‡ | 14.87 | BigDecimal | 39.84 | **2.68×** | xRkosw2 | compact idiom peer |
+| kotlin | mul | WP | P-gen | x86_64 | thru‡ | 47.79 | BigDecimal | 153.39 | **3.21×** | xRkosw2 | compact idiom peer |
+| kotlin | mul | XP | P-gen | x86_64 | thru‡ | 67.85 | BigDecimal | 282.03 | **4.16×** | xRkosw2 | compact idiom peer |
 
 <!-- END GENERATED mul-rel-kotlin-x86 -->
 
@@ -160,11 +160,11 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| kotlin | div | CD | P-gen | arm64 | thru‡ | 35.37 | BigDecimal | 138.12 | **3.91×** | Rkosw2 | compact idiom peer |
-| kotlin | div | WD | P-gen | arm64 | thru‡ | 52.56 | BigDecimal | 122.45 | **2.33×** | Rkosw2 | compact idiom peer |
-| kotlin | div | XD | P-gen | arm64 | thru‡ | 53.48 | BigDecimal | 216.17 | **4.04×** | Rkosw2 | compact idiom peer |
-| kotlin | div | ET | P-gen | arm64 | thru‡ | 19.61 | BigDecimal | 423.69 | **21.61×** | Rkosw2 | compact idiom peer |
-| kotlin | div | PT | P-gen | arm64 | thru‡ | 11.54 | BigDecimal | 393.92 | **34.14×** | Rkosw2 | compact idiom peer |
+| kotlin | div | CD | P-gen | arm64 | thru‡ | 35.23 | BigDecimal | 138.76 | **3.94×** | Rkosw2 | compact idiom peer |
+| kotlin | div | WD | P-gen | arm64 | thru‡ | 51.92 | BigDecimal | 112.44 | **2.17×** | Rkosw2 | compact idiom peer |
+| kotlin | div | XD | P-gen | arm64 | thru‡ | 51.77 | BigDecimal | 222.38 | **4.30×** | Rkosw2 | compact idiom peer |
+| kotlin | div | ET | P-gen | arm64 | thru‡ | 19.53 | BigDecimal | 422.56 | **21.64×** | Rkosw2 | compact idiom peer |
+| kotlin | div | PT | P-gen | arm64 | thru‡ | 11.52 | BigDecimal | 391.87 | **34.02×** | Rkosw2 | compact idiom peer |
 
 <!-- END GENERATED div-rel-kotlin -->
 
@@ -174,11 +174,11 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| kotlin | div | CD | P-gen | x86_64 | thru‡ | 91.75 | BigDecimal | 365.74 | **3.99×** | xRkosw2 | compact idiom peer |
-| kotlin | div | WD | P-gen | x86_64 | thru‡ | 121.40 | BigDecimal | 261.87 | **2.16×** | xRkosw2 | compact idiom peer |
-| kotlin | div | XD | P-gen | x86_64 | thru‡ | 138.46 | BigDecimal | 347.22 | **2.51×** | xRkosw2 | compact idiom peer |
-| kotlin | div | ET | P-gen | x86_64 | thru‡ | 49.40 | BigDecimal | 1112.78 | **22.53×** | xRkosw2 | compact idiom peer |
-| kotlin | div | PT | P-gen | x86_64 | thru‡ | 25.71 | BigDecimal | 1040.78 | **40.48×** | xRkosw2 | compact idiom peer |
+| kotlin | div | CD | P-gen | x86_64 | thru‡ | 93.41 | BigDecimal | 359.09 | **3.84×** | xRkosw2 | compact idiom peer |
+| kotlin | div | WD | P-gen | x86_64 | thru‡ | 119.42 | BigDecimal | 254.66 | **2.13×** | xRkosw2 | compact idiom peer |
+| kotlin | div | XD | P-gen | x86_64 | thru‡ | 126.54 | BigDecimal | 351.65 | **2.78×** | xRkosw2 | compact idiom peer |
+| kotlin | div | ET | P-gen | x86_64 | thru‡ | 48.04 | BigDecimal | 1099.23 | **22.88×** | xRkosw2 | compact idiom peer |
+| kotlin | div | PT | P-gen | x86_64 | thru‡ | 24.22 | BigDecimal | 1022.51 | **42.22×** | xRkosw2 | compact idiom peer |
 
 <!-- END GENERATED div-rel-kotlin-x86 -->
 
@@ -192,8 +192,8 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| kotlin | fma | FN | FMA | arm64 | thru‡ | 114.31 | - | - | - | Rkosw2 |  |
-| kotlin | fma | FF | FMA | arm64 | thru‡ | 83.67 | - | - | - | Rkosw2 |  |
+| kotlin | fma | FN | FMA | arm64 | thru‡ | 106.00 | - | - | - | Rkosw2 |  |
+| kotlin | fma | FF | FMA | arm64 | thru‡ | 81.98 | - | - | - | Rkosw2 |  |
 
 <!-- END GENERATED fma-rel-kotlin -->
 
@@ -203,8 +203,8 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| kotlin | fma | FN | FMA | x86_64 | thru‡ | 235.29 | - | - | - | xRkosw2 |  |
-| kotlin | fma | FF | FMA | x86_64 | thru‡ | 184.52 | - | - | - | xRkosw2 |  |
+| kotlin | fma | FN | FMA | x86_64 | thru‡ | 233.32 | - | - | - | xRkosw2 |  |
+| kotlin | fma | FF | FMA | x86_64 | thru‡ | 172.94 | - | - | - | xRkosw2 |  |
 
 <!-- END GENERATED fma-rel-kotlin-x86 -->
 
