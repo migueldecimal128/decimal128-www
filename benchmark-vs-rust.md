@@ -31,14 +31,14 @@ The headline: one realistic 64-bit financial operation mix — a `MIX` add/sub s
 
 | port | op | cat | profile | arch | mode | ns | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| rust | add | MIX | P-fin | arm64 | thru | 2.03 | rust_decimal | 3.38 | **1.67×** | Rrsw2 | compact idiom peer |
-| rust | sub | MIX | P-fin | arm64 | thru | 2.22 | rust_decimal | 3.54 | **1.59×** | Rrsw2 | compact idiom peer |
-| rust | div | CD | P-fin | arm64 | thru | 19.05 | rust_decimal | 15.51 | **0.81×** | Rrsw2 | compact idiom peer |
-| rust | div | WD | P-fin | arm64 | thru | 35.39 | rust_decimal | 20.57 | **0.58×** | Rrsw2 | compact idiom peer |
-| rust | div | ET | P-fin | arm64 | thru | 6.37 | rust_decimal | 3.85 | **0.60×** | Rrsw2 | compact idiom peer |
-| rust | div | PT | P-fin | arm64 | thru | 3.98 | rust_decimal | 15.45 | **3.88×** | Rrsw2 | compact idiom peer |
-| rust | mul | CP | P-fin | arm64 | thru | 1.12 | libbid | 23.91 | **21.35×** | Rrsw2 |  |
-| rust | mul | WP | P-fin | arm64 | thru | 14.23 | libbid | 34.44 | **2.42×** | Rrsw2 |  |
+| rust | add | MIX | P-fin | arm64 | thru | 2.01 | rust_decimal | 3.36 | **1.67×** | Rrsw2 | compact idiom peer |
+| rust | sub | MIX | P-fin | arm64 | thru | 2.20 | rust_decimal | 3.55 | **1.61×** | Rrsw2 | compact idiom peer |
+| rust | div | CD | P-fin | arm64 | thru | 20.82 | rust_decimal | 13.90 | **0.67×** | Rrsw2 | compact idiom peer |
+| rust | div | WD | P-fin | arm64 | thru | 38.54 | rust_decimal | 20.09 | **0.52×** | Rrsw2 | compact idiom peer |
+| rust | div | ET | P-fin | arm64 | thru | 6.27 | rust_decimal | 3.84 | **0.61×** | Rrsw2 | compact idiom peer |
+| rust | div | PT | P-fin | arm64 | thru | 4.00 | rust_decimal | 15.34 | **3.83×** | Rrsw2 | compact idiom peer |
+| rust | mul | CP | P-fin | arm64 | thru | 1.13 | libbid | 23.57 | **20.86×** | Rrsw2 |  |
+| rust | mul | WP | P-fin | arm64 | thru | 14.43 | libbid | 34.52 | **2.39×** | Rrsw2 |  |
 
 <!-- END GENERATED pfin-rel-rust -->
 
@@ -48,14 +48,14 @@ The headline: one realistic 64-bit financial operation mix — a `MIX` add/sub s
 
 | port | op | cat | profile | arch | mode | ns | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| rust | add | MIX | P-fin | x86_64 | thru | 5.67 | rust_decimal | 13.70 | **2.42×** | xRrsw2 | compact idiom peer |
-| rust | sub | MIX | P-fin | x86_64 | thru | 7.02 | rust_decimal | 14.33 | **2.04×** | xRrsw2 | compact idiom peer |
-| rust | div | CD | P-fin | x86_64 | thru | 71.78 | rust_decimal | 55.18 | **0.77×** | xRrsw2 | compact idiom peer |
-| rust | div | WD | P-fin | x86_64 | thru | 85.67 | rust_decimal | 73.47 | **0.86×** | xRrsw2 | compact idiom peer |
-| rust | div | ET | P-fin | x86_64 | thru | 23.36 | rust_decimal | 13.73 | **0.59×** | xRrsw2 | compact idiom peer |
-| rust | div | PT | P-fin | x86_64 | thru | 10.85 | rust_decimal | 50.20 | **4.63×** | xRrsw2 | compact idiom peer |
-| rust | mul | CP | P-fin | x86_64 | thru | 2.84 | libbid | 43.66 | **15.37×** | xRrsw2 |  |
-| rust | mul | WP | P-fin | x86_64 | thru | 28.69 | libbid | 57.74 | **2.01×** | xRrsw2 |  |
+| rust | add | MIX | P-fin | x86_64 | thru | 6.33 | rust_decimal | 13.42 | **2.12×** | xRrsw2 | compact idiom peer |
+| rust | sub | MIX | P-fin | x86_64 | thru | 7.46 | rust_decimal | 14.60 | **1.96×** | xRrsw2 | compact idiom peer |
+| rust | div | CD | P-fin | x86_64 | thru | 72.57 | rust_decimal | 55.28 | **0.76×** | xRrsw2 | compact idiom peer |
+| rust | div | WD | P-fin | x86_64 | thru | 86.93 | rust_decimal | 74.22 | **0.85×** | xRrsw2 | compact idiom peer |
+| rust | div | ET | P-fin | x86_64 | thru | 23.12 | rust_decimal | 14.30 | **0.62×** | xRrsw2 | compact idiom peer |
+| rust | div | PT | P-fin | x86_64 | thru | 9.73 | rust_decimal | 50.79 | **5.22×** | xRrsw2 | compact idiom peer |
+| rust | mul | CP | P-fin | x86_64 | thru | 3.40 | libbid | 44.36 | **13.05×** | xRrsw2 |  |
+| rust | mul | WP | P-fin | x86_64 | thru | 29.54 | libbid | 57.85 | **1.96×** | xRrsw2 |  |
 
 <!-- END GENERATED pfin-rel-rust-x86 -->
 
@@ -69,11 +69,16 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| rust | add | SQ | P-gen | arm64 | thru | 1.82 | rust_decimal | 3.46 | **1.90×** | Rrsw2 | compact idiom peer |
-| rust | add | NQ | P-gen | arm64 | thru | 5.69 | rust_decimal | 5.48 | **0.96×** | Rrsw2 | compact idiom peer |
-| rust | add | MQ | P-gen | arm64 | thru | 8.54 | rust_decimal | 5.76 | **0.67×** | Rrsw2 | compact idiom peer |
-| rust | add | OQ | P-gen | arm64 | thru | 10.82 | - | - | - | Rrsw2 |  |
-| rust | add | FQ | P-gen | arm64 | thru | 7.44 | - | - | - | Rrsw2 |  |
+| rust | add | SQss | P-gen | arm64 | thru | 0.81 | rust_decimal | 3.82 | **4.72×** | Rrsw2 | compact idiom peer |
+| rust | add | SQos | P-gen | arm64 | thru | 2.00 | rust_decimal | 3.41 | **1.71×** | Rrsw2 | compact idiom peer |
+| rust | add | NQss | P-gen | arm64 | thru | 3.37 | rust_decimal | 5.67 | **1.68×** | Rrsw2 | compact idiom peer |
+| rust | add | NQos | P-gen | arm64 | thru | 3.76 | rust_decimal | 5.11 | **1.36×** | Rrsw2 | compact idiom peer |
+| rust | add | MQss | P-gen | arm64 | thru | 5.22 | rust_decimal | 6.11 | **1.17×** | Rrsw2 | compact idiom peer |
+| rust | add | MQos | P-gen | arm64 | thru | 11.25 | rust_decimal | 5.52 | **0.49×** | Rrsw2 | compact idiom peer |
+| rust | add | OQss | P-gen | arm64 | thru | 9.06 | - | - | - | Rrsw2 |  |
+| rust | add | OQos | P-gen | arm64 | thru | 13.78 | - | - | - | Rrsw2 |  |
+| rust | add | FQss | P-gen | arm64 | thru | 8.41 | - | - | - | Rrsw2 |  |
+| rust | add | FQos | P-gen | arm64 | thru | 10.25 | - | - | - | Rrsw2 |  |
 
 <!-- END GENERATED add-rel-rust -->
 
@@ -83,11 +88,16 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| rust | add | SQ | P-gen | x86_64 | thru | 6.93 | rust_decimal | 14.56 | **2.10×** | xRrsw2 | compact idiom peer |
-| rust | add | NQ | P-gen | x86_64 | thru | 14.09 | rust_decimal | 20.63 | **1.46×** | xRrsw2 | compact idiom peer |
-| rust | add | MQ | P-gen | x86_64 | thru | 20.29 | rust_decimal | 19.77 | **0.97×** | xRrsw2 | compact idiom peer |
-| rust | add | OQ | P-gen | x86_64 | thru | 37.60 | - | - | - | xRrsw2 |  |
-| rust | add | FQ | P-gen | x86_64 | thru | 22.57 | - | - | - | xRrsw2 |  |
+| rust | add | SQss | P-gen | x86_64 | thru | 2.01 | rust_decimal | 12.66 | **6.30×** | xRrsw2 | compact idiom peer |
+| rust | add | SQos | P-gen | x86_64 | thru | 5.22 | rust_decimal | 15.50 | **2.97×** | xRrsw2 | compact idiom peer |
+| rust | add | NQss | P-gen | x86_64 | thru | 10.75 | rust_decimal | 18.18 | **1.69×** | xRrsw2 | compact idiom peer |
+| rust | add | NQos | P-gen | x86_64 | thru | 10.67 | rust_decimal | 18.95 | **1.78×** | xRrsw2 | compact idiom peer |
+| rust | add | MQss | P-gen | x86_64 | thru | 13.32 | rust_decimal | 18.79 | **1.41×** | xRrsw2 | compact idiom peer |
+| rust | add | MQos | P-gen | x86_64 | thru | 24.87 | rust_decimal | 19.29 | **0.78×** | xRrsw2 | compact idiom peer |
+| rust | add | OQss | P-gen | x86_64 | thru | 29.93 | - | - | - | xRrsw2 |  |
+| rust | add | OQos | P-gen | x86_64 | thru | 41.69 | - | - | - | xRrsw2 |  |
+| rust | add | FQss | P-gen | x86_64 | thru | 18.73 | - | - | - | xRrsw2 |  |
+| rust | add | FQos | P-gen | x86_64 | thru | 22.87 | - | - | - | xRrsw2 |  |
 
 <!-- END GENERATED add-rel-rust-x86 -->
 
@@ -101,11 +111,16 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| rust | sub | SQ | P-gen | arm64 | thru | 1.74 | rust_decimal | 3.39 | **1.95×** | Rrsw2 | compact idiom peer |
-| rust | sub | NQ | P-gen | arm64 | thru | 4.86 | rust_decimal | 5.54 | **1.14×** | Rrsw2 | compact idiom peer |
-| rust | sub | MQ | P-gen | arm64 | thru | 7.90 | rust_decimal | 5.62 | **0.71×** | Rrsw2 | compact idiom peer |
-| rust | sub | OQ | P-gen | arm64 | thru | 10.61 | - | - | - | Rrsw2 |  |
-| rust | sub | FQ | P-gen | arm64 | thru | 7.08 | - | - | - | Rrsw2 |  |
+| rust | sub | SQss | P-gen | arm64 | thru | 1.36 | rust_decimal | 3.27 | **2.40×** | Rrsw2 | compact idiom peer |
+| rust | sub | SQos | P-gen | arm64 | thru | 1.06 | rust_decimal | 4.39 | **4.14×** | Rrsw2 | compact idiom peer |
+| rust | sub | NQss | P-gen | arm64 | thru | 3.74 | rust_decimal | 5.10 | **1.36×** | Rrsw2 | compact idiom peer |
+| rust | sub | NQos | P-gen | arm64 | thru | 3.45 | rust_decimal | 5.52 | **1.60×** | Rrsw2 | compact idiom peer |
+| rust | sub | MQss | P-gen | arm64 | thru | 11.32 | rust_decimal | 5.48 | **0.48×** | Rrsw2 | compact idiom peer |
+| rust | sub | MQos | P-gen | arm64 | thru | 5.08 | rust_decimal | 6.16 | **1.21×** | Rrsw2 | compact idiom peer |
+| rust | sub | OQss | P-gen | arm64 | thru | 13.44 | - | - | - | Rrsw2 |  |
+| rust | sub | OQos | P-gen | arm64 | thru | 9.05 | - | - | - | Rrsw2 |  |
+| rust | sub | FQss | P-gen | arm64 | thru | 9.95 | - | - | - | Rrsw2 |  |
+| rust | sub | FQos | P-gen | arm64 | thru | 8.06 | - | - | - | Rrsw2 |  |
 
 <!-- END GENERATED sub-rel-rust -->
 
@@ -115,11 +130,16 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| rust | sub | SQ | P-gen | x86_64 | thru | 6.94 | rust_decimal | 14.05 | **2.02×** | xRrsw2 | compact idiom peer |
-| rust | sub | NQ | P-gen | x86_64 | thru | 13.34 | rust_decimal | 18.97 | **1.42×** | xRrsw2 | compact idiom peer |
-| rust | sub | MQ | P-gen | x86_64 | thru | 20.29 | rust_decimal | 18.91 | **0.93×** | xRrsw2 | compact idiom peer |
-| rust | sub | OQ | P-gen | x86_64 | thru | 37.57 | - | - | - | xRrsw2 |  |
-| rust | sub | FQ | P-gen | x86_64 | thru | 22.49 | - | - | - | xRrsw2 |  |
+| rust | sub | SQss | P-gen | x86_64 | thru | 4.47 | rust_decimal | 14.06 | **3.15×** | xRrsw2 | compact idiom peer |
+| rust | sub | SQos | P-gen | x86_64 | thru | 3.25 | rust_decimal | 13.52 | **4.16×** | xRrsw2 | compact idiom peer |
+| rust | sub | NQss | P-gen | x86_64 | thru | 10.67 | rust_decimal | 17.95 | **1.68×** | xRrsw2 | compact idiom peer |
+| rust | sub | NQos | P-gen | x86_64 | thru | 9.86 | rust_decimal | 16.40 | **1.66×** | xRrsw2 | compact idiom peer |
+| rust | sub | MQss | P-gen | x86_64 | thru | 23.60 | rust_decimal | 17.36 | **0.74×** | xRrsw2 | compact idiom peer |
+| rust | sub | MQos | P-gen | x86_64 | thru | 13.66 | rust_decimal | 16.93 | **1.24×** | xRrsw2 | compact idiom peer |
+| rust | sub | OQss | P-gen | x86_64 | thru | 41.21 | - | - | - | xRrsw2 |  |
+| rust | sub | OQos | P-gen | x86_64 | thru | 30.02 | - | - | - | xRrsw2 |  |
+| rust | sub | FQss | P-gen | x86_64 | thru | 23.13 | - | - | - | xRrsw2 |  |
+| rust | sub | FQos | P-gen | x86_64 | thru | 17.91 | - | - | - | xRrsw2 |  |
 
 <!-- END GENERATED sub-rel-rust-x86 -->
 
@@ -133,9 +153,9 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| rust | mul | CP | P-gen | arm64 | thru | 1.51 | libbid | 24.58 | **16.28×** | Rrsw2 |  |
-| rust | mul | WP | P-gen | arm64 | thru | 13.69 | libbid | 33.28 | **2.43×** | Rrsw2 |  |
-| rust | mul | XP | P-gen | arm64 | thru | 23.86 | libbid | 45.22 | **1.90×** | Rrsw2 |  |
+| rust | mul | CP | P-gen | arm64 | thru | 1.52 | libbid | 23.13 | **15.22×** | Rrsw2 |  |
+| rust | mul | WP | P-gen | arm64 | thru | 13.81 | libbid | 35.06 | **2.54×** | Rrsw2 |  |
+| rust | mul | XP | P-gen | arm64 | thru | 25.03 | libbid | 45.24 | **1.81×** | Rrsw2 |  |
 
 <!-- END GENERATED mul-rel-rust -->
 
@@ -145,9 +165,9 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| rust | mul | CP | P-gen | x86_64 | thru | 4.82 | libbid | 49.91 | **10.35×** | xRrsw2 |  |
-| rust | mul | WP | P-gen | x86_64 | thru | 29.06 | libbid | 77.04 | **2.65×** | xRrsw2 |  |
-| rust | mul | XP | P-gen | x86_64 | thru | 42.21 | libbid | 97.21 | **2.30×** | xRrsw2 |  |
+| rust | mul | CP | P-gen | x86_64 | thru | 5.46 | libbid | 45.57 | **8.35×** | xRrsw2 |  |
+| rust | mul | WP | P-gen | x86_64 | thru | 29.98 | libbid | 64.59 | **2.15×** | xRrsw2 |  |
+| rust | mul | XP | P-gen | x86_64 | thru | 43.70 | libbid | 93.63 | **2.14×** | xRrsw2 |  |
 
 <!-- END GENERATED mul-rel-rust-x86 -->
 
@@ -161,11 +181,11 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| rust | div | CD | P-gen | arm64 | thru | 19.02 | libbid | 36.64 | **1.93×** | Rrsw2 |  |
-| rust | div | WD | P-gen | arm64 | thru | 33.33 | libbid | 37.56 | **1.13×** | Rrsw2 |  |
-| rust | div | XD | P-gen | arm64 | thru | 37.57 | libbid | 39.18 | **1.04×** | Rrsw2 |  |
-| rust | div | ET | P-gen | arm64 | thru | 9.73 | libbid | 11.64 | **1.20×** | Rrsw2 |  |
-| rust | div | PT | P-gen | arm64 | thru | 3.98 | libbid | 11.54 | **2.90×** | Rrsw2 |  |
+| rust | div | CD | P-gen | arm64 | thru | 20.04 | libbid | 36.77 | **1.83×** | Rrsw2 |  |
+| rust | div | WD | P-gen | arm64 | thru | 37.80 | libbid | 37.54 | **0.99×** | Rrsw2 |  |
+| rust | div | XD | P-gen | arm64 | thru | 37.84 | libbid | 38.97 | **1.03×** | Rrsw2 |  |
+| rust | div | ET | P-gen | arm64 | thru | 9.60 | libbid | 11.68 | **1.22×** | Rrsw2 |  |
+| rust | div | PT | P-gen | arm64 | thru | 3.99 | libbid | 11.45 | **2.87×** | Rrsw2 |  |
 
 <!-- END GENERATED div-rel-rust -->
 
@@ -175,11 +195,11 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| rust | div | CD | P-gen | x86_64 | thru | 75.66 | libbid | 83.35 | **1.10×** | xRrsw2 |  |
-| rust | div | WD | P-gen | x86_64 | thru | 83.57 | libbid | 85.72 | **1.03×** | xRrsw2 |  |
-| rust | div | XD | P-gen | x86_64 | thru | 82.33 | libbid | 84.67 | **1.03×** | xRrsw2 |  |
-| rust | div | ET | P-gen | x86_64 | thru | 28.91 | libbid | 29.45 | **1.02×** | xRrsw2 |  |
-| rust | div | PT | P-gen | x86_64 | thru | 10.87 | libbid | 29.43 | **2.71×** | xRrsw2 |  |
+| rust | div | CD | P-gen | x86_64 | thru | 77.73 | libbid | 81.20 | **1.04×** | xRrsw2 |  |
+| rust | div | WD | P-gen | x86_64 | thru | 84.82 | libbid | 82.98 | **0.98×** | xRrsw2 |  |
+| rust | div | XD | P-gen | x86_64 | thru | 84.40 | libbid | 82.60 | **0.98×** | xRrsw2 |  |
+| rust | div | ET | P-gen | x86_64 | thru | 28.97 | libbid | 29.87 | **1.03×** | xRrsw2 |  |
+| rust | div | PT | P-gen | x86_64 | thru | 9.49 | libbid | 30.17 | **3.18×** | xRrsw2 |  |
 
 <!-- END GENERATED div-rel-rust-x86 -->
 
@@ -193,8 +213,8 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| rust | fma | FN | FMA | arm64 | thru | 23.22 | - | - | - | Rrsw2 |  |
-| rust | fma | FF | FMA | arm64 | thru | 34.17 | - | - | - | Rrsw2 |  |
+| rust | fma | FN | FMA | arm64 | thru | 22.84 | - | - | - | Rrsw2 |  |
+| rust | fma | FF | FMA | arm64 | thru | 35.77 | - | - | - | Rrsw2 |  |
 
 <!-- END GENERATED fma-rel-rust -->
 
@@ -204,8 +224,8 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| rust | fma | FN | FMA | x86_64 | thru | 59.79 | - | - | - | xRrsw2 |  |
-| rust | fma | FF | FMA | x86_64 | thru | 65.10 | - | - | - | xRrsw2 |  |
+| rust | fma | FN | FMA | x86_64 | thru | 60.95 | - | - | - | xRrsw2 |  |
+| rust | fma | FF | FMA | x86_64 | thru | 68.80 | - | - | - | xRrsw2 |  |
 
 <!-- END GENERATED fma-rel-rust-x86 -->
 
