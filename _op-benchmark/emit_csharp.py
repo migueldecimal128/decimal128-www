@@ -9,7 +9,7 @@ Needs the .NET 11 preview SDK (System.Numerics.Decimal128 is net11-only); the po
 compiled net10.0 and JIT'd by net11. Mints run Rcs11.
 
 Usage: emit_csharp.py [--proj <Decimal128.Benchmarks.Net11 dir>] [--run-id Rcs11]
-                      [--profiles P-gen,P-fin,P-max,FMA]
+                      [--profiles P-gen,P-fin,P-max,FMA] [--cells <regex>] [--note <text>]
        DOTNET11=/path/to/dotnet   net11 SDK (default ~/dotnet/current/dotnet)
 """
 # CONTRACT (store-only stage): this emitter writes ONLY the JSONL store
@@ -75,11 +75,15 @@ def main():
     proj = os.path.expanduser("~/decimal128/csharp/benchmark/Decimal128.Benchmarks.Net11")
     run = "Rcs11"
     profiles = list(PROFILES)
+    cells_re = None
+    note = ""
     a = sys.argv[1:]
     for i, x in enumerate(a):
         if x == "--proj": proj = os.path.expanduser(a[i+1])
         if x == "--run-id": run = a[i+1]
         if x == "--profiles": profiles = [p for p in a[i+1].split(",") if p]
+        if x == "--cells": cells_re = re.compile(a[i+1])
+        if x == "--note": note = a[i+1]
 
     # System.Numerics.Decimal128 is net11-only, and BDN 0.15.8 cannot target the net11.0
     # moniker out-of-process, so the swept run uses the pinned net11 preview SDK (the same
@@ -112,6 +116,16 @@ def main():
         if ls.returncode != 0 or not cells:
             print(f"   swept-list failed for {prof}: {(ls.stderr or '').strip().splitlines()[-1:]}")
             continue
+        # --cells narrows the sweep to the arms a change can actually move (e.g.
+        # '^Add_' = the d128 add cells, peers excluded — they are separate methods).
+        # Safe because the store upserts by key, so unlisted cells keep their prior
+        # rows, and because each cell is process-isolated either way: a subset run
+        # measures exactly what the same cell measures in a full run.
+        if cells_re is not None:
+            cells = [c for c in cells if cells_re.search(c)]
+            if not cells:
+                print(f"   no cells match /{cells_re.pattern}/ in {prof}, skipping")
+                continue
         print(f"running csharp swept SWEPT_PROFILE={prof} — {len(cells)} cells, one process each ...", flush=True)
         n = 0
         for cell in cells:
@@ -175,8 +189,10 @@ def main():
                                  "System.Decimal (96-bit/28-digit idiom peer; compact bands only — wide bands "
                                  "overflow its ~7.9e28 ceiling)",
                  "ports": "decimal128-csharp",
-                 "notes": f"csharp emit (emit_csharp.py); P-gen/P-fin/P-max/FMA. "
-                          f".NET 11 runtime, SDK {sdk_ver}. Add/sub bands sign-split ss/os as of 2026-07-28 (AddSubSignSplitWorkOrder; corpus regen by swift CorpusGen) — prior blended add/sub rows non-comparable."})
+                 "notes": f"csharp emit (emit_csharp.py); {'/'.join(profiles)}"
+                          + (f"; cells matching /{cells_re.pattern}/ only (partial re-emit — other cells keep their prior run's rows)" if cells_re else "")
+                          + f". .NET 11 runtime, SDK {sdk_ver}. Add/sub bands sign-split ss/os as of 2026-07-28 (AddSubSignSplitWorkOrder; corpus regen by swift CorpusGen) — prior blended add/sub rows non-comparable."
+                          + (f" {note}" if note else "")})
     with open(p, "w") as f:
         for r in runs: f.write(json.dumps(r, ensure_ascii=False) + "\n")
     print(f"upserted run '{run}'")
