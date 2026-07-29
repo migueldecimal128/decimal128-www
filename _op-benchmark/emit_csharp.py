@@ -97,37 +97,54 @@ def main():
 
     recs = {}
     KEY = lambda r: (r["lang"], r["impl"], r["op"], r["cat"], r["profile"], r["mode"], r["arch"])
+    # PER-CELL PROCESS ISOLATION: .NET tier-1 code is compiled once per process,
+    # shaped by dynamic PGO from whatever stream runs first. Cells sharing a
+    # process inherit that training (measured: a pure like-sign cell first
+    # pessimizes later unlike-sign cells by ~15 ns/op, growing with band depth;
+    # HotSpot deopts + retrains, so only .NET needs this). One BDN launch per
+    # benchmark method makes every cell "cost in a process trained on this
+    # workload" — the same semantics the untier'd native ports measure.
     for prof in profiles:
-        for f in glob.glob(os.path.join(proj, "BenchmarkDotNet.Artifacts/results/*-report-full.json")):
-            os.remove(f)
         env = dict(os.environ, SWEPT_PROFILE=prof, DOTNET_ROOT=dotnet_root)
-        print(f"running csharp swept SWEPT_PROFILE={prof} on .NET 11 (BDN, slow) ...", flush=True)
-        r = subprocess.run([dotnet, "run", "-c", "Release", "--", "swept"],
-                           cwd=proj, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
-        if r.returncode != 0:
-            tail = (r.stderr or b"").decode("utf-8", "replace").strip().splitlines()[-8:]
-            print(f"   dotnet run failed (exit {r.returncode}):\n     " + "\n     ".join(tail))
-        reports = glob.glob(os.path.join(proj, "BenchmarkDotNet.Artifacts/results/*-report-full.json"))
-        if not reports:
-            print("   NO report"); continue
-        j = json.load(open(max(reports, key=os.path.getmtime)))
+        ls = subprocess.run([dotnet, "run", "-c", "Release", "--", "swept-list"],
+                            cwd=proj, env=env, capture_output=True, text=True)
+        cells = [c for c in (ls.stdout or "").split() if c]
+        if ls.returncode != 0 or not cells:
+            print(f"   swept-list failed for {prof}: {(ls.stderr or '').strip().splitlines()[-1:]}")
+            continue
+        print(f"running csharp swept SWEPT_PROFILE={prof} — {len(cells)} cells, one process each ...", flush=True)
         n = 0
-        for b in j["Benchmarks"]:
-            st = b.get("Statistics")
-            if not st:                          # e.g. an overflow that BDN couldn't measure
+        for cell in cells:
+            for f in glob.glob(os.path.join(proj, "BenchmarkDotNet.Artifacts/results/*-report-full.json")):
+                os.remove(f)
+            cenv = dict(env, SWEPT_FILTER=f"*.{cell}")
+            r = subprocess.run([dotnet, "run", "-c", "Release", "--", "swept"],
+                               cwd=proj, env=cenv, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
+            if r.returncode != 0:
+                tail = (r.stderr or b"").decode("utf-8", "replace").strip().splitlines()[-4:]
+                print(f"   {cell}: dotnet run failed (exit {r.returncode}): " + " | ".join(tail))
                 continue
-            m = METH.match(b["Method"])
-            if not m:
+            reports = glob.glob(os.path.join(proj, "BenchmarkDotNet.Artifacts/results/*-report-full.json"))
+            if not reports:
+                print(f"   {cell}: NO report")
                 continue
-            prefix, opw, band = m.groups()
-            band = band.replace("_", "")   # store cat: "SQ_ss" -> "SQss"
-            impl = IMPL_OF.get(prefix, "d128")
-            op = OP[opw]
-            profile = "FMA" if op == "fma" else prof
-            recs[KEY(dict(lang="csharp", impl=impl, op=op, cat=band, profile=profile, mode="thru", arch=ARCH))] = \
-                dict(lang="csharp", impl=impl, op=op, cat=band, profile=profile,
-                     arch=ARCH, mode="thru", ns=round(st["Median"], 2), run=run)
-            n += 1
+            j2 = json.load(open(max(reports, key=os.path.getmtime)))
+            for b in j2["Benchmarks"]:
+                st = b.get("Statistics")
+                if not st:                          # e.g. an overflow that BDN couldn't measure
+                    continue
+                m = METH.match(b["Method"])
+                if not m:
+                    continue
+                prefix, opw, band = m.groups()
+                band = band.replace("_", "")   # store cat: "SQ_ss" -> "SQss"
+                impl = IMPL_OF.get(prefix, "d128")
+                op = OP[opw]
+                profile = "FMA" if op == "fma" else prof
+                recs[KEY(dict(lang="csharp", impl=impl, op=op, cat=band, profile=profile, mode="thru", arch=ARCH))] = \
+                    dict(lang="csharp", impl=impl, op=op, cat=band, profile=profile,
+                         arch=ARCH, mode="thru", ns=round(st["Median"], 2), run=run)
+                n += 1
         print(f"   {n} rows")
     print(f"collected {len(recs)} csharp records")
 
@@ -147,7 +164,7 @@ def main():
     runs = [r for r in runs if r["run"] != run]
     runs.append({"run": run, "date": "", "machine": MACHINE,
                  "os_toolchain": f"{_os_desc()}; .NET SDK {sdk_ver}.",
-                 "engine": "SweptBench.cs (BenchmarkDotNet InProcess Throughput, warmup 4 / iter 15 / launch 1; "
+                 "engine": "SweptBench.cs (BenchmarkDotNet InProcess Throughput, warmup 4 / iter 15; ONE PROCESS PER CELL — tier-1/dynamic-PGO code is per-process and training-order-dependent, so each cell runs in a fresh process trained on its own workload; "
                            "_tte Add/Sub/Mul/Quo), executed on the .NET 11 runtime (System.Numerics.Decimal128 is "
                            "net11-only; port compiled net10.0, JIT'd by net11 — InProcess toolchain as BDN 0.15.8 "
                            "lacks the net11.0 moniker). Each op routes one operand through a non-inlined Opaque() "
