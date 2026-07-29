@@ -19,7 +19,8 @@ type can be watched as it converges.
 
 | Date | Release | Review | Headline |
 |------|---------|--------|----------|
-| 2026-07-14 | preview 7 | [Read →](dotnet/net11-preview7.html) | Numerically correct; no status flags; rounding is composed rather than fused (double-rounding); ToString needs work; missing TotalOrder; missing FMA; naive division. |
+| 2026-07-28 | preview 7, build 26376.106 | [Read →](dotnet/net11-preview7-26376.106.html) | FMA arrives (truly fused); full IEEE 754 recommended-function surface; division up to 4× faster; new ln/log10 near-1 accuracy findings; RootN correct where the reference ports were not. |
+| 2026-07-14 | preview 7, build 26366.102 | [Read →](dotnet/net11-preview7.html) | Numerically correct; no status flags; rounding is composed rather than fused (double-rounding); ToString needs work; missing TotalOrder; missing FMA; naive division. |
 
 *Release candidate and GA editions will be added under this heading as they are
 published.*
