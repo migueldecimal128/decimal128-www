@@ -70,3 +70,18 @@ Current baselines:
   representation, AggressiveInlining intact), measured the same day as the BID
   run `Rcsbid3` for a same-session denominator. Rows carry `lang: "csharp-bid"`
   for the same emitter reason as the x86 file — they are UBD measurements.
+- `csharp-ubd.stabilization-Rcsubd2.arm64.jsonl` — the arm64 confirmation pass,
+  same spirit as the x86 stabilization files above: BID re-run `Rcsbid4` (now the
+  live store; the first run `Rcsbid3` is preserved in git history) and UBD re-run
+  `Rcsubd2` (this file), all four runs same-day 2026-07-30. Establishes:
+  - **Both arms repeat at ~1% on the M3** (BID Rcsbid4/Rcsbid3 geomean 0.995,
+    UBD Rcsubd2/Rcsubd1 geomean 0.987) — no day-scale drift, unlike the i9.
+  - **Rare per-cell mode flips exist on the UBD side**: sub MQss P-gen measured
+    15.91 (Jul-28) / 28.60 (`Rcsubd1`) / 17.83 (`Rcsubd2`) ns — the frozen
+    baseline's 28.60 is the outlier mode, so that cell is BID/UBD parity, not the
+    0.62x win the frozen zero alone suggests. `Rcsubd1`'s mul CP P-gen 2.52 ns is
+    also its high mode (2.07-2.13 typical). Sub-4 ns cells jitter +-10%.
+  - Headline arm64 BID/UBD: 1.152 / 1.162 across the two pairings — **~1.15x**.
+  The frozen zero remains `csharp-ubd.baseline.arm64.jsonl` (`Rcsubd1`), unmodified;
+  consult this file for the two known outlier cells before trusting a single-cell
+  ratio against it.
