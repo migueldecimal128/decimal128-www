@@ -36,7 +36,10 @@ import json, glob, sys, os, re
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 # ------------------------------------------------------------------ schema ----
-LANGS    = {"c","swift","java","kotlin","rust","go","csharp","zig","python"}
+# csharp-bid = the BID-representation migration arm (decimal128-csharp-migration,
+# emit_csharp_bid.py) — store-only for now: valid in the schema so its results file
+# loads, but absent from every SPECS ports list, so no page renders it.
+LANGS    = {"c","swift","java","kotlin","rust","go","csharp","zig","python","csharp-bid"}
 IMPLS    = {"d128","libbid","libdecquad","libmpdecimal","rust_decimal",
             "System.Decimal","System.Numerics.Decimal128","Foundation.Decimal","BigDecimal","decimal.Decimal"}
 OPS      = {"add","sub","mul","div","fma","toString","quantize"}
