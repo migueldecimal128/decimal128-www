@@ -38,6 +38,27 @@ Current baselines:
     measured. **A/B comparisons in this arm must use same-session runs; a
     cross-day denominator roughly doubles the apparent BID cost** (1.24x vs the
     true 1.10x).
+- `csharp-ubd.stabilization-xRcsubd2.x86_64.jsonl` + `csharp-bid.stabilization-xRcsbid2b.x86_64.jsonl`
+  — a **confirmation pass**, not new measurements of anything: both arms re-run
+  back-to-back on 2026-07-30, each with a forced clean build, and in the REVERSED
+  order (UBD first). Kept because they establish two things the single pass could not.
+  - **The BID effect reproduces.** BID/UBD within each pass: median 1.099 -> 1.117,
+    geomean **1.138 -> 1.134** (0.4% apart), sum-of-cells 1.091 -> 1.098, cells
+    slower 39/52 -> 38/52; comparing the two ratio sets cell-by-cell gives median
+    1.004. Band structure holds (NQos 1.56->1.60, NQss 1.50->1.50, CP 1.26->1.23,
+    ET 0.92->0.95, CD 0.98->0.98). Because the order was reversed and the builds
+    made symmetric, neither ordering nor the original build asymmetry (`xRcsbid2`
+    ran incremental, `xRcsubd1` clean) was contributing. **~1.10x median / ~1.14x
+    geomean is the real cost.**
+  - **The drift is persistent state, not run-to-run noise.** Same-session repeats
+    agree to ~1% (UBD rerun/UBD median 1.005, sd 0.058; BID rerun/BID median 1.009,
+    sd 0.041) while the 36 h gap reproduces at 11-13% (UBD-rerun/shipping 1.126,
+    independently of UBD-published/shipping 1.115). Checked during the pass: AC
+    power, `pmset -g therm` CPU_Speed_Limit=100, no thermal/perf warnings, 16 CPUs
+    — cause unidentified (battery was charging, an unproven candidate).
+  - Neither file is a baseline in the frozen-zero sense; they are evidence. The
+    zero remains `csharp-ubd.baseline.x86_64.jsonl` (`xRcsubd1`), unmodified, and
+    the live BID store still holds `xRcsbid2` — this pass changed neither.
 - `csharp-bid.baseline.arm64.jsonl` — run `Rcsbid1` (2026-07-30, 52 cells),
   decimal128-csharp-migration at baseline commit `7db6346`, pre-step-5: BID
   representation swap + identity ingress complete, AggressiveInlining stripped,
