@@ -43,3 +43,9 @@ Current baselines:
   representation swap + identity ingress complete, AggressiveInlining stripped,
   gate redesign and per-site inlining not yet begun. The fixed "before" for all
   step-5 fast-path-gate and inlining measurements.
+- `csharp-ubd.baseline.arm64.jsonl` — run `Rcsubd1` (2026-07-30, 52 cells), the
+  arm64 twin of the x86_64 UBD baseline above: decimal128-csharp-migration rolled
+  back to the seed commit `cca61bb` (= decimal128-csharp @ `9c66a99`; UBD
+  representation, AggressiveInlining intact), measured the same day as the BID
+  run `Rcsbid3` for a same-session denominator. Rows carry `lang: "csharp-bid"`
+  for the same emitter reason as the x86 file — they are UBD measurements.
