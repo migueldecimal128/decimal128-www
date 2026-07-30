@@ -20,6 +20,24 @@ Rules:
   frozen file is the working artifact.
 
 Current baselines:
+- `csharp-ubd.baseline.x86_64.jsonl` — run `xRcsubd1` (2026-07-30, 52 cells),
+  decimal128-csharp-migration at the seed commit `cca61bb` = decimal128-csharp
+  @ `9c66a99`: **UBD representation, AggressiveInlining still present** — the
+  true "before" for the whole BID migration, the zero that `csharp-bid` rows are
+  measured against. Verified byte-identical `src/` AND `benchmark/` to the
+  shipping csharp port at `9c66a99`.
+  - **The rows carry `lang: "csharp-bid"`** because `emit_csharp_bid.py` hardcodes
+    that field. They are UBD measurements despite the label. Copied verbatim rather
+    than hand-edited; harmless because `baselines/` is outside the `results.*.jsonl`
+    glob and is never loaded into a report.
+  - **Why this baseline exists rather than reusing `results.csharp.x86_64.jsonl`:**
+    the shipping-csharp rows (`xRcs11`) were measured ~36 h earlier, and identical
+    code re-measured here came out **11% slower** (median 1.115x, geo 1.110, range
+    0.94-1.27, sd 0.052) with identical src, benchmark, SDK 11.0.100-preview.7.26376.106,
+    OS and machine. For 25 of 52 cells that drift exceeds the BID effect being
+    measured. **A/B comparisons in this arm must use same-session runs; a
+    cross-day denominator roughly doubles the apparent BID cost** (1.24x vs the
+    true 1.10x).
 - `csharp-bid.baseline.arm64.jsonl` — run `Rcsbid1` (2026-07-30, 52 cells),
   decimal128-csharp-migration at baseline commit `7db6346`, pre-step-5: BID
   representation swap + identity ingress complete, AggressiveInlining stripped,
