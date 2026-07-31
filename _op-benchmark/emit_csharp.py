@@ -97,9 +97,16 @@ def main():
     profiles = list(PROFILES)
     cells_re = None
     note = ""
+    # --lang writes a SEPARATE store file. The store key is
+    # (lang,impl,op,cat,profile,mode,arch) with NO SDK/runtime dimension, so
+    # re-measuring under a different .NET band would upsert straight over the
+    # existing rows and silently mix two runtimes in one file. Give the new band
+    # its own lang (e.g. csharp-rc1) instead.
+    lang = "csharp"
     a = sys.argv[1:]
     for i, x in enumerate(a):
         if x == "--proj": proj = os.path.expanduser(a[i+1])
+        if x == "--lang": lang = a[i+1]
         if x == "--run-id": run = a[i+1]
         if x == "--profiles": profiles = [p for p in a[i+1].split(",") if p]
         if x == "--cells": cells_re = re.compile(a[i+1])
@@ -175,8 +182,8 @@ def main():
                 impl = IMPL_OF.get(prefix, "d128")
                 op = OP[opw]
                 profile = "FMA" if op == "fma" else prof
-                recs[KEY(dict(lang="csharp", impl=impl, op=op, cat=band, profile=profile, mode="thru", arch=ARCH))] = \
-                    dict(lang="csharp", impl=impl, op=op, cat=band, profile=profile,
+                recs[KEY(dict(lang=lang, impl=impl, op=op, cat=band, profile=profile, mode="thru", arch=ARCH))] = \
+                    dict(lang=lang, impl=impl, op=op, cat=band, profile=profile,
                          arch=ARCH, mode="thru", ns=round(st["Median"], 2), run=run)
                 n += 1
         print(f"   {n} rows")
@@ -186,12 +193,12 @@ def main():
     opo = {"add":0,"sub":1,"mul":2,"div":3,"fma":4}
     cato = {c:i for i,c in enumerate(["SQss","SQos","NQss","NQos","MQss","MQos","OQss","OQos","FQss","FQos","CP","WP","XP","CD","WD","XD","ET","PT","FN","FF","MIX"])}
     pro = {"P-fin":0,"P-gen":1,"P-max":2,"FMA":3}
-    merged = _merge_store(os.path.join(HERE, f"results.csharp.{ARCH}.jsonl"), recs, KEY)
+    merged = _merge_store(os.path.join(HERE, f"results.{lang}.{ARCH}.jsonl"), recs, KEY)
     rows = sorted(merged.values(), key=lambda r:(r["impl"],opo[r["op"]],pro[r["profile"]],cato[r["cat"]]))
-    with open(os.path.join(HERE, f"results.csharp.{ARCH}.jsonl"), "w") as f:
+    with open(os.path.join(HERE, f"results.{lang}.{ARCH}.jsonl"), "w") as f:
         for r in rows:
             f.write(json.dumps({k:r[k] for k in KO}, ensure_ascii=False) + "\n")
-    print(f"rewrote results.csharp.{ARCH}.jsonl ({len(rows)} records)")
+    print(f"rewrote results.{lang}.{ARCH}.jsonl ({len(rows)} records)")
 
     p = os.path.join(HERE, f"runs.{ARCH}.jsonl")
     runs = [json.loads(l) for l in open(p).read().splitlines() if l.strip()]

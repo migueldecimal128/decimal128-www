@@ -37,6 +37,11 @@ def _host_arch():
 
 
 ARCH = _host_arch()
+# Store lang key. --lang writes a SEPARATE store file: the store key is
+# (lang,impl,op,cat,profile,mode,arch) with no session/runtime dimension, so a
+# re-measure would upsert over the existing rows. Use a distinct lang to keep a
+# comparison-session run from disturbing the cross-port sweep's rows.
+LANG = "c"
 MACHINE = (f"Intel Core i9-9880H ({os.cpu_count()} cpus), x86_64"
            if ARCH == "x86_64" else "Apple M3 Pro (12 cores), arm64")
 
@@ -158,7 +163,7 @@ def reshape(j, profile, run):
             # d128 reports the _tte rung; peers report their plain fused arm.
             if (raw_impl == "d128") != (suffix == "_tte"):
                 continue
-            yield dict(lang="c", impl=IMPL[raw_impl], op="fma", cat=cat, profile="FMA",
+            yield dict(lang=LANG, impl=IMPL[raw_impl], op="fma", cat=cat, profile="FMA",
                        arch=ARCH, mode="thru", ns=ns, run=run)
             continue
         m = BAND_RE.match(name)
@@ -175,7 +180,7 @@ def reshape(j, profile, run):
         else:
             if suffix:                            # peers: plain benchmark only
                 continue
-        yield dict(lang="c", impl=impl, op=op, cat=cat, profile=profile,
+        yield dict(lang=LANG, impl=impl, op=op, cat=cat, profile=profile,
                    arch=ARCH, mode="thru", ns=ns, run=run)
 
 def build_bench(binary):
@@ -201,6 +206,7 @@ def build_bench(binary):
 
 
 def main():
+    global LANG
     if len(sys.argv) < 2:
         print(__doc__); sys.exit(1)
     binary = sys.argv[1]
@@ -209,6 +215,7 @@ def main():
     a = sys.argv[2:]
     for i, x in enumerate(a):
         if x == "--run-id": run = a[i+1]
+        if x == "--lang": LANG = a[i+1]
         if x == "--min-time": min_time = a[i+1]
     if "--no-build" not in a:
         build_bench(binary)
@@ -229,12 +236,12 @@ def main():
     opo = {"add":0,"sub":1,"mul":2,"div":3,"fma":4}
     cato = {c:i for i,c in enumerate(["SQss","SQos","NQss","NQos","MQss","MQos","OQss","OQos","FQss","FQos","CP","WP","XP","CD","WD","XD","ET","PT","FN","FF","MIX"])}
     pro = {"P-fin":0,"P-gen":1,"P-max":2,"FMA":3}
-    merged = _merge_store(os.path.join(HERE, f"results.c.{ARCH}.jsonl"), recs, KEY)
+    merged = _merge_store(os.path.join(HERE, f"results.{LANG}.{ARCH}.jsonl"), recs, KEY)
     rows = sorted(merged.values(), key=lambda r:(r["impl"],opo[r["op"]],pro[r["profile"]],cato[r["cat"]]))
-    with open(os.path.join(HERE, f"results.c.{ARCH}.jsonl"), "w") as f:
+    with open(os.path.join(HERE, f"results.{LANG}.{ARCH}.jsonl"), "w") as f:
         for r in rows:
             f.write(json.dumps({k:r[k] for k in KO}, ensure_ascii=False) + "\n")
-    print(f"rewrote results.c.{ARCH}.jsonl ({len(rows)} records)")
+    print(f"rewrote results.{LANG}.{ARCH}.jsonl ({len(rows)} records)")
 
     # mint / update the run in runs.jsonl
     upsert_run(run, ctx, f"{_os_desc()}; {_tool_version(['cc', '--version'])}; "
