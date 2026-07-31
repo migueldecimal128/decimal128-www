@@ -41,6 +41,26 @@ def _merge_store(path, recs, KEY):
     return store
 PROFILES = ["P-gen", "P-fin", "P-max", "FMA"]
 
+def _git_head(path):
+    """Short HEAD of the benchmarked port repo, '+dirty' if TRACKED files differ.
+
+    A run record that names only the arm cannot tell two engine states apart;
+    the commit is what makes a number reproducible. Untracked files are ignored
+    (-uno) on purpose: build trees (build-bench/, bin/, obj/) live inside the port
+    repos and would otherwise mark every run dirty. `git -C` resolves the enclosing
+    repo, so any path inside the port works."""
+    try:
+        h = subprocess.run(["git", "-C", path, "rev-parse", "--short", "HEAD"],
+                           capture_output=True, text=True, timeout=60)
+        if h.returncode != 0:
+            return "unknown"
+        s = subprocess.run(["git", "-C", path, "status", "--porcelain", "-uno"],
+                           capture_output=True, text=True, timeout=60)
+        return h.stdout.strip() + ("+dirty" if (s.stdout or "").strip() else "")
+    except Exception:
+        return "unknown"
+
+
 def _os_desc():
     rel = platform.mac_ver()[0]
     return f"macOS {rel} [Darwin {platform.release()}]" if rel else platform.platform()
@@ -108,6 +128,7 @@ def main():
     runs = [r for r in runs if r["run"] != run]
     toolchain = f"{_os_desc()}; zig {_tool_version(['zig', 'version'])}."
     runs.append({"run": run, "date": "", "machine": MACHINE,
+                 "port_commit": _git_head(crate),
                  "os_toolchain": toolchain,
                  "engine": "bench/swept.zig (manual std-clock, ~30ms/measurement min-over-reps, "
                            "doNotOptimizeAway; _tte rung); SWEPT_JSONL emit",

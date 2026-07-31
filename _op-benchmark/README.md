@@ -78,6 +78,14 @@ The rest of this file is reference.
 - **The store (data — never hand-edit):** `results.<lang>.<arch>.jsonl` (one per port
   **per arch**), plus `runs.<arch>.jsonl`, and the shared, single-copy `impls.json` +
   `annotations.jsonl`. The measured numbers.
+  - Measurement rows carry exactly nine fields (`lang, impl, op, cat, profile, arch,
+    mode, ns, run`); `run` joins to `runs.<arch>.jsonl`, which holds the provenance.
+  - **`port_commit`** on a run record is the short HEAD of the port repo that was
+    measured (`+dirty` if tracked files differed; untracked build trees are ignored).
+    **Every `emit_*.py` stamps it** — a number is only reproducible against a known
+    engine commit, and comparing two runs of "the same arm" is meaningless without it.
+    Runs emitted before this was added read `port_commit: None`; that is expected and
+    nothing is backfilled.
 - **The generators:** `gen_bench.py` (the `benchmark-*.md` pages) and
   `gen_bench_net11_preview7.py` (the .NET 11 review) — read the store, write tables into
   the report pages. These plus the `.md` pages are what you edit for layout.

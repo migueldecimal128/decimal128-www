@@ -61,6 +61,26 @@ BAND_RE = re.compile(r"^BM_(d128|libbid|decq|mpd)_(add|sub|mul|div)_"
 # native fused multiply-add (__bid128_fma / decQuadFMA / mpd_qfma), plain (no suffix).
 FMA_RE  = re.compile(r"^BM_(d128|libbid|decq|mpd)_fma_(FN|FF)(_tte)?$")
 
+def _git_head(path):
+    """Short HEAD of the benchmarked port repo, '+dirty' if TRACKED files differ.
+
+    A run record that names only the arm cannot tell two engine states apart;
+    the commit is what makes a number reproducible. Untracked files are ignored
+    (-uno) on purpose: build trees (build-bench/, bin/, obj/) live inside the port
+    repos and would otherwise mark every run dirty. `git -C` resolves the enclosing
+    repo, so any path inside the port works."""
+    try:
+        h = subprocess.run(["git", "-C", path, "rev-parse", "--short", "HEAD"],
+                           capture_output=True, text=True, timeout=60)
+        if h.returncode != 0:
+            return "unknown"
+        s = subprocess.run(["git", "-C", path, "status", "--porcelain", "-uno"],
+                           capture_output=True, text=True, timeout=60)
+        return h.stdout.strip() + ("+dirty" if (s.stdout or "").strip() else "")
+    except Exception:
+        return "unknown"
+
+
 def _os_desc():
     rel = platform.mac_ver()[0]
     return f"macOS {rel} [Darwin {platform.release()}]" if rel else platform.platform()
@@ -218,17 +238,19 @@ def main():
 
     # mint / update the run in runs.jsonl
     upsert_run(run, ctx, f"{_os_desc()}; {_tool_version(['cc', '--version'])}; "
-                         f"{_c_build_flags(binary)}.")
+                         f"{_c_build_flags(binary)}.",
+               _git_head(os.path.dirname(os.path.abspath(binary))))
     by = collections.Counter((r["impl"],r["profile"]) for r in recs.values())
     for k in sorted(by): print(f"   {k}: {by[k]}")
 
-def upsert_run(run, ctx, toolchain):
+def upsert_run(run, ctx, toolchain, port_commit="unknown"):
     p = os.path.join(HERE, f"runs.{ARCH}.jsonl")
     lines = [l for l in open(p).read().splitlines() if l.strip()]
     runs = [json.loads(l) for l in lines]
     runs = [r for r in runs if r["run"] != run]
     rec = {"run": run, "date": (ctx or {}).get("date","")[:10],
            "machine": f"{(ctx or {}).get('host_name','?')} ({(ctx or {}).get('num_cpus','?')} cpus)",
+           "port_commit": port_commit,
            "os_toolchain": toolchain,
            "engine": "Google Benchmark (bench_main.cpp), in-process; d128 add/sub _tte rung, "
                      "mul/div _ctx arm, FMA _tte; 15-rep MEDIAN aggregate "
