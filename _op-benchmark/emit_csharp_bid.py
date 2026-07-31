@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
-"""csharp-bid emit — the BID-representation migration arm (decimal128-csharp-migration).
-Runs the migration repo's SweptBench under the .NET 11 runtime, one BDN process per
-cell, and REWRITES results.csharp-bid.<arch>.jsonl with the d128 cells ONLY: the
-SysDec_/SysD128_ peer cells are identical code to the csharp arm and are already
-measured there (results.csharp.<arch>.jsonl) — re-measuring them here would double the
-wall-clock for duplicate numbers. lang key = "csharp-bid", impl stays "d128" (the store
-key's lang field disambiguates from the csharp arm; impls.json needs no new entry).
+"""csharp-bid emit — the BID-representation C# arm (decimal128-csharp-bid).
+Runs the repo's SweptBench under the .NET 11 runtime, one BDN process per cell, and
+REWRITES results.csharp-bid.<arch>.jsonl with the d128 cells AND the SysD128_ peer
+(System.Numerics.Decimal128) — measured here, same session/same SDK, because the MS
+peer's numbers move with every runtime daily and the review editions need the pair
+under ONE SDK. The SysDec_ (System.Decimal) cells are dropped (retired from the
+review cohort). lang key = "csharp-bid"; impls "d128" and
+"System.Numerics.Decimal128" (both already in impls.json).
 NOTE: BDN numbers are the **Median** of 15 iterations — the cross-port estimator.
-Needs the .NET 11 preview SDK. Mints run Rcsbid1 and stamps the migration repo's HEAD
-commit into the run record (port_commit) — the baseline is meaningful only against a
-known engine commit.
+Needs the .NET 11 SDK. Stamps the engine repo's HEAD commit into the run record
+(port_commit) — a run is meaningful only against a known engine commit.
+HISTORY: runs Rcsbid1–4/xRcsbid* (preview.7 SDKs, engine = the migration repo,
+d128 cells only) predate the SysD128_ ingestion and the decimal128-csharp-bid seed.
 
 Baseline freeze: after a run that is declared a baseline, copy the results file to
 baselines/csharp-bid.baseline.<arch>.jsonl (see baselines/README.md). This emitter
@@ -92,12 +94,14 @@ def _merge_store(path, recs, KEY):
     return store
 PROFILES = ["P-gen", "P-fin", "P-max", "FMA"]
 OP = {"Add": "add", "Sub": "sub", "Mul": "mul", "Div": "div", "Fma": "fma"}
-# d128 cells only — no SysDec_/SysD128_ prefix arm here (see module docstring).
-METH = re.compile(r"^(Add|Sub|Mul|Div|Fma)_([A-Z]+(?:_(?:ss|os))?)$")
+# Two arms: bare = the port (impl d128), SysD128_ = System.Numerics.Decimal128.
+# SysDec_ (System.Decimal) is deliberately NOT ingested (see module docstring).
+METH = re.compile(r"^(SysD128_)?(Add|Sub|Mul|Div|Fma)_([A-Z]+(?:_(?:ss|os))?)$")
+IMPL = {None: "d128", "SysD128_": "System.Numerics.Decimal128"}
 
 def main():
-    proj = os.path.expanduser("~/decimal128/csharp-migration/benchmark/Decimal128.Benchmarks.Net11")
-    run = "Rcsbid1"
+    proj = os.path.expanduser("~/decimal128/csharp-bid/benchmark/Decimal128.Benchmarks.Net11")
+    run = "Rcsbid5"
     profiles = list(PROFILES)
     cells_re = None
     note = ""
@@ -142,8 +146,7 @@ def main():
         if ls.returncode != 0 or not cells:
             print(f"   swept-list failed for {prof}: {(ls.stderr or '').strip().splitlines()[-1:]}")
             continue
-        # This arm measures the port only: drop the peer cells up front so no
-        # process is ever launched for them.
+        # Keep the port + SysD128_ cells; never launch a process for SysDec_.
         cells = [c for c in cells if METH.match(c)]
         # --cells narrows the sweep to the arms a change can actually move (e.g.
         # '^Add_' = the d128 add cells). Safe because the store upserts by key, so
@@ -179,12 +182,13 @@ def main():
                 m = METH.match(b["Method"])
                 if not m:
                     continue
-                opw, band = m.groups()
+                pfx, opw, band = m.groups()
+                impl = IMPL[pfx]
                 band = band.replace("_", "")   # store cat: "SQ_ss" -> "SQss"
                 op = OP[opw]
                 profile = "FMA" if op == "fma" else prof
-                recs[KEY(dict(lang=LANG, impl="d128", op=op, cat=band, profile=profile, mode="thru", arch=ARCH))] = \
-                    dict(lang=LANG, impl="d128", op=op, cat=band, profile=profile,
+                recs[KEY(dict(lang=LANG, impl=impl, op=op, cat=band, profile=profile, mode="thru", arch=ARCH))] = \
+                    dict(lang=LANG, impl=impl, op=op, cat=band, profile=profile,
                          arch=ARCH, mode="thru", ns=round(st["Median"], 2), run=run)
                 n += 1
         print(f"   {n} rows")
@@ -214,11 +218,11 @@ def main():
                            "opaque()/rust black_box) so branch-free fast paths (mul CP, div ET) can't "
                            "free-pipeline. Numbers are the BDN **Median** of the 15 iterations — the cross-port "
                            "estimator, matching the other ports' 15-rep median. SWEPT_PROFILE-filtered by category.",
-                 "alternatives": "none in this arm — d128 cells only. The System.Numerics.Decimal128 and "
-                                 "System.Decimal peers are identical code measured under lang=csharp "
-                                 "(results.csharp.<arch>.jsonl); compare against those rows.",
-                 "ports": "decimal128-csharp-migration (csharp-bid arm: raw BID128 in-memory, arithmetic on "
-                          "undecoded operands, non-canonical inputs handled in every operation)",
+                 "alternatives": "System.Numerics.Decimal128 (SysD128_ cells) measured in the SAME run/SDK — "
+                                 "its numbers move with every runtime daily, so the pair is only meaningful "
+                                 "under one SDK. System.Decimal (SysDec_) deliberately not measured here.",
+                 "ports": "decimal128-csharp-bid (raw BID128 in-memory, arithmetic on undecoded operands, "
+                          "non-canonical inputs handled in every operation)",
                  "notes": f"csharp-bid emit (emit_csharp_bid.py); {'/'.join(profiles)}"
                           + (f"; cells matching /{cells_re.pattern}/ only (partial re-emit — other cells keep their prior run's rows)" if cells_re else "")
                           + f". .NET 11 runtime, SDK {sdk_ver}. Engine commit {port_commit}."
