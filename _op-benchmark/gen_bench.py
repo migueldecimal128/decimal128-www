@@ -39,7 +39,11 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 # csharp-bid = the BID-representation migration arm (decimal128-csharp-migration,
 # emit_csharp_bid.py) — store-only for now: valid in the schema so its results file
 # loads, but absent from every SPECS ports list, so no page renders it.
-LANGS    = {"c","swift","java","kotlin","rust","go","csharp","zig","python","csharp-bid"}
+# c-rc1 = the same-session re-measured C/libbid arm for the .NET 11 rc.1 review edition,
+# consumed ONLY by the standalone gen_bench_net11_rc1_26380_103.py. Store-only here for the
+# same reason: it must validate (this module globs every results.*.jsonl), but it is in no
+# SPECS ports list, and impl_lang() always sources libbid from lang "c" — so it renders nowhere.
+LANGS    = {"c","swift","java","kotlin","rust","go","csharp","zig","python","csharp-bid","c-rc1"}
 IMPLS    = {"d128","libbid","libdecquad","libmpdecimal","rust_decimal",
             "System.Decimal","System.Numerics.Decimal128","Foundation.Decimal","BigDecimal","decimal.Decimal"}
 OPS      = {"add","sub","mul","div","fma","toString","quantize"}
