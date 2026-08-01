@@ -85,3 +85,18 @@ Current baselines:
   The frozen zero remains `csharp-ubd.baseline.arm64.jsonl` (`Rcsubd1`), unmodified;
   consult this file for the two known outlier cells before trusting a single-cell
   ratio against it.
+- `csharp-bid.stabilization-Rcsbid7.arm64.jsonl` — confirmation pass for the
+  **proof-gated add/sub/mul ladders** (decimal128-csharp-bid `64e891a`). Same
+  engine commit, same SDK (11.0.100-rc.1.26380.103), same day as the live store's
+  run `Rcsbid6`, so the pair is a pure repeatability measurement. Establishes:
+  - **Both arms repeat at ~1%**: port geomean 1.0074, System.Numerics.Decimal128
+    geomean 1.0084 over 52 cells each. The M3's same-day stability holds on the
+    new engine.
+  - **The fork gain is far outside that noise floor**: the port measured 0.873
+    geomean against the pre-fork engine (`Rcsbid5`, commit `e12cb6e`), i.e. a
+    12.7% improvement against a ~1% floor.
+  - Two cells swing >10% and both are known jitter shapes, not signal: mul CP
+    P-fin 2.10 -> 2.58 (a sub-3 ns cell; +-0.5 ns absolute is the documented
+    alignment-jitter floor — quote such cells as ranges) and fma FF 75.49 ->
+    84.60 (FMA was untouched by the fork work).
+  The live store remains `Rcsbid6`; this file is evidence only.
