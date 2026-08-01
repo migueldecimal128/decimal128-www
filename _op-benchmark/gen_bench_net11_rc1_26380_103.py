@@ -38,12 +38,15 @@ import json, glob, os, re, sys
 HERE   = os.path.dirname(os.path.abspath(__file__))
 TARGET = os.path.normpath(os.path.join(HERE, "..", "reviews", "dotnet", "net11-rc1-26380.103.md"))
 
-# Columns: (lang, impl, header). `lang` selects which results.<lang>.jsonl holds the record
-# (libbid is C-hosted; the SUT + port pair live in the csharp-bid arm). Order is editorial:
-# SUT first.
-COLS = [("csharp-bid", "System.Numerics.Decimal128", "Decimal128 (.NET 11)"),
-        ("c",          "libbid",                     "libbid C"),
-        ("csharp-bid", "d128",                       "decimal128-csharp-bid")]
+# Columns: (langs, impl, header). `langs` is a priority list of results.<lang>.jsonl files
+# to search for the record (first hit wins). The SUT + port pair live in the csharp-bid arm.
+# libbid prefers the SAME-SESSION re-measured C arm (lang c-rc1 — exists on x86_64, where
+# the i9 shows ~10% day-scale drift and cross-day rows would flatter the comparison) and
+# falls back to the standing cross-port C arm (lang c — the arm64 rows; the M3's same-day
+# drift is ~0 so cross-day is sound there). Order is editorial: SUT first.
+COLS = [(("csharp-bid",), "System.Numerics.Decimal128", "Decimal128 (.NET 11)"),
+        (("c-rc1", "c"),  "libbid",                     "libbid C"),
+        (("csharp-bid",), "d128",                       "decimal128-csharp-bid")]
 
 # base marker id -> (profile, [(op, cat), ...]). Each base renders for both arches; the x86
 # variant uses the "<id>-x86" marker, rendered directly below its arm64 twin.
@@ -79,11 +82,12 @@ def load_store():
             idx[(r["lang"], r["impl"], r["op"], r["cat"], r["profile"], r["mode"], r["arch"])] = r
     return idx
 
-def get(idx, lang, impl, op, cat, profile, arch):
-    for mode in MODE_PRIORITY:
-        k = (lang, impl, op, cat, profile, mode, arch)
-        if k in idx:
-            return idx[k]
+def get(idx, langs, impl, op, cat, profile, arch):
+    for lang in langs:
+        for mode in MODE_PRIORITY:
+            k = (lang, impl, op, cat, profile, mode, arch)
+            if k in idx:
+                return idx[k]
     return None
 
 def render(idx, profile, pairs, arch):
