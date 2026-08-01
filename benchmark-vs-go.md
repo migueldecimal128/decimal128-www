@@ -43,14 +43,14 @@ The headline: one realistic 64-bit financial operation mix — a `MIX` add/sub s
 
 | port | op | cat | profile | arch | mode | ns | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| go | add | MIX | P-fin | x86_64 | thru | 7.51 | - | - | - | xRgosw2 |  |
-| go | sub | MIX | P-fin | x86_64 | thru | 10.51 | - | - | - | xRgosw2 |  |
-| go | mul | CP | P-fin | x86_64 | thru | 3.96 | - | - | - | xRgosw2 |  |
-| go | mul | WP | P-fin | x86_64 | thru | 47.95 | - | - | - | xRgosw2 |  |
-| go | div | CD | P-fin | x86_64 | thru | 82.08 | - | - | - | xRgosw2 |  |
-| go | div | WD | P-fin | x86_64 | thru | 122.30 | - | - | - | xRgosw2 |  |
-| go | div | ET | P-fin | x86_64 | thru | 27.08 | - | - | - | xRgosw2 |  |
-| go | div | PT | P-fin | x86_64 | thru | 12.06 | - | - | - | xRgosw2 |  |
+| go | add | MIX | P-fin | x86_64 | thru | 7.66 | - | - | - | xRgosw2 |  |
+| go | sub | MIX | P-fin | x86_64 | thru | 10.93 | - | - | - | xRgosw2 |  |
+| go | mul | CP | P-fin | x86_64 | thru | 4.06 | - | - | - | xRgosw2 |  |
+| go | mul | WP | P-fin | x86_64 | thru | 48.78 | - | - | - | xRgosw2 |  |
+| go | div | CD | P-fin | x86_64 | thru | 88.80 | - | - | - | xRgosw2 |  |
+| go | div | WD | P-fin | x86_64 | thru | 121.80 | - | - | - | xRgosw2 |  |
+| go | div | ET | P-fin | x86_64 | thru | 26.96 | - | - | - | xRgosw2 |  |
+| go | div | PT | P-fin | x86_64 | thru | 11.93 | - | - | - | xRgosw2 |  |
 
 <!-- END GENERATED pfin-rel-go-x86 -->
 
@@ -83,16 +83,16 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| go | add | SQss | P-gen | x86_64 | thru | 3.19 | - | - | - | xRgosw2 |  |
-| go | add | SQos | P-gen | x86_64 | thru | 9.10 | - | - | - | xRgosw2 |  |
-| go | add | NQss | P-gen | x86_64 | thru | 11.33 | - | - | - | xRgosw2 |  |
-| go | add | NQos | P-gen | x86_64 | thru | 16.58 | - | - | - | xRgosw2 |  |
-| go | add | MQss | P-gen | x86_64 | thru | 19.01 | - | - | - | xRgosw2 |  |
-| go | add | MQos | P-gen | x86_64 | thru | 32.50 | - | - | - | xRgosw2 |  |
+| go | add | SQss | P-gen | x86_64 | thru | 3.13 | - | - | - | xRgosw2 |  |
+| go | add | SQos | P-gen | x86_64 | thru | 9.01 | - | - | - | xRgosw2 |  |
+| go | add | NQss | P-gen | x86_64 | thru | 11.40 | - | - | - | xRgosw2 |  |
+| go | add | NQos | P-gen | x86_64 | thru | 16.91 | - | - | - | xRgosw2 |  |
+| go | add | MQss | P-gen | x86_64 | thru | 19.04 | - | - | - | xRgosw2 |  |
+| go | add | MQos | P-gen | x86_64 | thru | 32.59 | - | - | - | xRgosw2 |  |
 | go | add | OQss | P-gen | x86_64 | thru | 46.99 | - | - | - | xRgosw2 |  |
-| go | add | OQos | P-gen | x86_64 | thru | 62.84 | - | - | - | xRgosw2 |  |
-| go | add | FQss | P-gen | x86_64 | thru | 30.34 | - | - | - | xRgosw2 |  |
-| go | add | FQos | P-gen | x86_64 | thru | 36.96 | - | - | - | xRgosw2 |  |
+| go | add | OQos | P-gen | x86_64 | thru | 62.47 | - | - | - | xRgosw2 |  |
+| go | add | FQss | P-gen | x86_64 | thru | 29.44 | - | - | - | xRgosw2 |  |
+| go | add | FQos | P-gen | x86_64 | thru | 37.04 | - | - | - | xRgosw2 |  |
 
 <!-- END GENERATED add-rel-go-x86 -->
 
@@ -125,16 +125,16 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| go | sub | SQss | P-gen | x86_64 | thru | 7.68 | - | - | - | xRgosw2 |  |
-| go | sub | SQos | P-gen | x86_64 | thru | 3.32 | - | - | - | xRgosw2 |  |
-| go | sub | NQss | P-gen | x86_64 | thru | 16.58 | - | - | - | xRgosw2 |  |
-| go | sub | NQos | P-gen | x86_64 | thru | 11.16 | - | - | - | xRgosw2 |  |
-| go | sub | MQss | P-gen | x86_64 | thru | 32.76 | - | - | - | xRgosw2 |  |
-| go | sub | MQos | P-gen | x86_64 | thru | 18.75 | - | - | - | xRgosw2 |  |
-| go | sub | OQss | P-gen | x86_64 | thru | 62.41 | - | - | - | xRgosw2 |  |
-| go | sub | OQos | P-gen | x86_64 | thru | 46.21 | - | - | - | xRgosw2 |  |
-| go | sub | FQss | P-gen | x86_64 | thru | 36.72 | - | - | - | xRgosw2 |  |
-| go | sub | FQos | P-gen | x86_64 | thru | 29.16 | - | - | - | xRgosw2 |  |
+| go | sub | SQss | P-gen | x86_64 | thru | 8.08 | - | - | - | xRgosw2 |  |
+| go | sub | SQos | P-gen | x86_64 | thru | 3.31 | - | - | - | xRgosw2 |  |
+| go | sub | NQss | P-gen | x86_64 | thru | 16.32 | - | - | - | xRgosw2 |  |
+| go | sub | NQos | P-gen | x86_64 | thru | 11.45 | - | - | - | xRgosw2 |  |
+| go | sub | MQss | P-gen | x86_64 | thru | 32.15 | - | - | - | xRgosw2 |  |
+| go | sub | MQos | P-gen | x86_64 | thru | 18.76 | - | - | - | xRgosw2 |  |
+| go | sub | OQss | P-gen | x86_64 | thru | 61.83 | - | - | - | xRgosw2 |  |
+| go | sub | OQos | P-gen | x86_64 | thru | 46.20 | - | - | - | xRgosw2 |  |
+| go | sub | FQss | P-gen | x86_64 | thru | 36.45 | - | - | - | xRgosw2 |  |
+| go | sub | FQos | P-gen | x86_64 | thru | 29.27 | - | - | - | xRgosw2 |  |
 
 <!-- END GENERATED sub-rel-go-x86 -->
 
@@ -160,9 +160,9 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| go | mul | CP | P-gen | x86_64 | thru | 5.76 | - | - | - | xRgosw2 |  |
-| go | mul | WP | P-gen | x86_64 | thru | 47.91 | - | - | - | xRgosw2 |  |
-| go | mul | XP | P-gen | x86_64 | thru | 71.81 | - | - | - | xRgosw2 |  |
+| go | mul | CP | P-gen | x86_64 | thru | 5.78 | - | - | - | xRgosw2 |  |
+| go | mul | WP | P-gen | x86_64 | thru | 47.84 | - | - | - | xRgosw2 |  |
+| go | mul | XP | P-gen | x86_64 | thru | 71.93 | - | - | - | xRgosw2 |  |
 
 <!-- END GENERATED mul-rel-go-x86 -->
 
@@ -190,11 +190,11 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| go | div | CD | P-gen | x86_64 | thru | 87.33 | - | - | - | xRgosw2 |  |
-| go | div | WD | P-gen | x86_64 | thru | 122.90 | - | - | - | xRgosw2 |  |
-| go | div | XD | P-gen | x86_64 | thru | 107.50 | - | - | - | xRgosw2 |  |
-| go | div | ET | P-gen | x86_64 | thru | 32.44 | - | - | - | xRgosw2 |  |
-| go | div | PT | P-gen | x86_64 | thru | 12.07 | - | - | - | xRgosw2 |  |
+| go | div | CD | P-gen | x86_64 | thru | 87.21 | - | - | - | xRgosw2 |  |
+| go | div | WD | P-gen | x86_64 | thru | 123.00 | - | - | - | xRgosw2 |  |
+| go | div | XD | P-gen | x86_64 | thru | 107.80 | - | - | - | xRgosw2 |  |
+| go | div | ET | P-gen | x86_64 | thru | 32.82 | - | - | - | xRgosw2 |  |
+| go | div | PT | P-gen | x86_64 | thru | 12.03 | - | - | - | xRgosw2 |  |
 
 <!-- END GENERATED div-rel-go-x86 -->
 
@@ -219,8 +219,8 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| go | fma | FN | FMA | x86_64 | thru | 250.30 | - | - | - | xRgosw2 |  |
-| go | fma | FF | FMA | x86_64 | thru | 130.30 | - | - | - | xRgosw2 |  |
+| go | fma | FN | FMA | x86_64 | thru | 249.80 | - | - | - | xRgosw2 |  |
+| go | fma | FF | FMA | x86_64 | thru | 130.70 | - | - | - | xRgosw2 |  |
 
 <!-- END GENERATED fma-rel-go-x86 -->
 
