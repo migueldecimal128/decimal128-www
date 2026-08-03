@@ -28,8 +28,8 @@ A cell is the headline ns/op for that impl at that band/arch, or an em dash wher
 record exists yet (e.g. x86 rows before the i9 mirror lands).
 
 Store rows behind this edition: arm64 Rcsbid9 + x86_64 xRcsbid9, both engine 64e891a
-under SDK 11.0.100-rc.1.26401.101 — the first edition in the series whose two arches
-were measured on the SAME SDK since the arches diverged at 26381.106. The libbid column
+under SDK 11.0.100-rc.1.26401.101 — both arches re-measured on the same SDK, which they
+had not been while x86 ran ahead of arm64 on the daily channel. The libbid column
 is NOT re-measured for this edition: x86 still resolves to lang c-rc1 (run xRcrc1, the
 26380.103-session C arm) and arm64 to lang c. libbid is a C library and runtime-independent,
 so an SDK bump cannot move it — but the x86 libbid rows are now cross-session against
