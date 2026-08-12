@@ -303,14 +303,6 @@
     result bits in every port. Divergence shows up as a Rosetta failure,
     not a silent drift. (See CrossPlatformArchitecture.md and Rosetta.md.)
 
-- id: using-library-1
-  category: "Using the Library"
-  question: "How do I create and print a decimal128 value?"
-  answer: >-
-    TODO — add one short snippet per language (or the two or three headline
-    ones), showing construction from a string/literal and formatting back
-    to text. Link to WrapperLayer.md.
-
 - id: using-library-2
   category: "Using the Library"
   question: "What is the default rounding mode, and can I change it?"
