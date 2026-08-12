@@ -47,14 +47,14 @@ The headline: one realistic 64-bit financial operation mix — a `MIX` add/sub s
 
 | port | op | cat | profile | arch | mode | ns | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| swift | add | MIX | P-fin | x86_64 | thru | 6.92 | Foundation.Decimal | 755.07 | **109.11×** | xRswsw2 | compact idiom peer |
-| swift | sub | MIX | P-fin | x86_64 | thru | 7.65 | Foundation.Decimal | 850.55 | **111.18×** | xRswsw2 | compact idiom peer |
-| swift | mul | CP | P-fin | x86_64 | thru | 3.60 | Foundation.Decimal | 689.64 | **191.57×** | xRswsw2 | compact idiom peer |
-| swift | mul | WP | P-fin | x86_64 | thru | 29.77 | Foundation.Decimal | 769.68 | **25.85×** | xRswsw2 | compact idiom peer |
-| swift | div | CD | P-fin | x86_64 | thru | 70.74 | Foundation.Decimal | 2940.93 | **41.57×** | xRswsw2 | compact idiom peer |
-| swift | div | WD | P-fin | x86_64 | thru | 91.17 | Foundation.Decimal | 1542.41 | **16.92×** | xRswsw2 | compact idiom peer |
-| swift | div | ET | P-fin | x86_64 | thru | 19.73 | Foundation.Decimal | 8244.88 | **417.89×** | xRswsw2 | compact idiom peer |
-| swift | div | PT | P-fin | x86_64 | thru | 10.37 | Foundation.Decimal | 7983.64 | **769.88×** | xRswsw2 | compact idiom peer |
+| swift | add | MIX | P-fin | x86_64 | thru | 7.66 | Foundation.Decimal | 825.09 | **107.71×** | xRswsw2 | compact idiom peer |
+| swift | sub | MIX | P-fin | x86_64 | thru | 8.46 | Foundation.Decimal | 905.82 | **107.07×** | xRswsw2 | compact idiom peer |
+| swift | mul | CP | P-fin | x86_64 | thru | 4.17 | Foundation.Decimal | 756.35 | **181.38×** | xRswsw2 | compact idiom peer |
+| swift | mul | WP | P-fin | x86_64 | thru | 32.61 | Foundation.Decimal | 845.70 | **25.93×** | xRswsw2 | compact idiom peer |
+| swift | div | CD | P-fin | x86_64 | thru | 76.62 | Foundation.Decimal | 3278.26 | **42.79×** | xRswsw2 | compact idiom peer |
+| swift | div | WD | P-fin | x86_64 | thru | 99.80 | Foundation.Decimal | 1676.87 | **16.80×** | xRswsw2 | compact idiom peer |
+| swift | div | ET | P-fin | x86_64 | thru | 21.37 | Foundation.Decimal | 9412.21 | **440.44×** | xRswsw2 | compact idiom peer |
+| swift | div | PT | P-fin | x86_64 | thru | 11.55 | Foundation.Decimal | 8951.48 | **775.02×** | xRswsw2 | compact idiom peer |
 
 <!-- END GENERATED pfin-rel-swift-x86 -->
 
@@ -87,16 +87,16 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| swift | add | SQss | P-gen | x86_64 | thru | 2.44 | Foundation.Decimal | 724.34 | **296.86×** | xRswsw2 | compact idiom peer |
-| swift | add | SQos | P-gen | x86_64 | thru | 5.08 | Foundation.Decimal | 828.27 | **163.05×** | xRswsw2 | compact idiom peer |
-| swift | add | NQss | P-gen | x86_64 | thru | 9.29 | Foundation.Decimal | 894.64 | **96.30×** | xRswsw2 | compact idiom peer |
-| swift | add | NQos | P-gen | x86_64 | thru | 10.03 | Foundation.Decimal | 1010.95 | **100.79×** | xRswsw2 | compact idiom peer |
-| swift | add | MQss | P-gen | x86_64 | thru | 15.04 | Foundation.Decimal | 892.55 | **59.35×** | xRswsw2 | compact idiom peer |
-| swift | add | MQos | P-gen | x86_64 | thru | 27.79 | Foundation.Decimal | 1068.52 | **38.45×** | xRswsw2 | compact idiom peer |
-| swift | add | OQss | P-gen | x86_64 | thru | 32.04 | Foundation.Decimal | 1225.87 | **38.26×** | xRswsw2 | compact idiom peer |
-| swift | add | OQos | P-gen | x86_64 | thru | 43.23 | Foundation.Decimal | 1344.02 | **31.09×** | xRswsw2 | compact idiom peer |
-| swift | add | FQss | P-gen | x86_64 | thru | 24.54 | Foundation.Decimal | 634.89 | **25.87×** | xRswsw2 | compact idiom peer |
-| swift | add | FQos | P-gen | x86_64 | thru | 29.73 | Foundation.Decimal | 645.81 | **21.72×** | xRswsw2 | compact idiom peer |
+| swift | add | SQss | P-gen | x86_64 | thru | 2.99 | Foundation.Decimal | 810.26 | **270.99×** | xRswsw2 | compact idiom peer |
+| swift | add | SQos | P-gen | x86_64 | thru | 5.69 | Foundation.Decimal | 923.22 | **162.25×** | xRswsw2 | compact idiom peer |
+| swift | add | NQss | P-gen | x86_64 | thru | 10.53 | Foundation.Decimal | 1028.94 | **97.72×** | xRswsw2 | compact idiom peer |
+| swift | add | NQos | P-gen | x86_64 | thru | 11.50 | Foundation.Decimal | 1105.30 | **96.11×** | xRswsw2 | compact idiom peer |
+| swift | add | MQss | P-gen | x86_64 | thru | 16.44 | Foundation.Decimal | 1001.83 | **60.94×** | xRswsw2 | compact idiom peer |
+| swift | add | MQos | P-gen | x86_64 | thru | 27.89 | Foundation.Decimal | 1140.21 | **40.88×** | xRswsw2 | compact idiom peer |
+| swift | add | OQss | P-gen | x86_64 | thru | 35.76 | Foundation.Decimal | 1438.33 | **40.22×** | xRswsw2 | compact idiom peer |
+| swift | add | OQos | P-gen | x86_64 | thru | 48.08 | Foundation.Decimal | 1548.90 | **32.22×** | xRswsw2 | compact idiom peer |
+| swift | add | FQss | P-gen | x86_64 | thru | 26.96 | Foundation.Decimal | 733.83 | **27.22×** | xRswsw2 | compact idiom peer |
+| swift | add | FQos | P-gen | x86_64 | thru | 32.71 | Foundation.Decimal | 733.68 | **22.43×** | xRswsw2 | compact idiom peer |
 
 <!-- END GENERATED add-rel-swift-x86 -->
 
@@ -129,16 +129,16 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| swift | sub | SQss | P-gen | x86_64 | thru | 4.40 | Foundation.Decimal | 844.21 | **191.87×** | xRswsw2 | compact idiom peer |
-| swift | sub | SQos | P-gen | x86_64 | thru | 3.09 | Foundation.Decimal | 715.24 | **231.47×** | xRswsw2 | compact idiom peer |
-| swift | sub | NQss | P-gen | x86_64 | thru | 10.16 | Foundation.Decimal | 1011.63 | **99.57×** | xRswsw2 | compact idiom peer |
-| swift | sub | NQos | P-gen | x86_64 | thru | 9.46 | Foundation.Decimal | 877.86 | **92.80×** | xRswsw2 | compact idiom peer |
-| swift | sub | MQss | P-gen | x86_64 | thru | 25.09 | Foundation.Decimal | 1007.16 | **40.14×** | xRswsw2 | compact idiom peer |
-| swift | sub | MQos | P-gen | x86_64 | thru | 15.08 | Foundation.Decimal | 900.10 | **59.69×** | xRswsw2 | compact idiom peer |
-| swift | sub | OQss | P-gen | x86_64 | thru | 42.03 | Foundation.Decimal | 1332.53 | **31.70×** | xRswsw2 | compact idiom peer |
-| swift | sub | OQos | P-gen | x86_64 | thru | 31.78 | Foundation.Decimal | 1223.11 | **38.49×** | xRswsw2 | compact idiom peer |
-| swift | sub | FQss | P-gen | x86_64 | thru | 29.58 | Foundation.Decimal | 637.76 | **21.56×** | xRswsw2 | compact idiom peer |
-| swift | sub | FQos | P-gen | x86_64 | thru | 23.95 | Foundation.Decimal | 632.91 | **26.43×** | xRswsw2 | compact idiom peer |
+| swift | sub | SQss | P-gen | x86_64 | thru | 5.11 | Foundation.Decimal | 1058.46 | **207.14×** | xRswsw2 | compact idiom peer |
+| swift | sub | SQos | P-gen | x86_64 | thru | 3.73 | Foundation.Decimal | 788.44 | **211.38×** | xRswsw2 | compact idiom peer |
+| swift | sub | NQss | P-gen | x86_64 | thru | 11.78 | Foundation.Decimal | 1175.38 | **99.78×** | xRswsw2 | compact idiom peer |
+| swift | sub | NQos | P-gen | x86_64 | thru | 10.59 | Foundation.Decimal | 986.28 | **93.13×** | xRswsw2 | compact idiom peer |
+| swift | sub | MQss | P-gen | x86_64 | thru | 28.39 | Foundation.Decimal | 1171.33 | **41.26×** | xRswsw2 | compact idiom peer |
+| swift | sub | MQos | P-gen | x86_64 | thru | 16.66 | Foundation.Decimal | 993.04 | **59.61×** | xRswsw2 | compact idiom peer |
+| swift | sub | OQss | P-gen | x86_64 | thru | 45.79 | Foundation.Decimal | 1543.20 | **33.70×** | xRswsw2 | compact idiom peer |
+| swift | sub | OQos | P-gen | x86_64 | thru | 35.71 | Foundation.Decimal | 1441.99 | **40.38×** | xRswsw2 | compact idiom peer |
+| swift | sub | FQss | P-gen | x86_64 | thru | 32.62 | Foundation.Decimal | 729.40 | **22.36×** | xRswsw2 | compact idiom peer |
+| swift | sub | FQos | P-gen | x86_64 | thru | 26.54 | Foundation.Decimal | 728.66 | **27.46×** | xRswsw2 | compact idiom peer |
 
 <!-- END GENERATED sub-rel-swift-x86 -->
 
@@ -164,9 +164,9 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| swift | mul | CP | P-gen | x86_64 | thru | 5.66 | Foundation.Decimal | 673.38 | **118.97×** | xRswsw2 | compact idiom peer |
-| swift | mul | WP | P-gen | x86_64 | thru | 29.66 | Foundation.Decimal | 769.46 | **25.94×** | xRswsw2 | compact idiom peer |
-| swift | mul | XP | P-gen | x86_64 | thru | 42.94 | Foundation.Decimal | 1961.85 | **45.69×** | xRswsw2 | compact idiom peer |
+| swift | mul | CP | P-gen | x86_64 | thru | 6.41 | Foundation.Decimal | 754.60 | **117.72×** | xRswsw2 | compact idiom peer |
+| swift | mul | WP | P-gen | x86_64 | thru | 32.66 | Foundation.Decimal | 845.34 | **25.88×** | xRswsw2 | compact idiom peer |
+| swift | mul | XP | P-gen | x86_64 | thru | 46.99 | Foundation.Decimal | 2176.17 | **46.31×** | xRswsw2 | compact idiom peer |
 
 <!-- END GENERATED mul-rel-swift-x86 -->
 
@@ -194,11 +194,11 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| swift | div | CD | P-gen | x86_64 | thru | 78.30 | Foundation.Decimal | 3095.28 | **39.53×** | xRswsw2 | compact idiom peer |
-| swift | div | WD | P-gen | x86_64 | thru | 91.05 | Foundation.Decimal | 1979.46 | **21.74×** | xRswsw2 | compact idiom peer |
-| swift | div | XD | P-gen | x86_64 | thru | 92.84 | Foundation.Decimal | 1476.69 | **15.91×** | xRswsw2 | compact idiom peer |
-| swift | div | ET | P-gen | x86_64 | thru | 26.92 | Foundation.Decimal | 7078.23 | **262.94×** | xRswsw2 | compact idiom peer |
-| swift | div | PT | P-gen | x86_64 | thru | 10.55 | Foundation.Decimal | 6961.89 | **659.89×** | xRswsw2 | compact idiom peer |
+| swift | div | CD | P-gen | x86_64 | thru | 84.73 | Foundation.Decimal | 3902.26 | **46.06×** | xRswsw2 | compact idiom peer |
+| swift | div | WD | P-gen | x86_64 | thru | 113.89 | Foundation.Decimal | 2538.86 | **22.29×** | xRswsw2 | compact idiom peer |
+| swift | div | XD | P-gen | x86_64 | thru | 100.42 | Foundation.Decimal | 1672.94 | **16.66×** | xRswsw2 | compact idiom peer |
+| swift | div | ET | P-gen | x86_64 | thru | 29.48 | Foundation.Decimal | 7994.08 | **271.17×** | xRswsw2 | compact idiom peer |
+| swift | div | PT | P-gen | x86_64 | thru | 11.47 | Foundation.Decimal | 8289.57 | **722.72×** | xRswsw2 | compact idiom peer |
 
 <!-- END GENERATED div-rel-swift-x86 -->
 
@@ -223,8 +223,8 @@ Swept 4096-input average per band (bare `thru`; ns/op = Time/4096 over the share
 
 | port | op | cat | profile | arch | mode | ours | alt | alt ns | ratio | run | notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| swift | fma | FN | FMA | x86_64 | thru | 145.47 | - | - | - | xRswsw2 |  |
-| swift | fma | FF | FMA | x86_64 | thru | 81.06 | - | - | - | xRswsw2 |  |
+| swift | fma | FN | FMA | x86_64 | thru | 159.48 | - | - | - | xRswsw2 |  |
+| swift | fma | FF | FMA | x86_64 | thru | 88.10 | - | - | - | xRswsw2 |  |
 
 <!-- END GENERATED fma-rel-swift-x86 -->
 
