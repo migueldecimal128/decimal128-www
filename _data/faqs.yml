@@ -361,3 +361,91 @@
     Find associates who can help ensure that language-specific wrappers follow
     the idioms/conventions established by that language. 
     Promote `decimal128` for the world!
+
+- id: techfaq-1
+  category: "Technical FAQs"
+  question: "How do you implement decimal on a binary computer?"
+  answer: >-
+    You may have experience storing a currency value in a 64-bit integer with
+    an implied/assumed decimal point ... essentially storing everything as
+    cents but rendering with a decimal point. Decimal floating point does
+    exactly the same thing, with the difference that the location of the
+    decimal/radix point is stored with the value and is free to **float**. 
+    In the case of decimal128, we allocate 113 bits for storing an integer
+    magnitude coefficient of 34 decimal digits. 14 bits gives is an exponent
+    range exceeding ten to the +/- 6000 along with room for special values
+    +/- Infinity and NaNs. We also need a bit for the sign. 113 + 14 + 1 => 128
+
+- id: techfaq-2
+  category: "Technical FAQs"
+  question: "What are the key performance constraints?"
+  answer: >-
+    Many operations involve shifting the decimal/radix point. One can easily
+    see this with addition an subtraction, whether the imputed decimal points
+    must be aligned. If the radix points are not aligned then at least one
+    of the two integer coefficients must be scaled. Scaling the integer
+    coefficient means multiplying or dividing by powers of 10. 
+    Integer multiplication is very fast on modern processors ... just a few
+    pipelined cycles. Integer division is 10x-20x slower, frequently causing
+    pipeline stalls. One can improve performance significantly by reciprocal
+    multiplication, effectively converting division by powers of 10 into
+    multiplications by precalculated power of 10 reciprocals. 
+
+- id: techfaq-3
+  category: "Technical FAQs"
+  question: "Why is proper rounding important?"
+  answer: >-
+    Accounting standards, contracts, and laws are written using base 10
+    calculations with specified/controlled decimal scale and rounding. 
+    Bank interest rates and tax calculations use different rounding
+    methods. Generally, individuals, institutions, and governments want
+    currency calculations performed **correctly**. Decimal128 provides
+    the tools for proper, user-controlled rounding. 
+
+- id: techfaq-4
+  category: "Technical FAQs"
+  question: "Isn't controlled rounding of arithmetic operations computationally expensive?"
+  answer: >-
+    This is a common misconception. 
+    Rounding is required only when results are inexact ... when the resulting
+    intermediate value has more than 34 digits ... 
+    somewhere between 113 an 227 bits ...
+    off the fast-path ...
+    which requires scaling to 34 digits ... 
+    which requires division by some power of 10 ... 
+    which indeed *is* quite expensive. 
+    Deciding proper rounding can be done in constant
+    time with a handful of instructions. 
+    When viewed from this context, the cost of user-controlled 
+    rounding is effectively zero. 
+
+- id: techfaq-5
+  category: "Technical FAQs"
+  question: "Why can't I perform operations, then round the result?"
+  answer: >-
+    When you perform an inexact arithmetic operation rounding is
+    involved ... if you then apply rounding again you have then
+    exposed yourself to a Double Rounding error ... see Double Rounding. 
+    
+- id: techfaq-6
+  category: "Technical FAQs"
+  question: "Why does Double Rounding fail to produce correct results?"
+  answer: >-
+    Round 1.49999 to the nearest integer ... 1 ...
+    Now, round 1.49999 to 1 place to the right of the decimal point ...
+    1.5 ...
+    Now apply a second rounding to an integer ... 2 ...
+    Double Rounding does not give the same answer. 
+
+
+
+
+
+    
+
+    
+  
+
+
+    
+    
