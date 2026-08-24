@@ -6,6 +6,10 @@ store-shaped JSON lines, and REWRITE results.java.jsonl. Two d128 records per ce
 
 Usage: emit_java.py [--repo ~/decimal128/java] [--run-id Rjasw2]
 """
+# CONTRACT (store-only stage): this emitter writes ONLY the JSONL store
+# (results.*.jsonl / runs.*.jsonl). It never writes a report page (*.md) and
+# never imports or invokes gen_bench. Splicing reports is a separate stage
+# (splice_benchmark_reports.sh / gen_bench.py). See ArchSplitStoreWorkOrder.md.
 import json, os, sys, subprocess, collections
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -38,6 +42,66 @@ def _merge_store(path, recs, KEY):
     return store
 PROFILES = ["P-gen", "P-fin", "P-max", "FMA"]
 
+def _git_head(path):
+    """Short HEAD of the benchmarked port repo, '+dirty' if TRACKED files differ.
+
+    A run record that names only the arm cannot tell two engine states apart;
+    the commit is what makes a number reproducible. Untracked files are ignored
+    (-uno) on purpose: build trees (build-bench/, bin/, obj/) live inside the port
+    repos and would otherwise mark every run dirty. `git -C` resolves the enclosing
+    repo, so any path inside the port works."""
+    try:
+        h = subprocess.run(["git", "-C", path, "rev-parse", "--short", "HEAD"],
+                           capture_output=True, text=True, timeout=60)
+        if h.returncode != 0:
+            return "unknown"
+        s = subprocess.run(["git", "-C", path, "status", "--porcelain", "-uno"],
+                           capture_output=True, text=True, timeout=60)
+        return h.stdout.strip() + ("+dirty" if (s.stdout or "").strip() else "")
+    except Exception:
+        return "unknown"
+
+
+def _os_desc():
+    rel = platform.mac_ver()[0]
+    return f"macOS {rel} [Darwin {platform.release()}]" if rel else platform.platform()
+
+
+def _tool_version(cmd, cwd=None):
+    """First line of a toolchain version probe (e.g. `go version`).
+
+    Provenance only: returns "unknown" rather than failing the run if the probe
+    errors. Pinning the exact build matters because a compiler or runtime bump
+    can move a number severalfold with no source change (a .NET preview bump
+    once moved a peer's divide 4x while the port held flat) — a run record that
+    names only the major version cannot tell those pictures apart.
+    """
+    try:
+        r = subprocess.run(cmd, capture_output=True, text=True, timeout=120, cwd=cwd)
+        out = ((r.stdout or "") + (r.stderr or "")).strip()
+        return out.splitlines()[0].strip() if r.returncode == 0 and out else "unknown"
+    except Exception:
+        return "unknown"
+
+
+def _gradle_toolchain(repo):
+    """Gradle + the JVM that actually ran the benchmark (authoritative over PATH `java`,
+    which gradle need not be using). "unknown" if the probe fails."""
+    try:
+        r = subprocess.run(["./gradlew", "-version", "--console=plain"],
+                           cwd=repo, capture_output=True, text=True, timeout=300)
+        gradle = jvm = None
+        for ln in ((r.stdout or "") + (r.stderr or "")).splitlines():
+            ln = ln.strip()
+            if ln.startswith("Gradle ") and gradle is None:
+                gradle = ln
+            elif ln.startswith(("Launcher JVM:", "JVM:")) and jvm is None:
+                jvm = "JVM " + ln.split(":", 1)[1].strip()
+        return "; ".join(x for x in (gradle, jvm) if x) or "unknown"
+    except Exception:
+        return "unknown"
+
+
 def main():
     repo = os.path.expanduser("~/decimal128/java")
     run = "Rjasw2"
@@ -65,26 +129,29 @@ def main():
 
     KO = ["lang","impl","op","cat","profile","arch","mode","ns","run"]
     opo = {"add":0,"sub":1,"mul":2,"div":3,"fma":4}
-    cato = {c:i for i,c in enumerate(["SQ","NQ","MQ","OQ","FQ","CP","WP","XP","CD","WD","XD","ET","PT","FN","FF","MIX"])}
+    cato = {c:i for i,c in enumerate(["SQss","SQos","NQss","NQos","MQss","MQos","OQss","OQos","FQss","FQos","CP","WP","XP","CD","WD","XD","ET","PT","FN","FF","MIX"])}
     pro = {"P-fin":0,"P-gen":1,"P-max":2,"FMA":3}
     modo = {"thru‡":0,"ea":1,"thru":2}
-    merged = _merge_store(os.path.join(HERE, "results.java.jsonl"), recs, KEY)
+    merged = _merge_store(os.path.join(HERE, f"results.java.{ARCH}.jsonl"), recs, KEY)
     rows = sorted(merged.values(), key=lambda r:(r["impl"],opo[r["op"]],pro[r["profile"]],cato[r["cat"]],modo.get(r["mode"],9)))
-    with open(os.path.join(HERE, "results.java.jsonl"), "w") as f:
+    with open(os.path.join(HERE, f"results.java.{ARCH}.jsonl"), "w") as f:
         for r in rows:
             f.write(json.dumps({k:r[k] for k in KO}, ensure_ascii=False) + "\n")
-    print(f"rewrote results.java.jsonl ({len(rows)} records)")
+    print(f"rewrote results.java.{ARCH}.jsonl ({len(rows)} records)")
 
-    p = os.path.join(HERE, "runs.jsonl")
+    p = os.path.join(HERE, f"runs.{ARCH}.jsonl")
     runs = [json.loads(l) for l in open(p).read().splitlines() if l.strip()]
     runs = [r for r in runs if r["run"] != run]
+    toolchain = f"{_os_desc()}; {_gradle_toolchain(repo)}."
     runs.append({"run": run, "date": "", "machine": MACHINE,
+                 "port_commit": _git_head(repo),
+                 "os_toolchain": toolchain,
                  "engine": "benchmark/.../swept/SweptBench.java (manual std-clock, ~300ms OSR warmup + "
                            "min-over-7; _tte add/subtract/multiply/divide); Verify.VERIFY_ENABLED=false. "
                            "TWO d128 records/cell: thru‡ (escape-forced 32B/op reified headline) + ea "
                            "(EA-elided 0-alloc lower bound). SWEPT_JSONL emit.",
                  "alternatives": "java.math.BigDecimal (MathContext.DECIMAL128; arbitrary precision ⇒ every band)",
-                 "ports": "decimal128-java", "notes": "Phase-3 java emit (emit_java.py); P-gen/P-fin/P-max/FMA."})
+                 "ports": "decimal128-java", "notes": "Phase-3 java emit (emit_java.py); P-gen/P-fin/P-max/FMA. Add/sub bands sign-split ss/os as of 2026-07-28 (AddSubSignSplitWorkOrder; corpus regen by swift CorpusGen) — prior blended add/sub rows non-comparable."})
     with open(p, "w") as f:
         for r in runs: f.write(json.dumps(r, ensure_ascii=False) + "\n")
     print(f"upserted run '{run}'")

@@ -14,8 +14,15 @@ d128 rung per the Rprof methodology: add/sub via the flag-free `_tte` rung, mul/
 plain `_ctx` arm (no per-band _tte exists for mul/div), FMA via `fma_{FN,FF}_tte`.
 Peers (libbid/decq/mpd) via the plain per-band benchmark.
 
-Usage: emit_c.py <bench_binary> [--run-id Rc2] [--min-time 0.05s]
+Usage: emit_c.py <bench_binary> [--run-id Rc2] [--min-time 0.05s] [--no-build]
+
+Rebuilds the binary from its CMake build tree first (walks up to CMakeCache.txt);
+--no-build measures the binary as-is.
 """
+# CONTRACT (store-only stage): this emitter writes ONLY the JSONL store
+# (results.*.jsonl / runs.*.jsonl). It never writes a report page (*.md) and
+# never imports or invokes gen_bench. Splicing reports is a separate stage
+# (splice_benchmark_reports.sh / gen_bench.py). See ArchSplitStoreWorkOrder.md.
 import json, re, sys, os, subprocess, glob, collections
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -30,6 +37,11 @@ def _host_arch():
 
 
 ARCH = _host_arch()
+# Store lang key. --lang writes a SEPARATE store file: the store key is
+# (lang,impl,op,cat,profile,mode,arch) with no session/runtime dimension, so a
+# re-measure would upsert over the existing rows. Use a distinct lang to keep a
+# comparison-session run from disturbing the cross-port sweep's rows.
+LANG = "c"
 MACHINE = (f"Intel Core i9-9880H ({os.cpu_count()} cpus), x86_64"
            if ARCH == "x86_64" else "Apple M3 Pro (12 cores), arm64")
 
@@ -49,10 +61,74 @@ def _merge_store(path, recs, KEY):
 PROFILES = ["P-gen", "P-fin", "P-max", "FMA"]   # FMA is its own SWEPT_PROFILE (FN/FF regimes)
 IMPL = {"d128": "d128", "libbid": "libbid", "decq": "libdecquad", "mpd": "libmpdecimal"}
 BAND_RE = re.compile(r"^BM_(d128|libbid|decq|mpd)_(add|sub|mul|div)_"
-                     r"(SQ|NQ|MQ|OQ|FQ|MIX|CP|WP|XP|CD|WD|XD|ET|PT)(_tte|_rnd)?$")
+                     r"((?:SQ|NQ|MQ|OQ|FQ)_(?:ss|os)|MIX|CP|WP|XP|CD|WD|XD|ET|PT)(_tte|_rnd)?$")
 # FMA now carries peers: d128 via the flag-free _tte rung, libbid/decq/mpd via their
 # native fused multiply-add (__bid128_fma / decQuadFMA / mpd_qfma), plain (no suffix).
 FMA_RE  = re.compile(r"^BM_(d128|libbid|decq|mpd)_fma_(FN|FF)(_tte)?$")
+
+def _git_head(path):
+    """Short HEAD of the benchmarked port repo, '+dirty' if TRACKED files differ.
+
+    A run record that names only the arm cannot tell two engine states apart;
+    the commit is what makes a number reproducible. Untracked files are ignored
+    (-uno) on purpose: build trees (build-bench/, bin/, obj/) live inside the port
+    repos and would otherwise mark every run dirty. `git -C` resolves the enclosing
+    repo, so any path inside the port works."""
+    try:
+        h = subprocess.run(["git", "-C", path, "rev-parse", "--short", "HEAD"],
+                           capture_output=True, text=True, timeout=60)
+        if h.returncode != 0:
+            return "unknown"
+        s = subprocess.run(["git", "-C", path, "status", "--porcelain", "-uno"],
+                           capture_output=True, text=True, timeout=60)
+        return h.stdout.strip() + ("+dirty" if (s.stdout or "").strip() else "")
+    except Exception:
+        return "unknown"
+
+
+def _os_desc():
+    rel = platform.mac_ver()[0]
+    return f"macOS {rel} [Darwin {platform.release()}]" if rel else platform.platform()
+
+
+def _tool_version(cmd, cwd=None):
+    """First line of a toolchain version probe. Provenance only — returns
+    "unknown" rather than failing the run if the probe errors."""
+    try:
+        r = subprocess.run(cmd, capture_output=True, text=True, timeout=120, cwd=cwd)
+        out = ((r.stdout or "") + (r.stderr or "")).strip()
+        return out.splitlines()[0].strip() if r.returncode == 0 and out else "unknown"
+    except Exception:
+        return "unknown"
+
+
+def _c_build_flags(binary):
+    """How the bench binary was actually configured, read from the CMakeCache
+    beside it (walking up from the binary; typically <build>/benchmark/<bin>).
+
+    Recorded because the flags silently decide what the numbers mean: the root
+    CMakeLists appends -flto only to CMAKE_C/CXX_FLAGS_RELEASE, so a build with
+    an empty CMAKE_BUILD_TYPE gets NO LTO and understates d128 by ~1.5x. A run
+    record carrying the flags makes that visible instead of invisible."""
+    d = os.path.dirname(os.path.abspath(binary))
+    for _ in range(4):
+        cache = os.path.join(d, "CMakeCache.txt")
+        if os.path.exists(cache):
+            want = {"CMAKE_BUILD_TYPE": None, "CMAKE_C_FLAGS": None, "DECIMAL128C_NO_LTO": None}
+            for ln in open(cache, errors="replace"):
+                k = ln.split(":", 1)[0]
+                if k in want and want[k] is None and "=" in ln:
+                    want[k] = ln.split("=", 1)[1].strip()
+            bt = want["CMAKE_BUILD_TYPE"] or "(none)"
+            cf = want["CMAKE_C_FLAGS"] or ""
+            lto = ("thin-LTO" if "-flto=thin" in cf else
+                   "full-LTO" if "-flto" in cf else
+                   "LTO via Release" if bt.lower() == "release" and want["DECIMAL128C_NO_LTO"] != "ON"
+                   else "NO LTO")
+            return f"build: CMAKE_BUILD_TYPE={bt}, C_FLAGS='{cf}' [{lto}]"
+        d = os.path.dirname(d)
+    return "build: CMakeCache not found"
+
 
 def run_bench(binary, profile, min_time, out):
     env = dict(os.environ, SWEPT_PROFILE=profile)
@@ -87,13 +163,14 @@ def reshape(j, profile, run):
             # d128 reports the _tte rung; peers report their plain fused arm.
             if (raw_impl == "d128") != (suffix == "_tte"):
                 continue
-            yield dict(lang="c", impl=IMPL[raw_impl], op="fma", cat=cat, profile="FMA",
+            yield dict(lang=LANG, impl=IMPL[raw_impl], op="fma", cat=cat, profile="FMA",
                        arch=ARCH, mode="thru", ns=ns, run=run)
             continue
         m = BAND_RE.match(name)
         if not m:
             continue
-        raw_impl, op, cat, suffix = m.groups()
+        raw_impl, op, band, suffix = m.groups()
+        cat = band.replace("_", "")   # store cat: "SQ_ss" -> "SQss"
         impl = IMPL[raw_impl]
         if impl == "d128":
             # add/sub: flag-free _tte rung; mul/div: plain _ctx arm
@@ -103,10 +180,33 @@ def reshape(j, profile, run):
         else:
             if suffix:                            # peers: plain benchmark only
                 continue
-        yield dict(lang="c", impl=impl, op=op, cat=cat, profile=profile,
+        yield dict(lang=LANG, impl=impl, op=op, cat=cat, profile=profile,
                    arch=ARCH, mode="thru", ns=ns, run=run)
 
+def build_bench(binary):
+    """Rebuild the bench binary from its CMake build tree before measuring —
+    the same build-before-bench contract every other emit has implicitly
+    (swift build / cargo build / gradle happen inside their emits). Locates the
+    build dir by walking up from the binary to CMakeCache.txt; a binary outside
+    any build tree (or --no-build) is measured as-is with a loud warning, since
+    a stale binary silently measures the WRONG code (the 2026-07-24 stale-LTO
+    incident, and any harness-arm change like the ss/os split)."""
+    d = os.path.dirname(os.path.abspath(binary))
+    for _ in range(4):
+        if os.path.exists(os.path.join(d, "CMakeCache.txt")):
+            print(f"building bench binary ({d}) ...", flush=True)
+            r = subprocess.run(["cmake", "--build", d, "--target", "bench_libbid_vs_d128",
+                                "-j", str(os.cpu_count() or 4)],
+                               stdout=subprocess.DEVNULL)
+            if r.returncode != 0:
+                sys.exit("error: cmake build of bench_libbid_vs_d128 failed")
+            return
+        d = os.path.dirname(d)
+    print("WARNING: no CMakeCache.txt near binary — skipping rebuild, measuring as-is", flush=True)
+
+
 def main():
+    global LANG
     if len(sys.argv) < 2:
         print(__doc__); sys.exit(1)
     binary = sys.argv[1]
@@ -115,7 +215,10 @@ def main():
     a = sys.argv[2:]
     for i, x in enumerate(a):
         if x == "--run-id": run = a[i+1]
+        if x == "--lang": LANG = a[i+1]
         if x == "--min-time": min_time = a[i+1]
+    if "--no-build" not in a:
+        build_bench(binary)
 
     recs, ctx = {}, None
     KEY = lambda r: (r["lang"], r["impl"], r["op"], r["cat"], r["profile"], r["mode"], r["arch"])
@@ -131,27 +234,31 @@ def main():
     # rewrite results.c.jsonl (C arm fully emit-owned)
     KO = ["lang","impl","op","cat","profile","arch","mode","ns","run"]
     opo = {"add":0,"sub":1,"mul":2,"div":3,"fma":4}
-    cato = {c:i for i,c in enumerate(["SQ","NQ","MQ","OQ","FQ","CP","WP","XP","CD","WD","XD","ET","PT","FN","FF","MIX"])}
+    cato = {c:i for i,c in enumerate(["SQss","SQos","NQss","NQos","MQss","MQos","OQss","OQos","FQss","FQos","CP","WP","XP","CD","WD","XD","ET","PT","FN","FF","MIX"])}
     pro = {"P-fin":0,"P-gen":1,"P-max":2,"FMA":3}
-    merged = _merge_store(os.path.join(HERE, "results.c.jsonl"), recs, KEY)
+    merged = _merge_store(os.path.join(HERE, f"results.{LANG}.{ARCH}.jsonl"), recs, KEY)
     rows = sorted(merged.values(), key=lambda r:(r["impl"],opo[r["op"]],pro[r["profile"]],cato[r["cat"]]))
-    with open(os.path.join(HERE, "results.c.jsonl"), "w") as f:
+    with open(os.path.join(HERE, f"results.{LANG}.{ARCH}.jsonl"), "w") as f:
         for r in rows:
             f.write(json.dumps({k:r[k] for k in KO}, ensure_ascii=False) + "\n")
-    print(f"rewrote results.c.jsonl ({len(rows)} records)")
+    print(f"rewrote results.{LANG}.{ARCH}.jsonl ({len(rows)} records)")
 
     # mint / update the run in runs.jsonl
-    upsert_run(run, ctx)
+    upsert_run(run, ctx, f"{_os_desc()}; {_tool_version(['cc', '--version'])}; "
+                         f"{_c_build_flags(binary)}.",
+               _git_head(os.path.dirname(os.path.abspath(binary))))
     by = collections.Counter((r["impl"],r["profile"]) for r in recs.values())
     for k in sorted(by): print(f"   {k}: {by[k]}")
 
-def upsert_run(run, ctx):
-    p = os.path.join(HERE, "runs.jsonl")
+def upsert_run(run, ctx, toolchain, port_commit="unknown"):
+    p = os.path.join(HERE, f"runs.{ARCH}.jsonl")
     lines = [l for l in open(p).read().splitlines() if l.strip()]
     runs = [json.loads(l) for l in lines]
     runs = [r for r in runs if r["run"] != run]
     rec = {"run": run, "date": (ctx or {}).get("date","")[:10],
            "machine": f"{(ctx or {}).get('host_name','?')} ({(ctx or {}).get('num_cpus','?')} cpus)",
+           "port_commit": port_commit,
+           "os_toolchain": toolchain,
            "engine": "Google Benchmark (bench_main.cpp), in-process; d128 add/sub _tte rung, "
                      "mul/div _ctx arm, FMA _tte; 15-rep MEDIAN aggregate "
                      "(--benchmark_repetitions=15 --benchmark_report_aggregates_only), "
@@ -160,7 +267,7 @@ def upsert_run(run, ctx):
                      "FMA peers via native fused multiply-add (__bid128_fma / decQuadFMA / mpd_qfma)",
            "ports": "decimal128-c", "notes": "Phase-2 C reference emit (emit_c.py); SWEPT_PROFILE "
                      "P-gen/P-fin/P-max/FMA. FMA now carries libbid/decQuad/mpd peer arms (one-rounding "
-                     "fused). Fresh emit — supersedes transcribed C rows."}
+                     "fused). Fresh emit — supersedes transcribed C rows. Add/sub bands sign-split ss/os as of 2026-07-28 (AddSubSignSplitWorkOrder; corpus regen by swift CorpusGen) — prior blended add/sub rows non-comparable."}
     runs.append(rec)
     with open(p, "w") as f:
         for r in runs:

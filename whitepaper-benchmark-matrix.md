@@ -461,13 +461,15 @@ Results are recorded in a **generated store** under `decimal128-www/op-benchmark
 per-operation tables in **`BenchmarkResults.md` §1–§5** are rendered from it — this spec is the
 contract, that file is the data.
 
-**Store** (`op-benchmark/`):
-- `results.<lang>.jsonl` — the fact table, one record per measured cell, upsert-by-key
+**Store** (`op-benchmark/`), **arch-split** — each measuring box writes only its own
+architecture's files (arm64 → `*.arm64.jsonl`, x86_64 → `*.x86_64.jsonl`), so the two
+boxes never contend or clobber; the generators glob across both:
+- `results.<lang>.<arch>.jsonl` — the fact table, one record per measured cell, upsert-by-key
   `(lang, impl, op, cat, profile, mode, arch)`. Each record carries a single number `ns`
   (ns/op) plus its `run` id. **`ns` is the only stored measurement** — `alt`, `alt ns`,
   `ratio`, and the `-` (peer-absent) cell are **derived at render** by pairing the port's
   `d128` cell against its alternative on `(op, cat, profile, arch)`.
-- `runs.jsonl` — one provenance record per `run` id (machine, toolchain, flags, date, engine).
+- `runs.<arch>.jsonl` — one provenance record per `run` id (machine, toolchain, flags, date, engine).
 - `impls.json` — the implementation registry (display name, idiom-peer flag, mantissa width,
   language pinning) that drives peer selection.
 

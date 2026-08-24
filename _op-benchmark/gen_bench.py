@@ -36,11 +36,19 @@ import json, glob, sys, os, re
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 # ------------------------------------------------------------------ schema ----
-LANGS    = {"c","swift","java","kotlin","rust","go","csharp","zig","python"}
+# csharp-bid = the BID-representation migration arm (decimal128-csharp-migration,
+# emit_csharp_bid.py) — store-only for now: valid in the schema so its results file
+# loads, but absent from every SPECS ports list, so no page renders it.
+# c-rc1 = the same-session re-measured C/libbid arm for the .NET 11 rc.1 review edition,
+# consumed ONLY by the standalone gen_bench_net11_rc1_26380_103.py. Store-only here for the
+# same reason: it must validate (this module globs every results.*.jsonl), but it is in no
+# SPECS ports list, and impl_lang() always sources libbid from lang "c" — so it renders nowhere.
+LANGS    = {"c","swift","java","kotlin","rust","go","csharp","zig","python","csharp-bid","c-rc1"}
 IMPLS    = {"d128","libbid","libdecquad","libmpdecimal","rust_decimal",
             "System.Decimal","System.Numerics.Decimal128","Foundation.Decimal","BigDecimal","decimal.Decimal"}
 OPS      = {"add","sub","mul","div","fma","toString","quantize"}
-CATS     = {"SQ","NQ","MQ","OQ","FQ","CP","WP","XP","CD","WD","XD","PT","ET","FN","FF","MIX"}
+CATS     = {"SQss","SQos","NQss","NQos","MQss","MQos","OQss","OQos","FQss","FQos",
+            "CP","WP","XP","CD","WD","XD","PT","ET","FN","FF","MIX"}
 PROFILES = {"P-fin","P-gen","P-max","FMA"}
 ARCHES   = {"arm64","x86_64"}
 MODES    = {"thru","thru*","thru‡","tte","ea"}
@@ -64,9 +72,11 @@ def load_impls():
     return json.load(open(os.path.join(HERE, "impls.json")))
 
 def load_runs():
+    # Glob every runs.<arch>.jsonl (the store is arch-split: each box writes only its own
+    # arch's provenance file). Run-ids are globally unique across arches, so union by run-id
+    # is conflict-free.
     idx = {}
-    p = os.path.join(HERE, "runs.jsonl")
-    if os.path.exists(p):
+    for p in sorted(glob.glob(os.path.join(HERE, "runs.*.jsonl"))):
         for line in open(p):
             line = line.strip()
             if line:
@@ -74,7 +84,8 @@ def load_runs():
     return idx
 
 def load_results():
-    """Glob every results.<lang>.jsonl, validate, upsert into an index keyed by
+    """Glob every results.<lang>.<arch>.jsonl (the store is arch-split — each box owns its
+    own arch's files), validate, upsert into an index keyed by
     (lang,impl,op,cat,profile,mode,arch) -- one record per cell (last wins)."""
     idx, runs_cited = {}, set()
     for path in sorted(glob.glob(os.path.join(HERE, "results.*.jsonl"))):
@@ -232,6 +243,10 @@ def render_relational(idx, spec):
                 peer = ip
             elif port in NO_LIBBID_PORTS:
                 peer = None          # idiom-peer-or-nothing: libbid fallback suppressed
+            elif profile == "FMA" and port != "c":
+                peer = None          # libbid is a C library, not an FMA alternative a
+                                     # rust/zig/swift/java/kotlin programmer can reach; only
+                                     # C keeps libbid here (python uses its decimal.Decimal peer)
             else:
                 peer = "libbid"
             # real = the reference/idiom peer + this port's conformant extra peers, minus the
@@ -322,14 +337,14 @@ _REL_EXTRA = [("c","libdecquad"),("c","libmpdecimal")]
 _REL_EXTRA_NONFMA = _REL_EXTRA + [("csharp","System.Numerics.Decimal128")]
 SPECS = {
   # 4.1 Add — add-only matrices + relational
-  "add-pgen": dict(kind="matrix", profile="P-gen", ops=["add"], cats=["SQ","NQ","MQ","OQ","FQ"], ports=ALL_PORTS),
-  "add-pmax": dict(kind="matrix", profile="P-max", ops=["add"], cats=["SQ","OQ","FQ"], ports=ALL_PORTS),
-  "add-rel":  dict(kind="relational", profile="P-gen", ops=["add"], cats=["SQ","NQ","MQ","OQ","FQ"],
+  "add-pgen": dict(kind="matrix", profile="P-gen", ops=["add"], cats=["SQss","SQos","NQss","NQos","MQss","MQos","OQss","OQos","FQss","FQos"], ports=ALL_PORTS),
+  "add-pmax": dict(kind="matrix", profile="P-max", ops=["add"], cats=["SQss","SQos","OQss","OQos","FQss","FQos"], ports=ALL_PORTS),
+  "add-rel":  dict(kind="relational", profile="P-gen", ops=["add"], cats=["SQss","SQos","NQss","NQos","MQss","MQos","OQss","OQos","FQss","FQos"],
                    ports=_REL_PORTS, extra=_REL_EXTRA_NONFMA),
   # 4.2 Subtract — sub-only matrices + relational
-  "sub-pgen": dict(kind="matrix", profile="P-gen", ops=["sub"], cats=["SQ","NQ","MQ","OQ","FQ"], ports=ALL_PORTS),
-  "sub-pmax": dict(kind="matrix", profile="P-max", ops=["sub"], cats=["SQ","OQ","FQ"], ports=ALL_PORTS),
-  "sub-rel":  dict(kind="relational", profile="P-gen", ops=["sub"], cats=["SQ","NQ","MQ","OQ","FQ"],
+  "sub-pgen": dict(kind="matrix", profile="P-gen", ops=["sub"], cats=["SQss","SQos","NQss","NQos","MQss","MQos","OQss","OQos","FQss","FQos"], ports=ALL_PORTS),
+  "sub-pmax": dict(kind="matrix", profile="P-max", ops=["sub"], cats=["SQss","SQos","OQss","OQos","FQss","FQos"], ports=ALL_PORTS),
+  "sub-rel":  dict(kind="relational", profile="P-gen", ops=["sub"], cats=["SQss","SQos","NQss","NQos","MQss","MQos","OQss","OQos","FQss","FQos"],
                    ports=_REL_PORTS, extra=_REL_EXTRA_NONFMA),
   # 4.3 Multiply — CP·WP·XP matrices + relational. (No P-fin idiom-peer group: the
   # swept CP band's products overflow rust_decimal's 28 digits ⇒ no swept mul peer.)
@@ -345,10 +360,11 @@ SPECS = {
   "div-rel":  dict(kind="relational", groups=[
                    dict(profile="P-gen", ops=["div"], cats=["CD","WD","XD","ET","PT"], ports=_REL_PORTS, extra=_REL_EXTRA_NONFMA),
                ]),
-  # FMA — d128 band-shape (FN/FF/FN÷FF) matrix + peer relational. Every conformant
-  # reference exposes a native fused multiply-add (one rounding): C libbid/decQuad/mpd
-  # + python decimal.Decimal. Ports without an in-language fused-FMA peer fall back to
-  # the libbid universal reference (rust/zig/swift/java/kotlin); go/csharp show "-".
+  # FMA — d128 band-shape (FN/FF/FN÷FF) matrix + peer relational. The only reachable
+  # fused-multiply-add peers are the ones exposed in each language: C libbid/decQuad/mpd
+  # + python decimal.Decimal. libbid is NOT borrowed as a universal FMA reference for the
+  # other ports (it is a C library no rust/zig/swift/java/kotlin programmer would reach for
+  # FMA), so rust/zig/swift/java/kotlin — like go/csharp — show "-" (d128-only).
   "fma":  dict(kind="fma", ports=ALL_PORTS),
   "fma-rel": dict(kind="relational", groups=[
                    dict(profile="FMA", ops=["fma"], cats=["FN","FF"], ports=_REL_PORTS, extra=_REL_EXTRA),

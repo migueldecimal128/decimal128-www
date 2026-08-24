@@ -1,70 +1,97 @@
-# `_op-benchmark/` — the benchmark report generator
+# `_op-benchmark/` — the benchmark store + report generator
 
-This directory holds the benchmark **data** (`.jsonl` store) and the **generator**
-(`gen_bench.py`) that renders it into the `benchmark-*.md` report pages one level up
-in this repo. Everything needed to regenerate or re-lay-out those reports is here —
-**no other repo is needed, and regenerating never re-runs a benchmark.**
+This directory holds the benchmark **data** (the `.jsonl` store) and the tooling that
+runs the benchmarks into it and renders it into the `benchmark-*.md` report pages one
+level up in this repo.
 
 The `_` prefix keeps this whole directory out of the published Jekyll site.
 
-Requires **Python 3 only** — no `pip install`, no dependencies (standard library
-only). If `python3 --version` works, you're ready.
+Requires **Python 3 only** for the report side — no `pip install`, standard library
+only. (Running the benchmarks additionally needs each port's toolchain.)
+
+## Two stages — kept strictly separate
+
+There are exactly **two** operations here, and **each is a separate script that does
+one thing and nothing else.** Running the benchmarks never regenerates a report;
+regenerating a report never runs a benchmark. Crossing that line is a defect.
+
+| | Stage A — update the store | Stage B — regenerate the reports |
+|---|---|---|
+| script | `./update_benchmark_stores.sh` | `./splice_benchmark_reports.sh` |
+| does | runs each port's `emit_<lang>.py` **serially** | runs `gen_bench.py --splice` |
+| writes | ONLY `results.<lang>.<arch>.jsonl` + `runs.<arch>.jsonl` | ONLY the `benchmark-*.md` / review `.md` pages |
+| needs | the port toolchains (+ a built C bench binary) | Python 3 and the store |
+| runs a benchmark? | yes | **never** |
+| splices a report? | **never** | yes |
+
+The store is **arch-split**: this machine's box writes only its own architecture's
+files (arm64 → `results.<lang>.arm64.jsonl` + `runs.arm64.jsonl`, minting `R*` run-ids;
+x86_64 → `results.<lang>.x86_64.jsonl` + `runs.x86_64.jsonl`, minting `xR*`). The two
+boxes therefore touch disjoint files and never clobber each other — no merge needed.
+`gen_bench.py` globs *all* of them (`results.*.jsonl` / `runs.*.jsonl`) and merges by
+key, so reports always show both arches.
 
 ---
 
-## ▶ Regenerate the report pages from the store (the procedure)
+## ▶ Stage B: regenerate the report pages from the store (the usual task)
 
-Run these steps exactly, from **inside this `_op-benchmark/` directory**.
-
-**1. Regenerate every report page that contains generated tables.** This rewrites
-the tables from the current `.jsonl` store, in place, leaving all hand-written prose
-untouched:
+From **inside this `_op-benchmark/` directory**, one command does splice + verify:
 
 ```bash
 cd _op-benchmark        # if not already here
-for f in ../benchmark-*.md; do
-  if grep -q 'BEGIN GENERATED' "$f"; then
-    echo "splicing $f"
-    python3 gen_bench.py --splice "$f"
-  fi
-done
+./splice_benchmark_reports.sh
 ```
 
-(This auto-finds the pages by their markers — currently the nine
-`../benchmark-vs-<port>.md` pages plus `../benchmark-port-compare.md` — so it stays
-correct if pages are added or removed. Pages without markers, e.g.
-`benchmark-key.md`, are correctly skipped.)
+It rewrites every generated table from the current store (leaving hand-written prose
+untouched), then re-checks that every block is in sync — failing loudly on any `[DIFF]`.
+It auto-finds pages by their markers (the nine `../benchmark-vs-<port>.md` pages, plus
+`../benchmark-port-compare.md`); pages without markers (e.g. `benchmark-key.md`) are
+skipped. Pages under `../reviews/` are **never** spliced — review editions are
+point-in-time snapshots; refresh one deliberately by running its generator by hand
+(e.g. `gen_bench_net11_preview7.py --splice`). It **does not run any benchmark.**
 
-**2. Verify the pages are now in sync with the store.** After step 1 this must report
-`[OK ]` for every block and no `[DIFF]`:
+Then report what changed (`git status --short ../benchmark-*.md ../reviews`) so the
+human can review. **Do NOT commit or push as part of regenerating** — publishing is a
+separate, explicit step.
+
+## ▶ Stage A: run the benchmarks to update the store
 
 ```bash
-for f in ../benchmark-*.md; do
-  if grep -q 'BEGIN GENERATED' "$f"; then
-    python3 gen_bench.py --check "$f"
-  fi
-done
+./update_benchmark_stores.sh                 # all 9 ports, serial (arch auto-detected)
+./update_benchmark_stores.sh rust zig        # a subset
+./update_benchmark_stores.sh csharp --profiles P-fin   # one port, surgical single-profile
 ```
 
-**3. Report what changed.** Summarize which `benchmark-*.md` files were modified
-(`git status --short ../benchmark-*.md`) so the human can review.
+This runs the ports **serially** (concurrent benches contaminate ns/op) and writes only
+this box's arch store files. It ends by reminding you that reports were **not**
+regenerated — run Stage B separately when you want to publish. (The C arm rebuilds its
+bench binary from the CMake tree automatically — `emit_c.py` walks up from `CBIN` to
+`CMakeCache.txt` and runs `cmake --build` first; the build dir must exist/be configured
+once — ThinLTO, see the C port. `--no-build` skips.)
 
-**Do NOT commit or push as part of regenerating** — regenerating only edits the
-working-tree `.md` files. Committing/publishing to the live site is a separate,
-explicit step the human will ask for if they want it.
-
-That is the whole regeneration task. The rest of this file is reference.
+The rest of this file is reference.
 
 ---
 
 ## What's in here
 
-- **The store (data — never hand-edit):** `results.<lang>.jsonl` (one per port),
-  plus `runs.jsonl`, `impls.json`, `annotations.jsonl`. The measured numbers.
-- **The generator:** `gen_bench.py` — reads the store, writes tables into the report
-  pages. This plus the `.md` pages is what you edit for layout.
-- `emit_*.py` and `_proto/` produce *new numbers* (they re-run the language ports) —
-  **not** part of regenerating or re-laying-out reports. Ignore them for this work.
+- **The store (data — never hand-edit):** `results.<lang>.<arch>.jsonl` (one per port
+  **per arch**), plus `runs.<arch>.jsonl`, and the shared, single-copy `impls.json` +
+  `annotations.jsonl`. The measured numbers.
+  - Measurement rows carry exactly nine fields (`lang, impl, op, cat, profile, arch,
+    mode, ns, run`); `run` joins to `runs.<arch>.jsonl`, which holds the provenance.
+  - **`port_commit`** on a run record is the short HEAD of the port repo that was
+    measured (`+dirty` if tracked files differed; untracked build trees are ignored).
+    **Every `emit_*.py` stamps it** — a number is only reproducible against a known
+    engine commit, and comparing two runs of "the same arm" is meaningless without it.
+    Runs emitted before this was added read `port_commit: None`; that is expected and
+    nothing is backfilled.
+- **The generators:** `gen_bench.py` (the `benchmark-*.md` pages) and
+  `gen_bench_net11_preview7.py` (the .NET 11 review) — read the store, write tables into
+  the report pages. These plus the `.md` pages are what you edit for layout.
+- `emit_*.py`, `update_benchmark_stores.sh`, and `_proto/` produce *new numbers* (they
+  re-run the language ports) — **not** part of regenerating reports. They write only the
+  `.jsonl` store, never a `.md` page.
 
 ## How the pages are built: the marker contract
 
