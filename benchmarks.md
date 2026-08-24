@@ -50,9 +50,9 @@ Methodology and the operation-category taxonomy are in the
 
 | | Add | Subtract | Multiply | Divide |
 |---|---|---|---|---|
-| ratio = libbid / Miguel | 3× | 4× | 1.3× – 19× | 0.8× – 1.9× |
-| ratio = decQuad / Miguel | 6× | 7× | 1.5× – 22× | 1.6× – 7× |
-| ratio = mpdecimal / Miguel | 4× | 5× | 1.0× – 13× | 1.8× – 9× |
+| ratio = libbid / Miguel | 6× | 5× | 1.8× – 18× | 0.9× – 2.9× |
+| ratio = decQuad / Miguel | 8× | 15× | 2.0× – 22× | 2.2× – 10× |
+| ratio = mpdecimal / Miguel | 7× | 7× | 1.3× – 12× | 2.6× – 14× |
 
   </div>
 </details>
@@ -67,8 +67,8 @@ Methodology and the operation-category taxonomy are in the
 
 | | Add | Subtract | Multiply | Divide |
 |---|---|---|---|---|
-| ratio = System.Decimal / Miguel | 0.8× | 0.9× | — | 0.5× – 5× |
-| ratio = Decimal128 (.NET 11) / Miguel | 2.5× | 2.9× | 2.2× – 8× | 4× – 54× |
+| ratio = System.Decimal / Miguel | 1.0× | 0.8× | — | 0.7× – 5× |
+| ratio = Decimal128 (.NET 11) / Miguel | 2.3× | 2.2× | 2.5× – 6× | 1.6× – 36× |
 
   </div>
 </details>
@@ -83,7 +83,7 @@ Methodology and the operation-category taxonomy are in the
 
 | | Add | Subtract | Multiply | Divide |
 |---|---|---|---|---|
-| ratio = BigDecimal / Miguel | 3× | 4× | 3× | 1.8× – 60× |
+| ratio = BigDecimal / Miguel | 5× | 4× | 4× | 2.0× – 55× |
 
   </div>
 </details>
@@ -98,7 +98,7 @@ Methodology and the operation-category taxonomy are in the
 
 | | Add | Subtract | Multiply | Divide |
 |---|---|---|---|---|
-| ratio = BigDecimal / Miguel | 2.7× | 4× | 3× – 4× | 1.8× – 55× |
+| ratio = BigDecimal / Miguel | 4× | 4× | 3× | 1.9× – 51× |
 
   </div>
 </details>
@@ -113,7 +113,7 @@ Methodology and the operation-category taxonomy are in the
 
 | | Add | Subtract | Multiply | Divide |
 |---|---|---|---|---|
-| ratio = Foundation.Decimal / Miguel | 69× | 78× | 21× – 177× | 17× – 644× |
+| ratio = Foundation.Decimal / Miguel | 108× | 107× | 26× – 181× | 17× – 775× |
 
   </div>
 </details>
@@ -128,8 +128,8 @@ Methodology and the operation-category taxonomy are in the
 
 | | Add | Subtract | Multiply | Divide |
 |---|---|---|---|---|
-| ratio = rust_decimal / Miguel | 1.6× | 1.9× | — | 0.6× – 5× |
-| ratio = libbid / Miguel | — | — | 2.0× – 15× | — |
+| ratio = rust_decimal / Miguel | 2.2× | 1.9× | — | 0.6× – 5× |
+| ratio = libbid / Miguel | — | — | 2.0× – 13× | — |
 
   </div>
 </details>
@@ -155,7 +155,7 @@ Methodology and the operation-category taxonomy are in the
 
 | | Add | Subtract | Multiply | Divide |
 |---|---|---|---|---|
-| ratio = decimal.Decimal / Miguel | 2.6× | 2.7× | 1.7× – 3× | 1.8× – 4× |
+| ratio = decimal.Decimal / Miguel | 3× | 2.9× | 2.0× – 3× | 1.8× – 4× |
 
   </div>
 </details>
@@ -170,7 +170,7 @@ Methodology and the operation-category taxonomy are in the
 
 | | Add | Subtract | Multiply | Divide |
 |---|---|---|---|---|
-| ratio = libbid / Miguel | 2.5× | 3× | 2.1× – 7× | 0.9× – 1.6× |
+| ratio = libbid / Miguel | 4× | 4× | 2.1× – 9× | 0.9× – 1.7× |
 
   </div>
 </details>

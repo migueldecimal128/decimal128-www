@@ -18,7 +18,7 @@ The ratio for Python's idiom peer on x86_64 (Intel i9-9880H): `ratio = decimal.D
 
 | | Add | Subtract | Multiply | Divide |
 |---|---|---|---|---|
-| ratio = decimal.Decimal / Miguel | 2.6× | 2.7× | 1.7× – 3× | 1.8× – 4× |
+| ratio = decimal.Decimal / Miguel | 3× | 2.9× | 2.0× – 3× | 1.8× – 4× |
 
 ## FinMix — realistic financial mix (P-fin)
 

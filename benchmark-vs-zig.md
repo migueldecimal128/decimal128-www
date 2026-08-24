@@ -18,7 +18,7 @@ The ratio for Zig's reference library on x86_64 (Intel i9-9880H): `ratio = libbi
 
 | | Add | Subtract | Multiply | Divide |
 |---|---|---|---|---|
-| ratio = libbid / Miguel | 2.5× | 3× | 2.1× – 7× | 0.9× – 1.6× |
+| ratio = libbid / Miguel | 4× | 4× | 2.1× – 9× | 0.9× – 1.7× |
 
 ## FinMix — realistic financial mix (P-fin)
 

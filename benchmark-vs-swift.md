@@ -18,7 +18,7 @@ The ratio for Swift's idiom peer on x86_64 (Intel i9-9880H): `ratio = Foundation
 
 | | Add | Subtract | Multiply | Divide |
 |---|---|---|---|---|
-| ratio = Foundation.Decimal / Miguel | 69× | 78× | 21× – 177× | 17× – 644× |
+| ratio = Foundation.Decimal / Miguel | 108× | 107× | 26× – 181× | 17× – 775× |
 
 ## FinMix — realistic financial mix (P-fin)
 

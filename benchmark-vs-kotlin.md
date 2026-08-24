@@ -18,7 +18,7 @@ The ratio for Kotlin's idiom peer on x86_64 (Intel i9-9880H): `ratio = BigDecima
 
 | | Add | Subtract | Multiply | Divide |
 |---|---|---|---|---|
-| ratio = BigDecimal / Miguel | 2.7× | 4× | 3× – 4× | 1.8× – 55× |
+| ratio = BigDecimal / Miguel | 4× | 4× | 3× | 1.9× – 51× |
 
 ## FinMix — realistic financial mix (P-fin)
 
