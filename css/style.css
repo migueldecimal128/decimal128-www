@@ -469,6 +469,69 @@ main tbody tr:nth-child(even) {
 }
 
 /* ==========================================================================
+   Publications page section distinction
+   ========================================================================== */
+
+.pub-jumpnav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0 0 2rem;
+}
+
+.pub-jumpnav a {
+  display: inline-block;
+  background: var(--color-accent);
+  color: var(--color-primary);
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.pub-jumpnav a:hover {
+  opacity: 0.8;
+}
+
+.pub-section {
+  padding: 1.75rem 1.75rem 2rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  margin-top: 2.25rem;
+}
+
+.pub-section:first-of-type {
+  margin-top: 0;
+}
+
+.pub-section h2 {
+  margin-top: 0;
+}
+
+.pub-section--whitepapers {
+  background: var(--color-bg);
+}
+
+.pub-section--reviews {
+  background: var(--color-bg-alt);
+}
+
+.pub-eyebrow {
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.pub-intro {
+  color: var(--color-text-muted);
+}
+
+/* ==========================================================================
    Q&A table of contents
    ========================================================================== */
 

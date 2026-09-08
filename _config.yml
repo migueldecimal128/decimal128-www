@@ -4,6 +4,8 @@ tagline: "IEEE 754-2019 compliant decimal128 high-performance software solution 
 markdown: kramdown
 kramdown:
   input: GFM
+plugins:
+  - jekyll-redirect-from
 exclude:
   - README.md
   - .gitignore
