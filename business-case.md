@@ -6,7 +6,7 @@ description: "How Decimal128 helps business leaders in finance, accounting, and 
 heading: "Business Case"
 ---
 
-Decimal128 solves a problem most companies don't realize they have.
+**Decimal128 solves a problem most companies don't realize they have.**
 
 Computers were built to solve mathematical calculations using binary floating point, but binary does not always produce accurate results in terms of decimal precision and rounding that is required for accounting, finance, tax, and payments. To ensure 100% accurate and auditable calculations, decimal floating point is required via additional hardware or software. This leaves companies with two unsatisfying options: pay for speed running on IBM hardware, or use software that may not meet compliance standards or is very slow.
 

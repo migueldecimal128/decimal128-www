@@ -72,6 +72,8 @@ The calculation 0.1 + 0.2 in Binary Floating point results in
   <img src="images/rust-swift-python-example.png" alt="Terminal running the same 0.1 + 0.2 calculation in Rust, Swift, and Python, each printing sum: 0.30000000000000004">
 </div>
 
+<div class="pub-section pub-section--whitepapers" markdown="1">
+
 ## Who is Miguel?
 
 Miguel is a retired entrepreneur, engineer, and expert in database
@@ -101,4 +103,6 @@ while obtaining BS and MS degrees in Computer Science from MIT.
 
 <div class="btn-row" markdown="0">
   <a class="btn btn-primary" href="https://www.linkedin.com/in/miguel-decimal128-howard/" target="_blank" rel="noopener">Contact Miguel on LinkedIn ↗</a>
+</div>
+
 </div>

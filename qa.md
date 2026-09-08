@@ -11,6 +11,21 @@ extra_js:
 
 Frequently asked questions about the multiplatform decimal128 project.
 
+<div class="kb-controls">
+  <div class="kb-search-field">
+    <label class="visually-hidden" for="kb-search-input">Search the knowledge base</label>
+    <input
+      type="search"
+      id="kb-search-input"
+      placeholder="Search questions, answers, or tags…"
+      autocomplete="off"
+    >
+  </div>
+  <div class="kb-categories" id="kb-categories" role="group" aria-label="Filter by category">
+    <!-- Category buttons are generated automatically by js/search.js -->
+  </div>
+</div>
+
 <nav class="qa-index" aria-label="Table of contents">
   <h2>Table of Contents</h2>
   <div class="qa-index-grid">
@@ -27,21 +42,6 @@ Frequently asked questions about the multiplatform decimal128 project.
     {% endfor %}
   </div>
 </nav>
-
-<div class="kb-controls">
-  <div class="kb-search-field">
-    <label class="visually-hidden" for="kb-search-input">Search the knowledge base</label>
-    <input
-      type="search"
-      id="kb-search-input"
-      placeholder="Search questions, answers, or tags…"
-      autocomplete="off"
-    >
-  </div>
-  <div class="kb-categories" id="kb-categories" role="group" aria-label="Filter by category">
-    <!-- Category buttons are generated automatically by js/search.js -->
-  </div>
-</div>
 
 <p class="kb-meta" id="kb-meta" aria-live="polite"></p>
 
