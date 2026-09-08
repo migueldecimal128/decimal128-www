@@ -99,4 +99,6 @@ hoping to revolutionize the financial world.
 Before all this, Miguel worked as a research intern at Xerox PARC
 while obtaining BS and MS degrees in Computer Science from MIT.
 
-[Miguel's LinkedIn ↗](https://www.linkedin.com/in/miguel-decimal128-howard/)
+<div class="btn-row" markdown="0">
+  <a class="btn btn-primary" href="https://www.linkedin.com/in/miguel-decimal128-howard/" target="_blank" rel="noopener">Contact Miguel on LinkedIn ↗</a>
+</div>
