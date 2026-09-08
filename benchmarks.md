@@ -38,7 +38,7 @@ Methodology and the operation-category taxonomy are in the
 
 ## Per-language results
 
-Click on each language below to see the benchmark results and ratio by operation.
+*Click on each language below to see the benchmark results and ratio by operation.*
 
 <div class="kb-results">
 
