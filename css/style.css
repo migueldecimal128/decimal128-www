@@ -513,7 +513,7 @@ main tbody tr:nth-child(even) {
   background: var(--color-bg-alt);
 }
 
-.pub-heading-row {
+.heading-row {
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
@@ -521,8 +521,13 @@ main tbody tr:nth-child(even) {
   margin-bottom: 0.75rem;
 }
 
-.pub-heading-row h2 {
+.heading-row h2 {
   margin: 0;
+}
+
+.heading-subtitle {
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
 }
 
 .pub-eyebrow {

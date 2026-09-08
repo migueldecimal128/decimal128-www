@@ -36,9 +36,10 @@ Methodology and the operation-category taxonomy are in the
   <a href="#lang-zig" class="lang-pill">Zig</a>
 </div>
 
-## Per-language results
-
-*Click on each language below to see the benchmark results and ratio by operation.*
+<div class="heading-row" markdown="0">
+  <h2>Per-language results</h2>
+  <span class="heading-subtitle"><em>Click on each language below to see the benchmark results and ratio by operation.</em></span>
+</div>
 
 <div class="kb-results">
 

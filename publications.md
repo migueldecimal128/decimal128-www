@@ -15,7 +15,7 @@ redirect_from:
 </nav>
 
 <div class="pub-section pub-section--whitepapers" id="pub-whitepapers" markdown="1">
-<div class="pub-heading-row" markdown="0">
+<div class="heading-row" markdown="0">
   <h2>Whitepapers</h2>
   <span class="pub-eyebrow">Miguel's Own Work</span>
 </div>
@@ -29,7 +29,7 @@ These whitepapers are written by Miguel and cover the technical foundation of de
 </div>
 
 <div class="pub-section pub-section--reviews" id="pub-reviews" markdown="1">
-<div class="pub-heading-row" markdown="0">
+<div class="heading-row" markdown="0">
   <h2>Independent Reviews</h2>
   <span class="pub-eyebrow">Independent Analysis</span>
 </div>
