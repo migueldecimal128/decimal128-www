@@ -505,10 +505,6 @@ main tbody tr:nth-child(even) {
   margin-top: 0;
 }
 
-.pub-section h2 {
-  margin-top: 0;
-}
-
 .pub-section--whitepapers {
   background: var(--color-bg);
 }
@@ -517,14 +513,24 @@ main tbody tr:nth-child(even) {
   background: var(--color-bg-alt);
 }
 
+.pub-heading-row {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+}
+
+.pub-heading-row h2 {
+  margin: 0;
+}
+
 .pub-eyebrow {
-  display: block;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-size: 0.78rem;
   font-weight: 700;
   color: var(--color-text-muted);
-  margin-bottom: 0.5rem;
 }
 
 .pub-intro {

@@ -15,9 +15,10 @@ redirect_from:
 </nav>
 
 <div class="pub-section pub-section--whitepapers" id="pub-whitepapers" markdown="1">
-<span class="pub-eyebrow" markdown="0">Miguel's Own Work</span>
-
-## Whitepapers
+<div class="pub-heading-row" markdown="0">
+  <h2>Whitepapers</h2>
+  <span class="pub-eyebrow">Miguel's Own Work</span>
+</div>
 
 These whitepapers are written by Miguel and cover the technical foundation of decimal128 — its encoding format, its conformance to the IEEE 754 and GDAS standards, and its performance against other implementations. Each whitepaper is a standalone piece.
 
@@ -28,9 +29,10 @@ These whitepapers are written by Miguel and cover the technical foundation of de
 </div>
 
 <div class="pub-section pub-section--reviews" id="pub-reviews" markdown="1">
-<span class="pub-eyebrow" markdown="0">Independent Analysis</span>
-
-## Independent Reviews
+<div class="pub-heading-row" markdown="0">
+  <h2>Independent Reviews</h2>
+  <span class="pub-eyebrow">Independent Analysis</span>
+</div>
 
 Independent, standards-anchored reviews of decimal floating-point
 implementations — the decimal types shipping in mainstream languages and
