@@ -50,7 +50,7 @@ off the IBM mainframe to the cloud without sacrificing the numerical
 correctness, determinism, or auditability that regulated
 environments depend on.
 
-The decimal128 architecture is implemented natively in eight
+The decimal128 architecture is implemented natively in nine
 programming languages, so systems built on different platforms can
 share exactly the same arithmetic behaviour:
 
