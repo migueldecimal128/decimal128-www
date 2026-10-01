@@ -18,7 +18,7 @@ The ratio for Java's idiom peer on x86_64 (Intel i9-9880H): `ratio = BigDecimal 
 
 | | Add | Subtract | Multiply | Divide |
 |---|---|---|---|---|
-| ratio = BigDecimal / Miguel | 5× | 4× | 4× | 2.0× – 55× |
+| ratio = BigDecimal / Miguel | 5× | 4× | 3× | 2.0× – 54× |
 
 ## FinMix — realistic financial mix (P-fin)
 

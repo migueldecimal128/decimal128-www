@@ -18,8 +18,8 @@ Each row below is the ratio for that reference/idiom peer on x86_64 (Intel i9-98
 
 | | Add | Subtract | Multiply | Divide |
 |---|---|---|---|---|
-| ratio = System.Decimal / Miguel | 1.0× | 0.8× | — | 0.7× – 5× |
-| ratio = Decimal128 (.NET 11) / Miguel | 2.3× | 2.2× | 2.5× – 6× | 1.6× – 36× |
+| ratio = System.Decimal / Miguel | 0.9× | 0.7× | — | 0.6× – 5× |
+| ratio = Decimal128 (.NET 11) / Miguel | 2.2× | 2.2× | 2.4× – 5× | 1.6× – 36× |
 
 ## FinMix — realistic financial mix (P-fin)
 

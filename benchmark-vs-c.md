@@ -18,9 +18,9 @@ Each row below is the ratio for that reference library on x86_64 (Intel i9-9880H
 
 | | Add | Subtract | Multiply | Divide |
 |---|---|---|---|---|
-| ratio = libbid / Miguel | 6× | 5× | 1.8× – 18× | 0.9× – 2.9× |
-| ratio = decQuad / Miguel | 8× | 15× | 2.0× – 22× | 2.2× – 10× |
-| ratio = mpdecimal / Miguel | 7× | 7× | 1.3× – 12× | 2.6× – 14× |
+| ratio = libbid / Miguel | 6× | 5× | 1.7× – 18× | 0.9× – 2.8× |
+| ratio = decQuad / Miguel | 8× | 14× | 2.0× – 21× | 2.2× – 9× |
+| ratio = mpdecimal / Miguel | 7× | 6× | 1.2× – 12× | 2.5× – 14× |
 
 ## FinMix — realistic financial mix (P-fin)
 

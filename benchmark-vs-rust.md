@@ -18,7 +18,7 @@ Each row below is the ratio for that reference/idiom peer on x86_64 (Intel i9-98
 
 | | Add | Subtract | Multiply | Divide |
 |---|---|---|---|---|
-| ratio = rust_decimal / Miguel | 2.2× | 1.9× | — | 0.6× – 5× |
+| ratio = rust_decimal / Miguel | 2.1× | 1.9× | — | 0.6× – 5× |
 | ratio = libbid / Miguel | — | — | 2.0× – 13× | — |
 
 ## FinMix — realistic financial mix (P-fin)
