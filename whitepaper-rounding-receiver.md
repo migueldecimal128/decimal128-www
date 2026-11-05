@@ -113,7 +113,7 @@ A function whose result depends on ambient state is not a function of its argume
 
 ## 4. Three Placements for the Rounding Mode
 
-There are three places an API can put the rounding direction. Only the ambient placement is unsafe under concurrency; between the two explicit placements, the receiver is the better design.
+There are three places an API can put the rounding direction. Only the ambient placement is unsafe under concurrency. The two explicit placements are equally correct; the case for the receiver, made in Section 5.2, rests on how code reads and how the API is organized.
 
 **Ambient.** The mode is state read implicitly by every operation: a control register, a thread-local, a library global, or a context variable.
 
@@ -122,7 +122,7 @@ fesetround(FE_DOWNWARD);   /* somewhere */
 z = x * y;                 /* somewhere else */
 ```
 
-**Parameter.** The mode is an argument of the operation, usually trailing and often optional.
+**Parameter.** The mode is an argument of the operation, usually trailing. It may be required or optional.
 
 ```java
 BigDecimal z = x.multiply(y, MathContext.DECIMAL128);
@@ -140,7 +140,7 @@ let z = Rounding.towardNegative.multiply(x, y)
 | Result depends only on the written arguments | No | Yes | Yes |
 | Safe across threads, pools, coroutines, goroutines | Only with runtime propagation | Yes | Yes |
 | Save/restore discipline required | Yes, on every exit path | No | No |
-| Can be silently omitted | Always: the operation reads whatever is set | When the parameter is optional or overloaded | No: there is no call without it |
+| Can be silently omitted | Always: the operation reads whatever is set | Only if optional or overloaded; a required parameter cannot be | No: there is no call without it |
 | Groups directed operations for discovery | No | No: spread across the value type | Yes: all on `Rounding` / `DecimalContext` |
 | Cost per operation | A register or thread-local read | Pass an argument | Pass the receiver |
 
@@ -162,14 +162,16 @@ The rule that holds the design together is simple: **no operation takes a roundi
 
 Bare arithmetic never consults hidden state. `a + b` means `roundTiesToEven` in every thread, coroutine and goroutine, which is what lets operators exist at all without reintroducing an ambient mode.
 
-### 5.2 Why the receiver, not a parameter
+### 5.2 Why a receiver rather than a required parameter
 
-A parameter already removes the ambient state. The receiver goes further in four ways.
+A required parameter already removes the ambient state, and it is just as correct as a receiver: the direction is explicit, it cannot be omitted, and the result depends only on the written arguments. The receiver offers no stronger correctness guarantee. Its advantages are design advantages, and the first two are hypotheses about how programmers read and use APIs rather than measured results.
 
-1. **It reads as the rule it implements.** `Rounding.towardNegative.quantized(interest, to: cent)` reads left to right as the business rule: `roundTowardNegative`, this amount, to the cent. A trailing parameter puts the rule last, after the reader has already formed an expectation from the operands.
-2. **It cannot be left out.** A parameter invites a default value or an overload without it, and the default silently becomes an implicit mode again. A directed operation spelled on `Rounding` has no form without a direction.
+1. **It reads as the rule it implements.** `Rounding.towardNegative.quantized(interest, to: cent)` reads left to right as the business rule: `roundTowardNegative`, this amount, to the cent. A trailing parameter puts the rule last, after the reader has already formed an expectation from the operands. We expect the receiver form to be easier to read and review; we have not measured it.
+2. **It stays required as the API grows.** A required parameter can be weakened later: adding an overload without it, or giving it a default value, is a small and tempting change, and either one quietly restores an implicit mode. A directed operation spelled on `Rounding` has no shorter form to drift toward. This is a judgment about API evolution, not a property a required parameter lacks on the day it is designed.
 3. **The type documents which operations round.** Autocompletion on `Rounding.towardZero.` lists exactly the operations whose result depends on a direction. `minimum`, `maximum` and the comparisons select or compare rather than round, so they are absent from `Rounding` and appear only on `DecimalContext`, where they can still raise invalid-operation. The API surface itself states the semantics.
 4. **It is spelled the same in every language.** Go has no default arguments or overloading, Java has no extension methods, and Rust's orphan rule prevents adding methods to another crate's enum. A custom `Rounding` type carrying methods works in all of them: `TowardZero.Add(a, b)` in Go, `Rounding.TOWARD_ZERO.add(a, b)` in Java and Kotlin, `.towardZero.add(a, b)` in Swift and Zig.
+
+None of these changes what a program computes. A library that took a required rounding parameter on every directed operation would be equally correct; these are reasons to prefer the receiver, not reasons the parameter fails.
 
 The C library, which has no methods, uses the flattened form `d128_add_rnd(a, b, ROUND_TOWARD_ZERO)` and `d128_add_ctx(a, b, ctx)`. This is the same tuple with the modifier trailing, and it is what every receiver call compiles down to.
 
@@ -246,7 +248,7 @@ As Section 1 quotes, IEEE 754 requires each operation to round its exact result 
 
 In discussions with Microsoft on GitHub chats, the rationale given for this design was performance: the belief that accepting a user-supplied rounding direction slows down arithmetic. It does not, for three reasons.
 
-1. **Exact results never consult the direction.** Rounding only happens when a result does not fit in 34 digits, and in decimal work most additions, subtractions and multiplications fit. Adding two prices, subtracting a discount, or multiplying a quantity by a unit price produces a result with far fewer than 34 digits, so it is exact. In Decimal128 by Miguel an exact result returns before the rounding step is reached, so the direction is never read. For these operations the cost of a user-supplied rounding direction is zero.
+1. **Exact results almost never consult the direction.** Rounding only happens when a result does not fit in 34 digits, and in decimal work most additions, subtractions and multiplications fit. Adding two prices, subtracting a discount, or multiplying a quantity by a unit price produces a result with far fewer than 34 digits, so it is exact. In Decimal128 by Miguel an exact result returns before the rounding step is reached. The one exception IEEE 754 defines is an exact zero produced by adding operands of opposite sign, or subtracting operands of the same sign: the result is −0 under `roundTowardNegative` and +0 under every other direction [IEEE 754-2019 §6.3]. That case costs a single comparison. For every other exact result, the cost of a user-supplied rounding direction is zero.
 2. **Inexact results cost the same in every direction, and a constant direction is free.** Every direction, `roundTiesToEven` included, goes through the same branch-free lookup, and a literal receiver can be folded by the compiler (Section 5.5).
 3. **Rounding afterward is the expensive design.** It does all the work of a `roundTiesToEven` operation and then a second rounding operation, `Round` or `Quantize`, on every directed result. It also gives the wrong answer (above).
 
