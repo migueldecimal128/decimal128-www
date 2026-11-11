@@ -19,6 +19,7 @@ type can be watched as it converges.
 
 | Date | Release | Review | Headline |
 |------|---------|--------|----------|
+| 2026-11-11 | GA, build 26529.118 | [Read →](dotnet/net11-ga-26529.118.html) | The shipped type, arm64 only: the near-1 logarithm finding is fixed and every remaining recommended-function miss is within one ulp; wide add, multiply and FMA are 3–5× faster than RC 1; rounding attributes and status flags still absent, so it ships numerically correct and not IEEE 754 conformant. |
 | 2026-08-12 | RC 1, build 26411.119 | [Read →](dotnet/net11-rc1-26411.119.html) | A short edition: ten dailies on, no finding changed status, the 54,820-vector sweep reproduces exactly, and performance is stationary on two microarchitectures. The freeze is holding. |
 | 2026-08-02 | RC 1, build 26401.101 | [Read →](dotnet/net11-rc1-26401.101.html) | Quantum-preserving ToString lands and clause 5.12 closes; the sweep widens to 54,820 vectors with 0 failures; performance stops moving; rounding attributes and status flags remain absent, so the type ships numerically correct and not IEEE 754 conformant. |
 | 2026-07-28 | preview 7, build 26376.106 | [Read →](dotnet/net11-preview7-26376.106.html) | FMA arrives (truly fused); full IEEE 754 recommended-function surface; division up to 4× faster; new ln/log10 near-1 accuracy findings; RootN correct where the reference ports were not. |
