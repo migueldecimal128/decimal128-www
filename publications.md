@@ -23,6 +23,7 @@ redirect_from:
 These whitepapers are written by Miguel and cover the technical foundation of decimal128 — its encoding format, its conformance to the IEEE 754 and GDAS standards, and its performance against other implementations. Each whitepaper is a standalone piece.
 
 - [UBD (An Unpacked Binary Decimal Format for Fast Software Decoding of IEEE 754 decimal128)](whitepapers/ubd.html)
+- [UBD64 (A Proposed Unpacked Binary Decimal Encoding for IEEE 754 decimal64)](whitepapers/ubd64.html)
 - [Three Scripts, One Truth (Conformance Evidence)](whitepapers/conformance-evidence.html)
 - [Benchmark Matrix](whitepapers/benchmark-matrix.html)
 - [Rounding as a Receiver (Explicit Rounding Control for Decimal Arithmetic in Concurrent Programs)](whitepapers/rounding-receiver.html)
