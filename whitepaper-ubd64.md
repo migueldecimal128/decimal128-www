@@ -89,15 +89,18 @@ Read bits 63–54 as an unsigned code. Codes 0–369 and 626–1023 identify com
 
 ### 3.1 Aligned addition
 
-The inline path computes two quantities independently: the sum of the masked low fields, and the difference in the high fields as a bitwise exclusive-or. Equality of the high eleven bits establishes equal quantum and sign once the sum establishes that both operands use the common layout.
+The inline path adds the low field of y into the whole word x, so the sign and quantum of x ride along in the sum. It then tests two quantities: the difference in the high fields as a bitwise exclusive-or, and the bits of the sum from bit 52 up against the high bits of x with bit 52 clear.
 
-    sum = (x & MASK(53)) + (y & MASK(53))
+    sum = x + (y & MASK(53))
     highDiff = LSR(x ^ y, 53)
-    if sum < 2⁵² and highDiff == 0:
-        return (x & ~MASK(53)) | sum
+    overflow = LSR(sum ^ (x & ~MASK(53)), 52)
+    if (highDiff | overflow) == 0:
+        return sum
     return addGeneral(x, y, roundingDirection)
 
-The two masked fields are unsigned, and their sum needs at most 54 bits. Even two maximum fields cannot wrap a 64-bit register. Every large finite operand, infinity, or NaN contributes at least 2⁵², so any one of them forces the sum beyond the fast-path bound. If the sum passes, both fields are ordinary coefficients and their exact sum fits the result field. Copying the high bits of x preserves the shared sign and quantum.
+The high bits of x have bits 52 and below clear, so the bits of the sum from bit 52 up equal them exactly when the two low fields together are below 2⁵². That is the fast-path bound: overflow is zero exactly when (x & MASK(53)) + (y & MASK(53)) < 2⁵². Both low fields are unsigned and below 2⁵³, so their sum needs at most 54 bits and cannot wrap the register. Every large finite operand, infinity, or NaN has bit 52 set, contributes at least 2⁵² to that sum, and so fails the bound. If the bound holds, both fields are ordinary coefficients, their exact sum fits the result field, and the sum is the result word: the shared sign and quantum of x over the sum of the coefficients. Equality of the high eleven bits establishes that x and y share them.
+
+Masking both low fields and then copying the high bits of x into the result computes the same predicate and the same result, with two more instructions: the mask of x and the merge. Adding into x leaves the header in place. This is the arrangement BID64's aligned addition uses for its own header.
 
 **Why this matters when addition is inlined.** An explicit classification would first establish that the shared exponent is in range. The operation would still have to test whether the result fits. Here the existing sum comparison serves both purposes. The inline body contains two predicates: high-field equality and the sum bound. It performs no separate exponent extraction or range test. This matters even on a processor that can overlap an independent range check with the coefficient addition through instruction-level parallelism. When the check generates extra instructions, those instructions still occupy space at each inline site and consume front-end and execution resources when run. Removing the check can reduce those costs even if the critical-path latency stays the same. The machine-instruction count and code size can be measured independently of elapsed time.
 
@@ -105,15 +108,27 @@ The tighter bound has a cost. At quantum zero, adding 1 to 2⁵²−1 goes to th
 
 ### 3.2 Subtraction and multiplication
 
-Aligned magnitude subtraction cannot increase coefficient width. If two common-layout operands produce a nonzero magnitude difference at their shared quantum, the result fits the common layout. Exact cancellation requires the signed-zero rule for the operation and rounding direction.
+Aligned magnitude subtraction cannot increase coefficient width. If two common-layout operands produce a nonzero magnitude difference at their shared quantum, the result fits the common layout. Exact cancellation requires the signed-zero rule for the operation and rounding direction. With no sum to bound, the inline path establishes that both operands use the common layout by testing bit 52 of each, which a large finite word or a special always sets. The test also refuses common coefficients from 2⁵² up, which the general routine then handles.
 
-For multiplication, two common-layout coefficients can produce a 106-bit product. A simple sufficient gate is to require each coefficient to fit in 26 bits. The exact product then fits in 52 bits. Once both inputs have been identified as common finite, their exponent sum is in range, and this coefficient gate passes, the result packs directly with the exclusive-or of the operand signs. Wider products and exponent-boundary cases require the general routine. The gate illustrates one implementation choice.
+For multiplication, two common-layout coefficients can produce a 106-bit product. The inline path forms the full product of the two low fields and accepts it under three conditions.
+
+    (hi, lo) = MUL128(x & MASK(53), y & MASK(53))
+    q = ASR(x, 54) + ASR(y, 54)
+    if (hi | LSR(lo, 53) | ((x | y) & (1 << 52))) == 0 and (q + 398) as unsigned < 768:
+        return (q << 54) | ((x ^ y) & (1 << 53)) | lo
+    return mulGeneral(x, y, roundingDirection)
+
+First, the product fits the common coefficient field: its high word is zero and its low word is below 2⁵³. Second, both operands use the common layout: bit 52 is clear in each. The product bound alone does not establish this, because a large finite or special operand multiplied by a zero coefficient gives a zero product. Third, the exponent sum lies in [−398, 369]. This test is required even for two common operands, whose exponents can sum outside the range (−398 + −398 = −796). The two exponents are added after extraction rather than in the header, because the sign at bit 53 lies directly below the quantum field and adding the headers would carry the sign bits into it. The result packs the exponent sum, the exclusive-or of the operand signs, and the product.
+
+A narrower gate requires each coefficient to fit in 26 bits, so that the exact product fits in 52 bits. It also proves both operands common, since bit 52 is then clear, and it can use a 64-bit multiply. It sends every coefficient of 2²⁶ (about 6.7 × 10⁷) or more to the general routine, which includes money amounts above about 671,088.64 at quantum −2. The full-product gate accepts what BID64's in-place multiplication accepts.
 
 ## 4. Evaluation and limitations
 
 The finite layouts partition the integer interval [0, 10¹⁶−1] at 2⁵³. In the lower interval the coefficient is stored verbatim. In the upper interval the stored field is C − 2⁵³, which is nonnegative and fits in 50 bits. Both layouts preserve all 768 quantum exponents and both signs. Together with the disjoint special tags, these properties give a unique canonical encoding for each sign, quantum, and coefficient tuple and for each supported special value and payload.
 
 The common layout covers about 90.07% of the possible coefficient magnitudes. This fraction describes the encoding space. Actual fast-path frequency depends on the workload, including the quantum and sign relationships between operands. A column of 16-digit identifiers and a column of fixed-scale invoice amounts can exercise quite different paths.
+
+The bit-52 marker that lets §3.1 omit the range test also halves the addition bound. BID64's aligned addition accepts a coefficient sum below 2⁵³, the width of its first-form coefficient field. UBD64 accepts a sum below 2⁵², because a sum from 2⁵² up cannot be told apart from an operand with the marker set. Coefficients of at most 15 digits are unaffected, since 2 × (10¹⁵ − 1) < 2⁵². Sixteen-digit coefficients summing to between 2⁵² and 2⁵³ go to the general routine, which BID64 would decide inline. Such sums arise in interest and allocation arithmetic, where intermediate results are rounded to full precision. For example, the coefficients of 0.3541666666666667 and 0.2916666666666667 sum to about 6.46 × 10¹⁵. In one measurement adding pairs of 16-digit monthly-interest values, 25.7% took the UBD64 inline path against 53.7% for BID64.
 
 The principal cost relative to UBD128 is visible in §3.1: some finite inputs need another decode, and an exact finite result can cross a layout boundary. BID64 also uses an implicit leading pattern for large coefficients. The case for UBD64 therefore depends on the cost of its common-layout unbiased exponent, adjacent exponent and sign, coefficient-sum test, and repacking in actual arithmetic kernels. A controlled UBD64/BID64 comparison using the same kernels would measure that cost. An inline comparison should record emitted instruction count and code bytes at the call site alongside elapsed time and the fraction of sums sent to the general routine. The conformance results reported for UBD128 apply to that implementation family. Decimal64 arithmetic conformance and comparative timings remain to be established.
 
