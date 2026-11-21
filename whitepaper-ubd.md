@@ -10,7 +10,7 @@ heading: "UBD (An Unpacked Binary Decimal Format for Fast Software Decoding of I
 
 <div class="whitepaper-abstract" markdown="1">
 
-**Abstract.** UBD (Unpacked Binary Decimal) is a software-oriented in-memory format for IEEE 754 decimal128, designed for fast decoding on general-purpose CPUs. The two interchange encodings defined by IEEE 754 — Densely Packed Decimal (DPD) and Binary Integer Decimal (BID) — were designed primarily for hardware implementation, which remains rare outside IBM processors. In software, both interchange formats carry a decode cost: DPD requires substantial work to unpack its declet-based coefficient, while BID, though cheaper to unpack, still makes exponent recovery and operand classification non-trivial. Consequently, most software implementations unpack each operand into a wider, more memory-hungry working representation. UBD instead fits the full decimal128 coefficient range and NaN/infinity semantics into 128 bits while making the binary coefficient accessible via a single masking operation and the quantum exponent via a single arithmetic shift. All non-finite special values are stored with oversized coefficients, eliminating a separate operand check on the fast path. The result makes common-case operand checks and field extractions for addition, subtraction, and multiplication trivial. Multiple implementations in different programming languages using UBD format pass the Cowlishaw/IBM `decTest`, IBM FPgen `fptest`, and Intel `libbid` decimal128 test-vector suites.
+**Abstract.** UBD (Unpacked Binary Decimal) is a software-oriented in-memory format for IEEE 754 decimal128, designed for fast decoding on general-purpose CPUs. The two interchange encodings defined by IEEE 754 — Densely Packed Decimal (DPD) and Binary Integer Decimal (BID) — were designed primarily for hardware implementation, which remains rare outside IBM processors. In software, both interchange formats carry a decode cost: DPD requires substantial work to unpack its declet-based coefficient, while BID, though cheaper to unpack, still makes exponent recovery and operand classification non-trivial. Consequently, most software implementations unpack each operand into a wider, more memory-hungry working representation. UBD instead fits the full decimal128 coefficient range and NaN/infinity semantics into 128 bits while making the binary coefficient accessible via a single masking operation and the quantum exponent via a single arithmetic shift. All non-finite special values are stored with oversized coefficients, eliminating a separate operand check on the fast path. The result makes common-case operand checks and field extractions for addition, subtraction, and multiplication trivial. Multiple implementations in different programming languages using UBD format pass the Cowlishaw/IBM `decTest`, IBM FPgen `fptest`, and Intel `libbid` decimal128 test-vector suites. In a fork of the Go toolchain that stores Go's built-in `decimal128` as UBD, small inline fast paths in front of kernel calls run seven application benchmarks within 1.2% of the BID-based original on average, with 42% of its code.
 
 **Keywords:** decimal floating-point, IEEE 754, decimal128, DPD, BID, software arithmetic, in-memory encoding.
 
@@ -31,6 +31,7 @@ The contributions of this paper are:
 1. **UBD**, a 128-bit 16-byte in-memory encoding for `decimal128` that preserves the full coefficient range and NaN/infinity semantics while exposing the coefficient and exponent through single, cheap operations with a high degree of instruction-level parallelism (ILP).
 2. A **special-value scheme** that stores all non-finite values with oversized coefficients, reducing the need for a dedicated operand-classification step on the arithmetic fast path.
 3. **Conforming implementations** in Swift, C, C#, Java, Kotlin Multiplatform (KMP), Rust, Go, and Zig, all of which demonstrate high performance. 
+4. A **compiler integration**: Go's predeclared `decimal128` type, in a fork of the Go toolchain, stored as UBD, with its inline fast paths selectable by level and measured on whole applications against the BID-based original (Sections 5.1 and 6.3).
 
 ## 2. Background and Related Work
 
@@ -263,6 +264,48 @@ The Kotlin compiler enforces immutability through `val` fields. The core is 100%
 
 All implementations are kept as syntactically similar as practical. This is accomplished (in part) by restricting language constructs to a shared core. An effort is made to keep base filenames the same across all ports. These cross-platform goals and constraints are the subject of a companion paper. 
 
+### 5.1 UBD as a compiler built-in: the Go fork
+
+A proposal to add decimal floating-point types to Go [Go #19787] has a prototype toolchain by Marcelo Cantos [Cantos decimal] in which `decimal64` and `decimal128` are predeclared types with operators, implemented on BID: a `decimal128` is stored as its BID encoding with the high word XORed with the encoding of +0E+0, so that all bits clear is the zero value (*XOR-BID*). Its compiler expands each operator into integer fast paths inline, with calls into a software kernel for the rest.
+
+The `ubd128` fork of that toolchain [go-decimal-ubd] stores `decimal128` as UBD instead, unchanged in layout from Section 3, so that all bits clear is +0E+0 with no mask. The runtime, the conversions, formatting and parsing, and the kernel all work on UBD directly; BID appears only at the interchange boundary (reading and writing BID bits) and in a compile-time zero test of constants. The kernel is the prototype's BID kernel with its decoding and packing replaced by UBD's and its arithmetic unchanged. On amd64 and arm64, each operator compiles to a direct call into a kernel entry that takes the two 64-bit words of each operand in the registers they already occupy, low word first, so a call site moves nothing into place, optionally preceded by an inline fast path. (`decimal64` remains XOR-BID.)
+
+How much is inlined is chosen by the compiler flag `-d=ubdlevel`:
+
+| Level | Inline code at each call site |
+|---|---|
+| 1 | none: every operation is its kernel call, the smallest code |
+| **2** (default) | the narrowed fast paths below, in front of the kernel calls |
+| 3 | the large inline paths the prototype's compiler had for BID, moved to UBD's bit positions, in front of the same kernel calls |
+
+The level-2 paths narrow the paths of Section 4 to operands whose coefficients fit one 64-bit word. One test then serves addition, subtraction, and comparison:
+
+```
+(xHi64 ^ yHi64) | (xHi64 << 15) == 0
+```
+
+The high words are equal, so the operands share qExp and sign, and x's high word holds no coefficient bits, so both coefficients are below 2^64. Because every special value carries the `0x1F` coefficient prefix in its high word (Section 3.4.1), the same test excludes them: the special-value check is folded into the operand test, as in Section 4.1, now for comparisons as well.
+
+- **Addition** of operands of one qExp and one sign: the low words are added and the carry is added into the high word, an exact sum below 2^65. qExp and sign ride along in x's high word.
+- **Subtraction** of operands of one qExp and one sign: one subtraction of the low words; a borrow means |y| > |x|, and the difference is negated and the sign flipped; an exact zero is +0.
+- **Multiplication:** both coefficients below 2^56 and the qExp sum in range; the 64 × 64-bit product is then below 2^112, exact at the preferred exponent.
+- **Comparison with zero:** `(hi << 15) | lo == 0` for equality; the ordered comparisons place the sign above the coefficient in one word and test it as a signed integer. There is no kernel call at all.
+- **Comparison of two values:** the low words compared, XORed with a sign mask for the ordered comparisons.
+
+Every other operand pair takes the kernel call. Table 2 shows the code each operator costs at a call site.
+
+| Operator | XOR-BID | UBD level 1 | **UBD level 2** | UBD level 3 |
+|---|--:|--:|--:|--:|
+| `x + y` | 169 / 119 | 2 / 3 | **12 / 8** | 101 / 74 |
+| `x - y` | 179 / 126 | 2 / 3 | **25 / 14** | 102 / 76 |
+| `x * y` | 84 / 65 | 2 / 3 | **28 / 20** | 38 / 32 |
+| `x == y` | 169 / 131 | 2 / 3 | **12 / 7** | 69 / 58 |
+| `x < y` | 201 / 152 | 2 / 3 | **17 / 10** | 86 / 68 |
+| `x == 0` | 30 / 31 | 4 / 5 | **5 / 4** | 5 / 4 |
+| `x > 0` | 41 / 40 | 4 / 5 | **13 / 10** | 14 / 11 |
+
+*Table 2. Instructions per call site, amd64 / arm64: the inline fast paths and the call setup, without the enclosing function's frame.*
+
 ## 6. Evaluation
 
 UBD is evaluated on two axes: *conformance* — that implementations built on the format compute `decimal128` results exactly as the standard requires — and *decode cost* — the per-operand work the format demands of a general-purpose CPU. The first is measured against independent test-vector suites; the second is a structural, CPU-independent complexity argument.
@@ -315,6 +358,44 @@ Because every non-finite value carries a coefficient larger than any finite valu
 
 Benchmarks showing a performance breakdown of add/sub/mul/div with different operand shapes are run across the different implementations. See the companion BenchmarkMatrix and BenchmarkResults documents. 
 
+### 6.3 Application benchmarks: inline code against speed
+
+The Go toolchains of Section 5.1 are measured on whole applications with the go-decimal128-app-benchmark suite [go-decimal128-app-benchmark]: Go translations of the UW-Madison decimal floating-point application benchmarks [Wang et al. 2007; Anderson et al. 2009] (euro conversion, risk management, three tax forms, banking) and of Cowlishaw's telco benchmark [Cowlishaw telco]. Each program's output is checked byte for byte against the reference output on every run. The baseline is the XOR-BID toolchain the fork started from; UBD is measured at its three levels. All four builds were run interleaved on an Apple M3 Pro (arm64), with every function aligned to 64 bytes so that code placement does not differ between builds (November 2026).
+
+Table 3 gives the time of each program's own timed loop, in ns per record; lower is better.
+
+| App | XOR-BID, ns | UBD level 1, ns | **UBD level 2, ns** | UBD level 3, ns |
+|---|--:|--:|--:|--:|
+| euro | 881.2 | 872.1 (−1.0%) | **865.6 (−1.8%)** | 857.3 (−2.7%) |
+| risk | 5,777.1 | 7,693.8 (+33.2%) | **6,422.9 (+11.2%)** | 5,725.0 (−0.9%) |
+| tax fed | 2,347.9 | 2,851.2 (+21.4%) | **2,409.7 (+2.6%)** | 2,212.9 (−5.7%) |
+| tax ca | 500.2 | 575.5 (+15.1%) | **509.5 (+1.9%)** | 449.7 (−10.1%) |
+| tax nc | 805.0 | 822.4 (+2.2%) | **758.2 (−5.8%)** | 708.9 (−11.9%) |
+| banking | 648.8 | 698.9 (+7.7%) | **661.1 (+1.9%)** | 636.0 (−2.0%) |
+| telco | 32.1 | 43.8 (+36.3%) | **31.9 (−0.7%)** | 28.7 (−10.7%) |
+| **time vs XOR-BID, geometric mean (%)** | — | **+15.6%** | **+1.2%** | **−6.4%** |
+
+*Table 3. Compute time, ns per record, with the change against XOR-BID.*
+
+Table 4 gives the size of each program's own machine code, in KB: its main package and the adapter through which it reaches the decimal type, where the operators are compiled and inlined. The kernel, runtime, and standard library are shared by every program and not counted.
+
+| App | XOR-BID, KB | UBD level 1, KB | **UBD level 2, KB** | UBD level 3, KB |
+|---|--:|--:|--:|--:|
+| euro | 11.0 | 7.8 | **8.4** | 9.5 |
+| risk | 25.2 | 10.1 | **12.1** | 19.5 |
+| tax fed | 154.2 | 30.7 | **44.9** | 101.9 |
+| tax ca | 40.8 | 12.1 | **15.5** | 29.2 |
+| tax nc | 64.4 | 14.6 | **20.9** | 44.3 |
+| banking | 131.7 | 65.2 | **74.4** | 105.4 |
+| telco | 9.5 | 5.9 | **6.5** | 9.1 |
+| **total of the seven (KB)** | **436.7 KB** | **146.4 KB (−66%)** | **182.7 KB (−58%)** | **318.9 KB (−27%)** |
+
+*Table 4. Code size, KB per program, with the change in total against XOR-BID.*
+
+The levels trace a curve of code against speed. Level 2 adds 36 KB (+25%) to level 1 and is 12.5% faster on the geometric mean; level 3 adds a further 136 KB (+75%) for a further 7.5%. Level 2 is at most 2.6% slower than XOR-BID on six of the seven programs, and faster on three of them (euro, nc, telco), with 42% of its code; level 3 is faster than XOR-BID on all seven with 73% of its code. The remaining gap at level 2 is risk (+11.2%): about two in five of its additions and subtractions have operands of different exponents or of opposite signs for the operator, money-sized values that nonetheless take the kernel call. Two attempts to close it without growing the inline code did not succeed: computing the kernel's word-path addition without branches (the branches it removed were predicted better in risk than in random data) and an inline path for either sign (its code cost as much time as the calls it saved).
+
+One kernel change did close a gap without any inline code: telco's quantize to cents spent its time on a mispredicted branch deciding whether the remainder passed half, not on the division; computing that decision without a branch took the kernel's word path from 6.5 to 4.3 ns and telco from 36.0 to 31.8 ns per record, level with XOR-BID.
+
 ## 7. Discussion
 
 ### 7.1 When UBD helps and when it does not
@@ -333,10 +414,12 @@ This conversion cost issue only applies to binary data that is already in DPD/BI
 
 A standard architecture for multi-platform support — the shared-core discipline that keeps the 8 implementations syntactically aligned — has been designed and is described in an accompanying whitepaper. A quantitative companion study characterizes the arithmetic kernels built on UBD across operand shapes and implementations (Section 6.2).
 
+In the Go fork (Sections 5.1 and 6.3), the remaining work is the additions the level-2 paths send to the kernel, operands of different exponents or of opposite signs, which keep risk 11% behind XOR-BID, without giving up the small call sites that make level 2 worth having.
+
 
 ## 8. Conclusion
 
-UBD reframes the decimal128 storage question for the common case of software implementations of decimal floating-point. UBD maintains the density of the DPD and BID interchange formats while allowing the coded coefficient and qExp to be accessed with a single trivial operation each. Conforming implementations in Swift, C, C#, Java, Kotlin Multiplatform, Rust, Go, and Zig pass the Cowlishaw/IBM `decTest`, IBM FPgen `fptest`, and Intel `libbid` test suites. A quantitative study of the arithmetic kernels built on this format is left to a companion paper.
+UBD reframes the decimal128 storage question for the common case of software implementations of decimal floating-point. UBD maintains the density of the DPD and BID interchange formats while allowing the coded coefficient and qExp to be accessed with a single trivial operation each. Conforming implementations in Swift, C, C#, Java, Kotlin Multiplatform, Rust, Go, and Zig pass the Cowlishaw/IBM `decTest`, IBM FPgen `fptest`, and Intel `libbid` test suites. A quantitative study of the arithmetic kernels built on this format is left to a companion paper. As the storage of Go's built-in `decimal128` in a fork of the Go toolchain, UBD lets small inline fast paths — one test for exponent, sign, coefficient size, and special values — keep seven application benchmarks within 1.2% of the BID-based original on average with 42% of its code, and larger ones run them 6.4% faster with 73% of it.
 
 ## References
 
@@ -349,6 +432,20 @@ UBD reframes the decimal128 storage question for the common case of software imp
 [IEEE 754-2019] IEEE, *IEEE Standard for Floating-Point Arithmetic*, IEEE Std 754-2019 (revision of IEEE Std 754-2008), Institute of Electrical and Electronics Engineers, July 2019. DOI: 10.1109/IEEESTD.2019.8766229. Available: https://ieeexplore.ieee.org/document/8766229
 
 [Aharoni et al. 2003] M. Aharoni, S. Asaf, L. Fournier, A. Koifman, and R. Nagel, "FPgen — A Test Generation Framework for Datapath Floating-Point Verification," in *Proc. Eighth IEEE International High-Level Design Validation and Test Workshop (HLDVT)*, 2003, pp. 17–22. DOI: 10.1109/HLDVT.2003.1252469. Available: https://ieeexplore.ieee.org/document/1252469/. The associated IEEE 754R test suite (*fptest*) was distributed by IBM Research, Haifa.
+
+[Go #19787] "proposal: spec: add decimal float types (IEEE 754-2008)," Go issue 19787. Available: https://go.dev/issue/19787
+
+[Cantos decimal] M. Cantos, Go toolchain with predeclared decimal types, branch `decimal` of https://github.com/marcelocantos/go, commit `5032fd77`; proposal and toolchain lock at https://github.com/marcelocantos/go-decimal-proposal
+
+[go-decimal-ubd] The `ubd128` fork of [Cantos decimal], storing `decimal128` as UBD. Available: https://github.com/migueldecimal128/go-decimal-ubd/tree/ubd128 (measured at commit `45ff73c327`)
+
+[Wang et al. 2007] L.-K. Wang, C. Tsen, M. J. Schulte, and D. Jhalani, "Benchmarks and Performance Analysis of Decimal Floating-Point Applications," in *Proc. 25th IEEE International Conference on Computer Design (ICCD)*, October 2007, pp. 164–170.
+
+[Anderson et al. 2009] M. J. Anderson, C. Tsen, L.-K. Wang, K. Compton, and M. J. Schulte, "Performance Analysis of Decimal Floating-Point Libraries and Its Impact on Decimal Hardware and Software Solutions," in *Proc. 27th IEEE International Conference on Computer Design (ICCD)*, October 2009, pp. 465–471.
+
+[go-decimal128-app-benchmark] Go application benchmarks for decimal128 libraries: the UW-Madison decimal floating-point application benchmarks (v1.0) [Wang et al. 2007; Anderson et al. 2009] and Cowlishaw's telco benchmark, with byte-exact output gates and a runner. Available: https://github.com/migueldecimal128/go-decimal128-app-benchmark
+
+[Cowlishaw telco] M. F. Cowlishaw, "The 'telco' benchmark." Available: https://speleotrove.com/decimal/telco.html
 
 [Cowlishaw 2002] M. F. Cowlishaw, "Densely Packed Decimal Encoding," *IEEE Proceedings — Computers and Digital Techniques*, vol. 149, no. 3, pp. 102–104, May 2002. ISSN 1350-2387. A summary is available at https://speleotrove.com/decimal/DPDecimal.html
 
