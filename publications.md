@@ -24,6 +24,7 @@ These whitepapers are written by Miguel and cover the technical foundation of de
 
 - [UBD (An Unpacked Binary Decimal Format for Fast Software Decoding of IEEE 754 decimal128)](whitepapers/ubd.html)
 - [UBD64 (A Proposed Unpacked Binary Decimal Encoding for IEEE 754 decimal64)](whitepapers/ubd64.html)
+- [UBD in a Compiler (Go's Built-in decimal128 Stored as UBD)](whitepapers/ubd-go.html)
 - [Three Scripts, One Truth (Conformance Evidence)](whitepapers/conformance-evidence.html)
 - [Benchmark Matrix](whitepapers/benchmark-matrix.html)
 - [Rounding as a Receiver (Explicit Rounding Control for Decimal Arithmetic in Concurrent Programs)](whitepapers/rounding-receiver.html)
