@@ -49,7 +49,7 @@ The level-2 paths narrow the fast paths of [UBD] (Section 4) to operands whose c
 The high words are equal, so the operands share qExp and sign, and x's high word holds no coefficient bits, so both coefficients are below 2^64. Because every special value carries the `0x1F` coefficient prefix in its high word ([UBD], Section 3.4.1), the same test excludes them: the special-value check is folded into the operand test, as for addition in [UBD] (Section 4.1), now for comparisons as well.
 
 - **Addition** of operands of one qExp and one sign: the low words are added and the carry is added into the high word, an exact sum below 2^65. qExp and sign ride along in x's high word.
-- **Subtraction** of operands of one qExp and one sign: one subtraction of the low words; a borrow means |y| > |x|, and the difference is negated and the sign flipped; an exact zero is +0.
+- **Subtraction** of operands of one qExp and one sign: one subtraction of the low words; a borrow means y is larger in magnitude than x, and the difference is negated and the sign flipped; an exact zero is +0.
 - **Multiplication:** both coefficients below 2^56 and the qExp sum in range; the 64 × 64-bit product is then below 2^112, exact at the preferred exponent.
 - **Comparison with zero:** `(hi << 15) | lo == 0` for equality; the ordered comparisons place the sign above the coefficient in one word and test it as a signed integer. There is no kernel call at all.
 - **Comparison of two values:** the low words compared, XORed with a sign mask for the ordered comparisons.
