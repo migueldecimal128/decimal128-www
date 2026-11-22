@@ -48,11 +48,13 @@ The level-2 paths narrow the fast paths of [UBD] (Section 4) to operands whose c
 
 The high words are equal, so the operands share qExp and sign, and x's high word holds no coefficient bits, so both coefficients are below 2^64. Because every special value carries the `0x1F` coefficient prefix in its high word ([UBD], Section 3.4.1), the same test excludes them: the special-value check is folded into the operand test, as for addition in [UBD] (Section 4.1), now for comparisons as well.
 
-- **Addition** of operands of one qExp and one sign: the low words are added and the carry is added into the high word, an exact sum below 2^65. qExp and sign ride along in x's high word.
-- **Subtraction** of operands of one qExp and one sign: one subtraction of the low words; a borrow means y is larger in magnitude than x, and the difference is negated and the sign flipped; an exact zero is +0.
-- **Multiplication:** both coefficients below 2^56 and the qExp sum in range; the 64 × 64-bit product is then below 2^112, exact at the preferred exponent.
-- **Comparison with zero:** `(hi << 15) | lo == 0` for equality; the ordered comparisons place the sign above the coefficient in one word and test it as a signed integer. There is no kernel call at all.
-- **Comparison of two values:** the low words compared, XORed with a sign mask for the ordered comparisons.
+In plain terms, the inline code finishes the operation itself, with no call, in these cases:
+
+- **Addition `x + y`:** x and y have the same sign and the same exponent, and both coefficients fit in 64 bits (up through 19 decimal digits). The sum needs no further test: it may be one bit wider than 64 bits, and that bit goes into the high word, where the coefficient continues. The result keeps x's sign and exponent.
+- **Subtraction `x - y`:** the same conditions: same sign, same exponent, both coefficients in 64 bits. The coefficients are subtracted; if y's is the larger, the difference is negated and the result takes the opposite sign. A zero result is +0.
+- **Multiplication `x * y`:** any signs and any exponents, provided both coefficients fit in 56 bits (up through 16 decimal digits) and the sum of the exponents is in range. The product then fits in 112 bits and is exact; its sign is the exclusive or of the signs.
+- **Comparison of two values:** the same conditions as addition: same sign, same exponent, both coefficients in 64 bits. The coefficients are compared directly, with the order reversed for negative values.
+- **Comparison with zero:** always inline, with no kernel call at all. Equality tests `(hi << 15) | lo == 0`; the ordered comparisons place the sign above the coefficient in one word and test it as a signed integer.
 
 Every other operand pair takes the kernel call. Table 1 shows the code each operator costs at a call site.
 
