@@ -40,7 +40,7 @@ How much is inlined is chosen by the compiler flag `-d=ubdlevel`:
 | **2** (default) | the narrowed fast paths described below, with function call fall-back to general-path kernel implementations |
 | 3 | the same large inline paths the prototype's compiler had for XOR-BID, modified for UBD structure, in front of the same kernel implementations also modified for UBD structure |
 
-The level-2 paths narrow the fast paths of [UBD] (Section 4) to operands whose coefficients fit one 64-bit word. One test then serves addition, subtraction, and comparison:
+The level-2 paths narrow the fast paths of [UBD] (Section 4) to operands whose coefficients fit one 64-bit word, effectively covering up through 19 decimal digits. One test then serves addition, subtraction, and comparison:
 
 ```
 (xHi64 ^ yHi64) | (xHi64 << 15) == 0
