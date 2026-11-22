@@ -2,7 +2,7 @@
 layout: default
 permalink: /whitepapers/ubd-go.html
 title: "UBD in a Compiler: Go's Built-in decimal128 Stored as UBD — Decimal128"
-description: "A fork of the Go decimal toolchain stores the predeclared decimal128 type as UBD, with inline fast paths chosen by level, measured on whole applications against the BID-based original."
+description: "A fork of the Go decimal toolchain stores the predeclared decimal128 type as UBD, with inline fast paths chosen by level, measured on whole applications against the XOR-BID original."
 heading: "UBD in a Compiler (Go's Built-in decimal128 Stored as UBD)"
 ---
 
@@ -10,9 +10,9 @@ heading: "UBD in a Compiler (Go's Built-in decimal128 Stored as UBD)"
 
 <div class="whitepaper-abstract" markdown="1">
 
-**Abstract.** The UBD whitepaper [UBD] defines an in-memory format for IEEE 754 decimal128 whose coefficient and exponent are recovered with a single mask and a single shift, and whose special values carry oversized coefficients. This companion paper reports what that format does as the storage of a language's built-in decimal type. In a fork of a prototype Go toolchain with predeclared decimal types, `decimal128` is stored as UBD instead of BID, every operator is a call into a kernel that works on UBD directly, and a compiler flag chooses how much is inlined in front of those calls. At the default level, one test covers exponent, sign, coefficient size, and special values, and the inline code at a binary operator's call site is 7 to 28 instructions instead of the original's 65 to 201. On seven application benchmarks the default build is within 1.2% of the BID-based original on average on arm64 and 0.6% faster on x86_64, with 37–42% of its code; a level with the original's larger inline paths is 6–7% faster with 65–73% of it.
+**Abstract.** The UBD whitepaper [UBD] defines an in-memory format for IEEE 754 decimal128 whose coefficient and exponent are recovered with a single mask and a single shift, and whose special values carry oversized coefficients. This companion paper reports what that format does as the storage of a language's built-in decimal type. In a fork of a prototype Go toolchain with predeclared decimal types, `decimal128` is stored as UBD instead of XOR-BID (BID with the high word XORed so that all bits clear is zero), every operator is a call into a kernel that works on UBD directly, and a compiler flag chooses how much is inlined in front of those calls. At the default level, one test covers exponent, sign, coefficient size, and special values, and the inline code at a binary operator's call site is 7 to 28 instructions instead of XOR-BID's 65 to 201. On seven application benchmarks the default build is within 1.2% of XOR-BID on average on arm64 and 0.6% faster on x86_64, with 37–42% of its code; a level with XOR-BID's larger inline paths, moved onto UBD, is 6–7% faster with 65–73% of XOR-BID's code.
 
-**Keywords:** decimal floating-point, IEEE 754, decimal128, UBD, BID, Go, compiler, inlining, code size.
+**Keywords:** decimal floating-point, IEEE 754, decimal128, UBD, BID, XOR-BID, Go, compiler, inlining, code size.
 
 </div>
 
@@ -22,13 +22,13 @@ heading: "UBD in a Compiler (Go's Built-in decimal128 Stored as UBD)"
 
 The UBD whitepaper [UBD] argues for UBD on structural grounds: decoding an operand costs a mask and a shift, and the check for special values folds into a range check the arithmetic already performs. Its implementations are libraries. A built-in type is a different setting: every arithmetic operator in a program is expanded by the compiler, so the size of the code at each call site is multiplied by the number of call sites, and the choice between inlining a fast path and calling a kernel is made once for every program.
 
-Go has a proposal to add decimal floating-point types [Go #19787], with a prototype toolchain by Marcelo Cantos [Cantos decimal] that stores `decimal128` as BID. This paper describes a fork of that toolchain that stores it as UBD [go-decimal-ubd] (Section 2), the inline fast paths its compiler can place in front of the kernel calls, chosen by level (Section 3), and their cost and benefit on whole applications against the BID-based original, on arm64 and x86_64 (Section 4). Section 5 reports a kernel change that closed one gap and two attempts that did not close another, and Section 6 what remains.
+Go has a proposal to add decimal floating-point types [Go #19787], with a prototype toolchain by Marcelo Cantos [Cantos decimal] that stores `decimal128` as XOR-BID, a variant of BID. This paper describes a fork of that toolchain that stores it as UBD [go-decimal-ubd] (Section 2), the inline fast paths its compiler can place in front of the kernel calls, chosen by level (Section 3), and their cost and benefit on whole applications against XOR-BID, on arm64 and x86_64 (Section 4). Section 5 reports a kernel change that closed one gap and two attempts that did not close another, and Section 6 what remains.
 
 ## 2. Go's built-in decimal128 on UBD
 
 A proposal to add decimal floating-point types to Go [Go #19787] has a prototype toolchain by Marcelo Cantos [Cantos decimal] in which `decimal64` and `decimal128` are predeclared types with operators, implemented on BID: a `decimal128` is stored as its BID encoding with the high word XORed with the encoding of +0E+0, so that all bits clear is the zero value (*XOR-BID*). Its compiler expands each operator into integer fast paths inline, with calls into a software kernel for the rest.
 
-The `ubd128` fork of that toolchain [go-decimal-ubd] stores `decimal128` as UBD instead, unchanged in layout from the UBD whitepaper [UBD], so that all bits clear is +0E+0 with no mask. The runtime, the conversions, formatting and parsing, and the kernel all work on UBD directly; BID appears only at the interchange boundary (reading and writing BID bits) and in a compile-time zero test of constants. The kernel is the prototype's BID kernel with its decoding and packing replaced by UBD's and its arithmetic unchanged. On amd64 and arm64, each operator compiles to a direct call into a kernel entry that takes the two 64-bit words of each operand in the registers they already occupy, low word first, so a call site moves nothing into place, optionally preceded by an inline fast path. (`decimal64` remains XOR-BID.)
+The `ubd128` fork of that toolchain [go-decimal-ubd] stores `decimal128` as UBD instead, unchanged in layout from the UBD whitepaper [UBD], so that all bits clear is +0E+0 with no mask. The runtime, the conversions, formatting and parsing, and the kernel all work on UBD directly; BID appears only at the interchange boundary (reading and writing BID bits) and in a compile-time zero test of constants. The kernel is the XOR-BID kernel with its decoding and packing replaced by UBD's and its arithmetic unchanged. On amd64 and arm64, each operator compiles to a direct call into a kernel entry that takes the two 64-bit words of each operand in the registers they already occupy, low word first, so a call site moves nothing into place, optionally preceded by an inline fast path. (`decimal64` remains XOR-BID.)
 
 ## 3. Inline levels
 
@@ -36,9 +36,9 @@ How much is inlined is chosen by the compiler flag `-d=ubdlevel`:
 
 | Level | Inline code at each call site |
 |---|---|
-| 1 | none: every operation is its kernel call, the smallest code |
-| **2** (default) | the narrowed fast paths below, in front of the kernel calls |
-| 3 | the large inline paths the prototype's compiler had for BID, moved to UBD's bit positions, in front of the same kernel calls |
+| 1 | none: every operation is a function call to the general-path kernel implementation — the smallest code, but the slowest performance |
+| **2** (default) | the narrowed fast paths described below, with function call fall-back to general-path kernel implementations |
+| 3 | the same large inline paths the prototype's compiler had for XOR-BID, modified for UBD structure, in front of the same kernel implementations also modified for UBD structure |
 
 The level-2 paths narrow the fast paths of [UBD] (Section 4) to operands whose coefficients fit one 64-bit word. One test then serves addition, subtraction, and comparison:
 
@@ -140,13 +140,13 @@ Two attempts to close risk's gap did not succeed. Computing the kernel's word-pa
 
 ## 6. Discussion and future work
 
-The levels separate two costs that a library cannot: the code each call site carries, which grows with the number of operators in a program, and the time spent in calls that a larger inline path would have avoided. Level 2 keeps the first small — 37–42% of the BID-based original's application code — while matching its speed on all but one program; level 3 shows how much speed the larger inline paths still buy. The kernel change for quantize shows that some of a gap can be closed in the kernel, at no cost to call sites, once the profile shows where the time goes; the two rejected changes show that a microbenchmark of random operands can mislead where the application's data is more regular.
+The levels separate two costs that a library cannot: the code each call site carries, which grows with the number of operators in a program, and the time spent in calls that a larger inline path would have avoided. Level 2 keeps the first small — 37–42% of XOR-BID's application code — while matching XOR-BID's speed on all but one program; level 3 shows how much speed the larger inline paths still buy. The kernel change for quantize shows that some of a gap can be closed in the kernel, at no cost to call sites, once the profile shows where the time goes; the two rejected changes show that a microbenchmark of random operands can mislead where the application's data is more regular.
 
 The remaining work is the additions level 2 sends to the kernel, operands of different exponents or of opposite signs for the operator, which keep risk 8–11% behind XOR-BID, without giving up the small call sites that make level 2 worth having.
 
 ## 7. Conclusion
 
-Stored as UBD, Go's built-in `decimal128` needs one test — for exponent, sign, coefficient size, and special values — in front of a kernel call to take the common case of addition, subtraction, and comparison inline. With those small paths, seven application benchmarks run within 1.2% of the BID-based original on arm64 and 0.6% ahead of it on x86_64, with 37–42% of its code; with the original's larger paths moved onto UBD, they run 6–7% faster with 65–73% of it.
+Stored as UBD, Go's built-in `decimal128` needs one test — for exponent, sign, coefficient size, and special values — in front of a kernel call to take the common case of addition, subtraction, and comparison inline. With those small paths, seven application benchmarks run within 1.2% of XOR-BID on arm64 and 0.6% ahead of it on x86_64, with 37–42% of its code; with XOR-BID's larger paths moved onto UBD, they run 6–7% faster with 65–73% of XOR-BID's code.
 
 ## References
 
