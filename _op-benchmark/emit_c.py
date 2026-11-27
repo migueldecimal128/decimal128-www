@@ -10,8 +10,9 @@ and dataset.size() == kDefaultN == 4096, so items_per_second is per-OP — verif
 Runs 15 repetitions with --benchmark_report_aggregates_only and reads the MEDIAN
 aggregate (the cross-port estimator; 1e9/median(ips) == median(ns) by monotonicity).
 
-d128 rung per the Rprof methodology: add/sub via the flag-free `_tte` rung, mul/div via the
-plain `_ctx` arm (no per-band _tte exists for mul/div), FMA via `fma_{FN,FF}_tte`.
+d128 rung per the Rprof methodology: add/sub/mul/div via the flag-free `_tte` rung (the
+per-band mul/div `_tte` rungs were added with GoUbdKernelGapWorkOrder.md L1-L3; before, mul/div
+read the plain `_ctx` arm), FMA via `fma_{FN,FF}_tte`.
 Peers (libbid/decq/mpd) via the plain per-band benchmark.
 
 Usage: emit_c.py <bench_binary> [--run-id Rc2] [--min-time 0.05s] [--no-build]
@@ -173,8 +174,8 @@ def reshape(j, profile, run):
         cat = band.replace("_", "")   # store cat: "SQ_ss" -> "SQss"
         impl = IMPL[raw_impl]
         if impl == "d128":
-            # add/sub: flag-free _tte rung; mul/div: plain _ctx arm
-            want = "_tte" if op in ("add", "sub") else None
+            # every op: the flag-free _tte rung, as the other ports' emitters read
+            want = "_tte"
             if (suffix or None) != want:
                 continue
         else:
